@@ -1,0 +1,392 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-03 14:37+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Martin Fors\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: sv_SE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: esc_html__;esc_html_e;esc_attr__;esc_attr_e;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../include/classes.php:1687
+msgid "Information"
+msgstr ""
+
+#: ../include/classes.php:1688
+#: ../include/classes.php:1740
+msgid "Company"
+msgstr "Företag"
+
+#: ../include/classes.php:1689
+msgid "Type"
+msgstr "Typ"
+
+#: ../include/classes.php:1690
+msgid "Test API"
+msgstr "Testa API"
+
+#: ../include/classes.php:1699
+msgid "Theme Child"
+msgstr "STR-tema"
+
+#: ../include/classes.php:1710
+#, php-format
+msgid "The oldest instructor to be updated was %s (%s)"
+msgstr "Den första utbildaren som har uppdaterats var %s (%s)"
+
+#: ../include/classes.php:1717
+#, php-format
+msgid "The newest instructor to be updated was %s (%s)"
+msgstr "Den senaste utbildaren som har uppdaterats var %s (%s)"
+
+#: ../include/classes.php:1741
+msgid "Properties"
+msgstr "Attribut"
+
+#: ../include/classes.php:1742
+msgid "Terms"
+msgstr "Klasser"
+
+#: ../include/classes.php:1773
+msgid "Run Now"
+msgstr "Kör nu"
+
+#: ../include/classes.php:1785
+msgid "Optima"
+msgstr ""
+
+#: ../include/classes.php:1830
+msgid "Unknown"
+msgstr "Okänd"
+
+#: ../include/classes.php:1832
+#, php-format
+msgid "Created %s by %s and got the answer %d"
+msgstr "Skapad %s av %s och fick svaret %d"
+
+#: ../include/classes.php:1894
+msgid "The information was successfully sent"
+msgstr "Informationen skickades"
+
+#: ../include/classes.php:1899
+msgid "The information could not be sent"
+msgstr "Informationen kunde inte skickas"
+
+#: ../include/classes.php:1926
+msgid "Send Again"
+msgstr "Skicka igen"
+
+#: ../include/classes.php:2097
+#, php-format
+msgid "Enter the details of the person who will use %s below"
+msgstr "Ange nedan uppgifter på den som ska använda %s"
+
+#: ../include/classes.php:2099
+msgid "Social Security Number"
+msgstr "Personnummer"
+
+#: ../include/classes.php:2099
+msgid "YYMMDDXXXX"
+msgstr "ÅÅMMDDXXXX"
+
+#: ../include/classes.php:2103
+msgid "Phone Number"
+msgstr "Telefonnummer"
+
+#: ../include/classes.php:2103
+#: ../include/classes.php:2104
+msgid "to the user"
+msgstr "till den som ska använda materialet"
+
+#: ../include/classes.php:2104
+msgid "E-mail"
+msgstr "E-post"
+
+#: ../include/classes.php:2125
+msgid "Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits"
+msgstr "Var vänlig ange personnummer enligt formatet ÅÅMMDDXXXX med endast tio siffror"
+
+#: ../include/classes.php:2132
+msgid "Please enter a Social Security Number with only digits in it"
+msgstr "Var vänlig ange personnummer endast med siffror"
+
+#: ../include/classes.php:2139
+msgid "Please enter a Social Security Number with a correct YYMMDD"
+msgstr "Var vänlig ange personnummer med korrekt ÅÅMMDD"
+
+#: ../include/classes.php:2146
+msgid "Please enter a Social Security Number with the correct last check number"
+msgstr "Var vänlig ange personnummer med korrekt kontrollsiffra i slutet"
+
+#: ../include/classes.php:2160
+msgid "Please enter a Phone Number or E-mail Address"
+msgstr "Var vänlig ange telefonnummer eller e-postadress"
+
+#: ../include/classes.php:2174
+msgid "The Social Security Number and Phone Number does not match on all products. If you enter the same Social Security Number on several products, you can't enter different Phone Numbers on those products."
+msgstr "Personnumret och telefonnumret stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika telefonnummer på dessa produkter."
+
+#: ../include/classes.php:2181
+msgid "The Social Security Number and E-mail Address does not match on all products. If you enter the same Social Security Number on several products, you can't enter different E-mail Addresses on those products."
+msgstr "Personnumret och e-postadressen stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika e-postadresser på dessa produkter."
+
+#: ../include/classes.php:2214
+#: ../woocommerce/checkout/form-shipping.php:31
+msgid "Ship to a different address?"
+msgstr "Leverera till en annan adress?"
+
+#: ../include/classes.php:2217
+msgid "First Name"
+msgstr "Förnamn"
+
+#: ../include/classes.php:2218
+msgid "Last Name"
+msgstr "Efternamn"
+
+#: ../include/classes.php:2220
+msgid "Street Address"
+msgstr "Gatuadress"
+
+#: ../include/classes.php:2223
+msgid "Zipcode"
+msgstr "Postnummer"
+
+#: ../include/classes.php:2224
+msgid "City"
+msgstr "Ort"
+
+#: ../include/classes.php:2257
+msgid "Recipient"
+msgstr "Mottagare"
+
+#: ../include/classes.php:2343
+#: ../woocommerce/order/order-details.php:159
+msgid "Continue to shop"
+msgstr "Fortsätt handla"
+
+#: ../woocommerce/checkout/review-order.php:23
+#: ../woocommerce/emails/email-order-details.php:45
+#: ../woocommerce/order/order-details.php:63
+msgid "Product"
+msgstr "Produkt"
+
+#: ../woocommerce/checkout/review-order.php:24
+msgid "Subtotal"
+msgstr "Delsumma"
+
+#: ../woocommerce/checkout/review-order.php:108
+#: ../woocommerce/order/order-details.php:64
+msgid "Total"
+msgstr "Totalt"
+
+#: ../woocommerce/checkout/thankyou.php:28
+msgid "Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again."
+msgstr "Tyvärr går din beställning inte att behandla eftersom banken har nekat transaktionen. Var vänlig försök igen."
+
+#: ../woocommerce/checkout/thankyou.php:30
+msgid "Pay"
+msgstr "Betala"
+
+#: ../woocommerce/checkout/thankyou.php:34
+msgid "My account"
+msgstr "Mitt konto"
+
+#: ../woocommerce/checkout/thankyou.php:43
+#: ../woocommerce/checkout/thankyou.php:94
+msgid "Thank you. Your order has been received."
+msgstr "Tack! Din order har tagits emot."
+
+#: ../woocommerce/checkout/thankyou.php:51
+msgid "Order number"
+msgstr "Beställningsnummer"
+
+#: ../woocommerce/checkout/thankyou.php:55
+msgid "Date"
+msgstr "Datum"
+
+#: ../woocommerce/checkout/thankyou.php:62
+msgid "Email"
+msgstr "E-post"
+
+#: ../woocommerce/emails/email-order-details.php:38
+#, php-format
+msgid "[Order #%s]"
+msgstr ""
+
+#: ../woocommerce/emails/email-order-details.php:46
+msgid "Quantity"
+msgstr "Kvanitet"
+
+#: ../woocommerce/emails/email-order-details.php:47
+msgid "Price"
+msgstr "Pris"
+
+#: ../woocommerce/emails/email-order-details.php:109
+#: ../woocommerce/order/order-details.php:134
+msgid "Note:"
+msgstr "Anteckning:"
+
+#: ../woocommerce/order/order-details-customer.php:30
+msgid "Billing address"
+msgstr "Faktureringsadress"
+
+#: ../woocommerce/order/order-details-customer.php:32
+#: ../woocommerce/order/order-details-customer.php:54
+#: ../woocommerce/order/order-details-customer.php:56
+msgid "N/A"
+msgstr ""
+
+#: ../woocommerce/order/order-details-customer.php:59
+msgid "Shipping address"
+msgstr "Leveransadress"
+
+#: ../woocommerce/order/order-details.php:156
+msgid "Save your order details"
+msgstr "Spara din orderbekräftelse"
+
+#: ../woocommerce/order/order-details.php:164
+#, php-format
+msgid "Have you purchased access to the app %s?"
+msgstr "Har du köpt tillgång till appen %s?"
+
+#: ../woocommerce/order/order-details.php:165
+#, php-format
+msgid "Download from %s or %s. You need to create an account the first time you log in."
+msgstr "Ladda nu ner den från %s eller %s. Första gången du ska logga in så behöver du skapa ett konto."
+
+#: ../woocommerce/order/order-details.php:166
+msgid "There you use the social security number that you entered when you bought your periods and that you see above in your order. When you have created an account and logged in, your periods are there waiting for you. Good luck!"
+msgstr "Där använder du det personnummer som du angav när du köpte dina perioder och som du ser ovan i din beställning. När du skapat ett konto och loggat in så ligger dina perioder där och väntar på dig. Lycka till!"
+
+#~ msgid "Enter details below for the user"
+#~ msgstr "Ange nedan uppgifter på den som ska använda"
+
+#~ msgid "Debug"
+#~ msgstr "Felsök"
+
+#~ msgid "Order details"
+#~ msgstr "Beställningsdetaljer"
+
+#~ msgid "One Reply to %s"
+#~ msgstr "Ett svar till %s"
+
+#~ msgid "Previous"
+#~ msgstr "Föregående"
+
+#~ msgid "Next"
+#~ msgstr "Nästa"
+
+#~ msgid "Comments are closed"
+#~ msgstr "Kommentarer är stängda"
+
+#~ msgid "Read More"
+#~ msgstr "Läs mer"
+
+#~ msgid "of"
+#~ msgstr "av"
+
+#~ msgid "No results"
+#~ msgstr "Inga resultat"
+
+#~ msgid "I could not find any results for %s"
+#~ msgstr "Jag kunde inte hitta några resultat för %s"
+
+#~ msgid "Menu"
+#~ msgstr "Meny"
+
+#~ msgid "Load more posts"
+#~ msgstr "Ladda fler inlägg"
+
+#~ msgid "Display Heading"
+#~ msgstr "Visa rubrik"
+
+#~ msgid "Display Featured Image on Single Page"
+#~ msgstr "Visa utvald bild på sida"
+
+#~ msgid "Text Columns"
+#~ msgstr "Textkolumner"
+
+#~ msgid "Body Class"
+#~ msgstr "Klass på Body"
+
+#~ msgid "Content Settings"
+#~ msgstr "Inställningar för innehåll"
+
+#~ msgid "Primary Navigation"
+#~ msgstr "Primär navigation"
+
+#~ msgid "Before Header"
+#~ msgstr "Före sidhuvud"
+
+#~ msgid "Header"
+#~ msgstr "Sidhuvud"
+
+#~ msgid "After Header"
+#~ msgstr "Efter sidhuvud"
+
+#~ msgid "Slide menu"
+#~ msgstr "Sidomeny"
+
+#~ msgid "Pre Content"
+#~ msgstr "Före innehåll"
+
+#~ msgid "Below Main Heading"
+#~ msgstr "Under huvudrubrik"
+
+#~ msgid "Aside"
+#~ msgstr "Sidokolumn"
+
+#~ msgid "Left"
+#~ msgstr "Vänster"
+
+#~ msgid "Below Main Column"
+#~ msgstr "Under huvudkolumn"
+
+#~ msgid "Right"
+#~ msgstr "Höger"
+
+#~ msgid "Below Content"
+#~ msgstr "Efter innehåll"
+
+#~ msgid "Pre Footer"
+#~ msgstr "Före sidfot"
+
+#~ msgid "Footer"
+#~ msgstr "Sidfot"
+
+#~ msgid "Window Side"
+#~ msgstr "Innehåll vid sidan"
+
+#~ msgid "Window Bottom"
+#~ msgstr "Innehåll i botten"
+
+#~ msgid "Display Menu"
+#~ msgstr "Visa meny"
+
+#~ msgid "Always Display Mobile Menu"
+#~ msgstr "Visa alltid mobilmeny"
+
+#~ msgid "Columns"
+#~ msgstr "Kolumner"
+
+#~ msgid "Desktop"
+#~ msgstr "Dator"
+
+#~ msgid "Tablet"
+#~ msgstr "Platta"
+
+#~ msgid "Mobile"
+#~ msgstr "Mobil"
+
+#~ msgid "Height"
+#~ msgstr "Höjd"
+
+#~ msgid "Footer Navigation"
+#~ msgstr "Meny i sidfot"
