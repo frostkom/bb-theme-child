@@ -457,7 +457,7 @@ class mf_theme_child
 				//$arr_content = json_decode($content, true);
 
 				//echo "Successful: ".$headers['http_code']." (".htmlspecialchars($content).")";
-				do_log("Order sent: #".$order_id." (Post: ".str_replace(array("\n", "\r"), "", var_export($arr_post_data, true)).")", 'notification');
+				//do_log("Order sent: #".$order_id." (Post: ".str_replace(array("\n", "\r"), "", var_export($arr_post_data, true)).")", 'notification');
 
 				//"UPDATE ".$wpdb->prefix."wc_order_stats SET status = '' WHERE order_id = '%d'" // wc-on-hold -> wc-processing
 
@@ -2342,6 +2342,11 @@ class mf_theme_child
 		//do_log("Order sent with ".__FUNCTION__.": #".$order_id, 'notification');
 
 		//$this->send_payment_complete(__FUNCTION__, $status, $order_id, $order);
+	}
+
+	function woocommerce_order_status_changed($order_id, $status_transition_from, $status_transition_to)
+	{
+		do_log("Order status changed : #".$order_id." (".$status_transition_from." -> ".$status_transition_to.")", 'notification');
 	}
 
 	function woocommerce_proceed_to_checkout()

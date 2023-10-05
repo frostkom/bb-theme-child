@@ -39,6 +39,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		//add_action('woocommerce_after_add_to_cart_button', array($obj_theme_child, 'woocommerce_after_add_to_cart_button'));
 		add_action('woocommerce_payment_complete', array($obj_theme_child, 'woocommerce_payment_complete'));
 		//add_action('woocommerce_payment_complete_order_status', array($obj_theme_child, 'woocommerce_payment_complete_order_status'), 10, 3);
+		add_action('woocommerce_order_status_changed', array($obj_theme_child, 'woocommerce_order_status_changed'), 10, 3);
 
 		add_action('woocommerce_proceed_to_checkout', array($obj_theme_child, 'woocommerce_proceed_to_checkout'), 20);
 	}
