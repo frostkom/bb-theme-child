@@ -39,7 +39,16 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		//add_action('woocommerce_after_add_to_cart_button', array($obj_theme_child, 'woocommerce_after_add_to_cart_button'));
 		add_action('woocommerce_payment_complete', array($obj_theme_child, 'woocommerce_payment_complete'));
 		//add_action('woocommerce_payment_complete_order_status', array($obj_theme_child, 'woocommerce_payment_complete_order_status'), 10, 3);
-		add_action('woocommerce_order_status_changed', array($obj_theme_child, 'woocommerce_order_status_changed'), 10, 3);
+		//add_action('woocommerce_order_status_changed', array($obj_theme_child, 'woocommerce_order_status_changed'), 10, 3);
+		//add_action('dibs_easy_process_payment', array($obj_theme_child, 'dibs_easy_process_payment'), 10, 2);
+		//add_action('woocommerce_pre_payment_complete', array($obj_theme_child, 'woocommerce_pre_payment_complete'), 10, 2);
+
+		/*add_action('woocommerce_payment_complete_order_status_on-hold', array($obj_theme_child, 'woocommerce_payment_complete_order_status_on_hold'), 10, 2);
+		add_action('woocommerce_payment_complete_order_status_pending', array($obj_theme_child, 'woocommerce_payment_complete_order_status_pending'), 10, 2);
+		add_action('woocommerce_payment_complete_order_status_failed', array($obj_theme_child, 'woocommerce_payment_complete_order_status_failed'), 10, 2);
+		add_action('woocommerce_payment_complete_order_status_cancelled', array($obj_theme_child, 'woocommerce_payment_complete_order_status_cancelled'), 10, 2);
+		add_action('woocommerce_payment_complete_order_status_processing', array($obj_theme_child, 'woocommerce_payment_complete_order_status_processing'), 10, 2);
+		add_action('woocommerce_payment_complete_order_status_completed', array($obj_theme_child, 'woocommerce_payment_complete_order_status_completed'), 10, 2);*/
 
 		add_action('woocommerce_proceed_to_checkout', array($obj_theme_child, 'woocommerce_proceed_to_checkout'), 20);
 	}

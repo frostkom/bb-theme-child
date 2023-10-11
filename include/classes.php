@@ -2332,21 +2332,61 @@ class mf_theme_child
 
 	function woocommerce_payment_complete($order_id)
 	{
-		//do_log("Order sent with ".__FUNCTION__.": #".$order_id, 'notification');
+		//do_log(__FUNCTION__.": #".$order_id, 'notification');
 
 		$this->send_payment_complete(__FUNCTION__, 'completed', $order_id, array());
 	}
 
 	function woocommerce_payment_complete_order_status($status, $order_id, $order)
 	{
-		//do_log("Order sent with ".__FUNCTION__.": #".$order_id, 'notification');
+		do_log(__FUNCTION__.": #".$order_id, 'notification');
 
 		//$this->send_payment_complete(__FUNCTION__, $status, $order_id, $order);
 	}
 
 	function woocommerce_order_status_changed($order_id, $status_transition_from, $status_transition_to)
 	{
-		do_log("Order status changed : #".$order_id." (".$status_transition_from." -> ".$status_transition_to.")", 'notification');
+		do_log(__FUNCTION__.": #".$order_id." (".$status_transition_from." -> ".$status_transition_to.")", 'notification');
+	}
+
+	function dibs_easy_process_payment($order_id, $request)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".var_export($request, true).")", 'notification');
+	}
+
+	function woocommerce_pre_payment_complete($order_id, $transaction_id)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
+	}
+
+	function woocommerce_payment_complete_order_status_on_hold($order_id, $transaction_id)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
+	}
+
+	function woocommerce_payment_complete_order_status_pending($order_id, $transaction_id)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
+	}
+
+	function woocommerce_payment_complete_order_status_failed($order_id, $transaction_id)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
+	}
+
+	function woocommerce_payment_complete_order_status_cancelled($order_id, $transaction_id)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
+	}
+
+	function woocommerce_payment_complete_order_status_processing($order_id, $transaction_id)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
+	}
+
+	function woocommerce_payment_complete_order_status_completed($order_id, $transaction_id)
+	{
+		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
 	}
 
 	function woocommerce_proceed_to_checkout()
