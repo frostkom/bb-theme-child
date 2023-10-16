@@ -22,161 +22,165 @@ class mf_theme_child
 			array(
 				'area' => "Kvalitet och miljö", //"Kvalitet, miljö och övrigt"
 				'services' => array(
-					array('id' => 43801, 'name' => "Miljöanpassade fordon", 'description' => "Erbjuder utbildning i fordon med miljöanpassade drivmedel"),
-					//array('id' => 43701, 'name' => "Vi mäter kundnöjdhet, NKI", 'description' => ""),
-					array('id' => 10901, 'name' => "FR2000", 'description' => "Trafikutbildare som genomgått kvalitets- och miljöledningssystemet FR2000"),
-					array('id' => 44901, 'name' => "Erbjuder e-handel", 'description' => "Skolor som erbjuder e-handel"),
+					array('id' => array(43801), 'name' => "Miljöanpassade fordon", 'description' => "Erbjuder utbildning i fordon med miljöanpassade drivmedel"),
+					//array('id' => array(43701), 'name' => "Vi mäter kundnöjdhet, NKI", 'description' => ""),
+					array('id' => array(10901), 'name' => "FR2000", 'description' => "Trafikutbildare som genomgått kvalitets- och miljöledningssystemet FR2000"),
+					array('id' => array(44901), 'name' => "Erbjuder e-handel", 'description' => "Skolor som erbjuder e-handel"),
 				),
 			),
 			array(
 				'area' => "Personbil",
 				'services' => array(
-					array('id' => 11701, 'name' => "B - personbil", 'description' => "Förarutbildning för personbil"),
-					array('id' => 34401, 'name' => "B - personbil utökad", 'description' => "Förarutbildning med utökad behörighet för personbil och släp (max 4,25 ton)"),
-					array('id' => 11801, 'name' => "BE - tungt släp", 'description' => "Förarutbildning för personbil med tungt släp"),
-					array('id' => 10001, 'name' => "Introduktionsutbildning", 'description' => "Utbildning för handledare och elever som ska övningsköra privat med personbil (minst 3 tim)"),
-					array('id' => 14901, 'name' => "Riskutbildning del 1B", 'description' => "Riskutbildning 1B som handlar om alkohol, trötthet, riskfyllda beteenden mm (minst 3 tim)"),
-					array('id' => 30501, 'name' => "Riskutbildning del 2B", 'description' => "Riskutbildning 2B på trafikövningsplats (halkbana) som handlar om hastighet, säkerhet och körning under särskilda förhållanden (minst 3 tim)"),
-					//array('id' => 31501, 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
-					//array('id' => 33301, 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
-					array('id' => 12601, 'name' => "Körbedömning", 'description' => "Körbedömning i samarbete med sjukhusen för personer med försämrad körförmåga"),
-					//array('id' => 14601, 'name' => "Automatväxlat fordon", 'description' => "Förarutbildning för automatväxlat fordon"),
-					array('id' => 30701, 'name' => "Fordonsanpassning", 'description' => "Förarutbildning för personer med rörelsehinder som behöver anpassat fordon"),
-					//array('id' => 14701, 'name' => "Handreglage", 'description' => "Förarutbildning för personer med rörelsehinder som behöver anpassat fordon"),
-					//array('id' => 42001, 'name' => "CSN Körkortslån", 'description' => "Förarutbildning med CSN-avtal"),
-					array('id' => 42101, 'name' => "Språk - Engelska", 'description' => "Förarutbildning med engelsktalande utbildare"),
-					array('id' => 42201, 'name' => "Språk - Arabiska", 'description' => "Förarutbildning med arabisktalande utbildare"),
-					array('id' => 42301, 'name' => "Språk - Persiska", 'description' => "Förarutbildning med persisktalande utbildare"),
-					array('id' => 42701, 'name' => "Språk - Somaliska", 'description' => "Förarutbildning med somalisktalande utbildare"),
-					//array('id' => 32601, 'name' => "Teoristöd - extra", 'description' => ""),
-					//array('id' => 31901, 'name' => "Teoristöd - läs och skriv", 'description' => ""),
-					//array('id' => 45301, 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
-					//array('id' => 46001, 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
+					array('id' => array(11701), 'name' => "B - personbil", 'description' => "Förarutbildning för personbil"),
+					array('id' => array(34401), 'name' => "B - personbil utökad", 'description' => "Förarutbildning med utökad behörighet för personbil och släp (max 4,25 ton)"),
+					array('id' => array(11801), 'name' => "BE - tungt släp", 'description' => "Förarutbildning för personbil med tungt släp"),
+					array('id' => array(10001), 'name' => "Introduktionsutbildning", 'description' => "Utbildning för handledare och elever som ska övningsköra privat med personbil (minst 3 tim)"),
+					array('id' => array(14901), 'name' => "Riskutbildning del 1B", 'description' => "Riskutbildning 1B som handlar om alkohol, trötthet, riskfyllda beteenden mm (minst 3 tim)"),
+					array('id' => array(30501), 'name' => "Riskutbildning del 2B", 'description' => "Riskutbildning 2B på trafikövningsplats (halkbana) som handlar om hastighet, säkerhet och körning under särskilda förhållanden (minst 3 tim)"),
+					//array('id' => array(31501), 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
+					//array('id' => array(33301), 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
+					array('id' => array(12601), 'name' => "Körbedömning", 'description' => "Körbedömning i samarbete med sjukhusen för personer med försämrad körförmåga"),
+					//array('id' => array(14601), 'name' => "Automatväxlat fordon", 'description' => "Förarutbildning för automatväxlat fordon"),
+					array('id' => array(30701), 'name' => "Fordonsanpassning", 'description' => "Förarutbildning för personer med rörelsehinder som behöver anpassat fordon"),
+					//array('id' => array(14701), 'name' => "Handreglage", 'description' => "Förarutbildning för personer med rörelsehinder som behöver anpassat fordon"),
+					//array('id' => array(42001), 'name' => "CSN Körkortslån", 'description' => "Förarutbildning med CSN-avtal"),
+					array('id' => array(42101), 'name' => "Språk - Engelska", 'description' => "Förarutbildning med engelsktalande utbildare"),
+					array('id' => array(42201), 'name' => "Språk - Arabiska", 'description' => "Förarutbildning med arabisktalande utbildare"),
+					array('id' => array(42301), 'name' => "Språk - Persiska", 'description' => "Förarutbildning med persisktalande utbildare"),
+					array('id' => array(42701), 'name' => "Språk - Somaliska", 'description' => "Förarutbildning med somalisktalande utbildare"),
+					//array('id' => array(32601), 'name' => "Teoristöd - extra", 'description' => ""),
+					//array('id' => array(31901), 'name' => "Teoristöd - läs och skriv", 'description' => ""),
+					//array('id' => array(45301), 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
+					//array('id' => array(46001), 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
 				),
 			),
 			array(
 				'area' => "Motorcykel",
 				'services' => array(
-					array('id' => 38901, 'name' => "A1 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
-					array('id' => 39001, 'name' => "A2 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
-					array('id' => 38801, 'name' => "A - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
-					array('id' => 34801, 'name' => "A1 - lätt motorcykel", 'description' => "MC-utbildning med lätt motorcykel"),
-					array('id' => 34901, 'name' => "A2 - mellantung motorcykel", 'description' => "MC-utbildning med mellantung motorcykel"),
-					array('id' => 35001, 'name' => "A - tung motorcykel", 'description' => "MC-utbildning med tung motorcykel"),
-					array('id' => 15101, 'name' => "Riskutbildning del 1A", 'description' => "Riskutbildning 1A som handlar om alkohol, trötthet, riskfyllda faktorer och beteenden mm (minst 3 tim)"),
-					array('id' => 15201, 'name' => "Riskutbildning del 2A", 'description' => "Riskutbildning 2A som handlar om hastighet, säkerhet och körning under särskilda förhållanden (minst 4 tim)"),
-					//array('id' => 31601, 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
-					//array('id' => 33401, 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
-					//array('id' => 32701, 'name' => "Teoristöd - extra", 'description' => ""),
-					//array('id' => 32001, 'name' => "Teoristöd - läs och skriv", 'description' => ""),
-					//array('id' => 45401, 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
-					//array('id' => 46101, 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
+					//array('id' => array(38801), 'name' => "A - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
+					array('id' => array(35001, 38801), 'name' => "A - tung motorcykel", 'description' => "MC-utbildning med tung motorcykel"),
+					//array('id' => array(38901), 'name' => "A1 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
+					array('id' => array(38901, 34801), 'name' => "A1 - lätt motorcykel", 'description' => "MC-utbildning med lätt motorcykel"),
+					//array('id' => array(39001), 'name' => "A2 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
+					array('id' => array(39001, 34901), 'name' => "A2 - mellantung motorcykel", 'description' => "MC-utbildning med mellantung motorcykel"),
+					array('id' => array(15101), 'name' => "Riskutbildning del 1A", 'description' => "Riskutbildning 1A som handlar om alkohol, trötthet, riskfyllda faktorer och beteenden mm (minst 3 tim)"),
+					array('id' => array(15201), 'name' => "Riskutbildning del 2A", 'description' => "Riskutbildning 2A som handlar om hastighet, säkerhet och körning under särskilda förhållanden (minst 4 tim)"),
+					//array('id' => array(31601), 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
+					//array('id' => array(33401), 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
+					//array('id' => array(32701), 'name' => "Teoristöd - extra", 'description' => ""),
+					//array('id' => array(32001), 'name' => "Teoristöd - läs och skriv", 'description' => ""),
+					//array('id' => array(45401), 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
+					//array('id' => array(46101), 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
 				),
 			),
 			array(
 				'area' => "Moped",
 				'services' => array(
-					array('id' => 11301, 'name' => "AM - moped klass 1", 'description' => "Utbildning för AM - moped klass 1 (minst 12 timmar)"),
-					array('id' => 15001, 'name' => "Moped klass 2", 'description' => "Utbildning för förarbevis för moped klass 2 (minst 10 timmar)"),
-					//array('id' => 31701, 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
-					//array('id' => 32801, 'name' => "Teoristöd - extra", 'description' => ""),
-					//array('id' => 32101, 'name' => "Teoristöd - läs och skriv", 'description' => ""),
-					//array('id' => 33501, 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
-					//array('id' => 45501, 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
-					//array('id' => 46201, 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
+					array('id' => array(11301), 'name' => "AM - moped klass 1", 'description' => "Utbildning för AM - moped klass 1 (minst 12 timmar)"),
+					array('id' => array(15001), 'name' => "Moped klass 2", 'description' => "Utbildning för förarbevis för moped klass 2 (minst 10 timmar)"),
+					//array('id' => array(31701), 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
+					//array('id' => array(32801), 'name' => "Teoristöd - extra", 'description' => ""),
+					//array('id' => array(32101), 'name' => "Teoristöd - läs och skriv", 'description' => ""),
+					//array('id' => array(33501), 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
+					//array('id' => array(45501), 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
+					//array('id' => array(46201), 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
 				),
 			),
 			array(
 				'area' => "Lastbil",
 				'services' => array(
-					array('id' => 11901, 'name' => "C - tung lastbil", 'description' => "Förarutbildning för tung lastbil över 3,5 ton"),
-					array('id' => 12001, 'name' => "CE - tung lastbil med släp", 'description' => "Förarutbildning för tung lastbil med tungt släp"),
-					array('id' => 12101, 'name' => "CE - tung lastbil påhängsvagn", 'description' => "Förarutbildning för tung lastbil med tungt släp (trailer)"),
-					//array('id' => 32901, 'name' => "Teoristöd - extra", 'description' => ""),
-					//array('id' => 32201, 'name' => "Teoristöd - läs och skriv", 'description' => ""),
-					array('id' => 33601, 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
-					array('id' => 34601, 'name' => "C1 - tung lastbil (7,5 ton)", 'description' => "7,5 ton"),
-					array('id' => 34701, 'name' => "C1E - tung lastbil med släp (12 ton)", 'description' => "12 ton"),
-					//array('id' => 45601, 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
-					//array('id' => 46301, 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
+					array('id' => array(11901), 'name' => "C - tung lastbil", 'description' => "Förarutbildning för tung lastbil över 3,5 ton"),
+					array('id' => array(12001, 12101), 'name' => "CE - tung lastbil med släp", 'description' => "Förarutbildning för tung lastbil med tungt släp"),
+					//array('id' => array(12101), 'name' => "CE - tung lastbil påhängsvagn", 'description' => "Förarutbildning för tung lastbil med tungt släp (trailer)"),
+					//array('id' => array(32901), 'name' => "Teoristöd - extra", 'description' => ""),
+					//array('id' => array(32201), 'name' => "Teoristöd - läs och skriv", 'description' => ""),
+					array('id' => array(33601), 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
+					array('id' => array(34601), 'name' => "C1 - tung lastbil (7,5 ton)", 'description' => "7,5 ton"),
+					array('id' => array(34701), 'name' => "C1E - tung lastbil med släp (12 ton)", 'description' => "12 ton"),
+					//array('id' => array(45601), 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
+					//array('id' => array(46301), 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
 				),
 			),
 			array(
 				'area' => "Buss",
 				'services' => array(
-					array('id' => 12201, 'name' => "D - buss", 'description' => "Förarutbildning för buss"),
-					array('id' => 12301, 'name' => "DE - buss med tungt släp", 'description' => "Förarutbildning för buss med tungt släp"),
-					array('id' => 33701, 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
-					//array('id' => 33001, 'name' => "Teoristöd - extra", 'description' => ""),
-					//array('id' => 32301, 'name' => "Teoristöd - läs och skriv", 'description' => ""),
-					array('id' => 34501, 'name' => "D1 - buss (16 sittplatser)", 'description' => "16 sittplatser"),
-					array('id' => 35101, 'name' => "D1E - buss (16 pl) med tungt släp", 'description' => "16 sittplatser"),
-					//array('id' => 45701, 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
-					//array('id' => 46401, 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
+					array('id' => array(12201), 'name' => "D - buss", 'description' => "Förarutbildning för buss"),
+					array('id' => array(12301), 'name' => "DE - buss med tungt släp", 'description' => "Förarutbildning för buss med tungt släp"),
+					array('id' => array(33701), 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
+					//array('id' => array(33001), 'name' => "Teoristöd - extra", 'description' => ""),
+					//array('id' => array(32301), 'name' => "Teoristöd - läs och skriv", 'description' => ""),
+					array('id' => array(34501), 'name' => "D1 - buss (16 sittplatser)", 'description' => "16 sittplatser"),
+					array('id' => array(35101), 'name' => "D1E - buss (16 pl) med tungt släp", 'description' => "16 sittplatser"),
+					//array('id' => array(45701), 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
+					//array('id' => array(46401), 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
 				),
 			),
 			array(
 				'area' => "Övrigt",
 				'services' => array(
-					//array('id' => 11201, 'name' => "Traktor", 'description' => "Förarutbildning för traktor"),
-					//array('id' => 30801, 'name' => "Terränghjuling", 'description' => "Förarutbildning för terränghjuling"),
-					//array('id' => 15401, 'name' => "Snöskoter", 'description' => "Förarutbildning för snöskoter"),
-					array('id' => 31801, 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
-					//array('id' => 33801, 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
-					//array('id' => 33101, 'name' => "Teoristöd - extra", 'description' => ""),
-					//array('id' => 32401, 'name' => "Teoristöd - läs och skriv", 'description' => ""),
-					array('id' => 45801, 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
-					array('id' => 46501, 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
-					array('id' => 47901, 'name' => "Simulator", 'description' => "Använder simulator i utbildningen"),
+					//array('id' => array(11201), 'name' => "Traktor", 'description' => "Förarutbildning för traktor"),
+					//array('id' => array(30801), 'name' => "Terränghjuling", 'description' => "Förarutbildning för terränghjuling"),
+					//array('id' => array(15401), 'name' => "Snöskoter", 'description' => "Förarutbildning för snöskoter"),
+					array('id' => array(31801), 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
+					//array('id' => array(33801), 'name' => "Videoutrustning", 'description' => "Möjlighet att videofilma körlektionen som en del av förarutbildningen"),
+					//array('id' => array(33101), 'name' => "Teoristöd - extra", 'description' => ""),
+					//array('id' => array(32401), 'name' => "Teoristöd - läs och skriv", 'description' => ""),
+					array('id' => array(45801), 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
+					array('id' => array(10101, 10401, 11101, 31201), 'name' => "EcoDriving", 'description' => "EcoDriving för personbilförare"),
+					//array('id' => array(10401), 'name' => "Heavy EcoDriving", 'description' => "EcoDriving för buss- och lastbilsförare"),
+					//array('id' => array(11101), 'name' => "Working EcoDriving", 'description' => "EcoDriving för förare av arbetsfordon"),
+					//array('id' => array(31201), 'name' => "EcoDriving Taxi", 'description' => "EcoDriving för taxiförare"),
+					array('id' => array(46501), 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
+					array('id' => array(47901), 'name' => "Simulator", 'description' => "Använder simulator i utbildningen"),
 				),
 			),
 			array(
 				'area' => "Yrkesförarutbildningar",
 				'services' => array(
-					array('id' => 12801, 'name' => "YKB Grundutbildning lastbil", 'description' => "Grundutbildning i yrkeskompetens (YKB) för lastbilsförare"),
-					array('id' => 14101, 'name' => "YKB Fortbildning lastbil", 'description' => "Fortbildning i yrkeskompetens (YKB) för lastbilsförare"),
-					array('id' => 14301, 'name' => "YKB Grundutbildning buss", 'description' => "Grundutbildning i yrkeskompetens (YKB) för bussförare"),
-					array('id' => 14401, 'name' => "YKB Fortbildning buss", 'description' => "Fortbildning i yrkeskompetens (YKB) för bussförare"),
-					//array('id' => 33201, 'name' => "Teoristöd - extra", 'description' => ""),
-					//array('id' => 32501, 'name' => "Teoristöd - läs och skriv", 'description' => ""),
-					//array('id' => 45901, 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
-					//array('id' => 46601, 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
-					array('id' => 12901, 'name' => "Taxiförarlegitimation", 'description' => "Utbildning för taxiförare"),
+					array('id' => array(12801), 'name' => "YKB Grundutbildning lastbil", 'description' => "Grundutbildning i yrkeskompetens (YKB) för lastbilsförare"),
+					array('id' => array(14101), 'name' => "YKB Fortbildning lastbil", 'description' => "Fortbildning i yrkeskompetens (YKB) för lastbilsförare"),
+					array('id' => array(14301), 'name' => "YKB Grundutbildning buss", 'description' => "Grundutbildning i yrkeskompetens (YKB) för bussförare"),
+					array('id' => array(14401), 'name' => "YKB Fortbildning buss", 'description' => "Fortbildning i yrkeskompetens (YKB) för bussförare"),
+					//array('id' => array(33201), 'name' => "Teoristöd - extra", 'description' => ""),
+					//array('id' => array(32501), 'name' => "Teoristöd - läs och skriv", 'description' => ""),
+					//array('id' => array(45901), 'name' => "Extra stöd", 'description' => "För elever med t.ex. NPF och/eller läs- och skrivsvårigheter"),
+					//array('id' => array(46601), 'name' => "Ansöker om anpassat prov hos Trafikverket", 'description' => "Intygsgivare för att ansöka om anpassat prov hos Trafikverket"),
+					array('id' => array(12901), 'name' => "Taxiförarlegitimation", 'description' => "Utbildning för taxiförare"),
 				),
 			),
 			/*array(
 				'area' => "Specialiserade yrkesutbildningar",
 				'services' => array(
-					array('id' => 13201, 'name' => "Trafiktillstånd", 'description' => "Utbildning för företagare med inriktning mot godstransporter för trafiktillstånd (Eget på väg)"),
-					array('id' => 13601, 'name' => "Lastsäkring", 'description' => "Kurs för personer som jobbar med lastsäkring av gods på väg"),
-					array('id' => 13701, 'name' => "Godshantering", 'description' => "Kurs för personer som jobbar med godshantering i samband med transporter"),
-					array('id' => 13801, 'name' => "Farligt gods (ADR)", 'description' => "Kontakta utbildaren gällande vilka delar de utbildar inom"),
-					array('id' => 14501, 'name' => "Fordonsmonterad kran", 'description' => "Kurs för personer som jobbar med lastning och lossning av virke eller gods med fordonsmonterad kran"),
-					array('id' => 14801, 'name' => "Bakgavellyft", 'description' => "Kurs i säker användning av bakgavellyft"),
-					array('id' => 13901, 'name' => "Truck", 'description' => "Utbildning för truckförare"),
-					array('id' => 14001, 'name' => "Hjullastare", 'description' => "Utbildning för förare av hjullastare"),
+					array('id' => array(13201), 'name' => "Trafiktillstånd", 'description' => "Utbildning för företagare med inriktning mot godstransporter för trafiktillstånd (Eget på väg)"),
+					array('id' => array(13601), 'name' => "Lastsäkring", 'description' => "Kurs för personer som jobbar med lastsäkring av gods på väg"),
+					array('id' => array(13701), 'name' => "Godshantering", 'description' => "Kurs för personer som jobbar med godshantering i samband med transporter"),
+					array('id' => array(13801), 'name' => "Farligt gods (ADR)", 'description' => "Kontakta utbildaren gällande vilka delar de utbildar inom"),
+					array('id' => array(14501), 'name' => "Fordonsmonterad kran", 'description' => "Kurs för personer som jobbar med lastning och lossning av virke eller gods med fordonsmonterad kran"),
+					array('id' => array(14801), 'name' => "Bakgavellyft", 'description' => "Kurs i säker användning av bakgavellyft"),
+					array('id' => array(13901), 'name' => "Truck", 'description' => "Utbildning för truckförare"),
+					array('id' => array(14001), 'name' => "Hjullastare", 'description' => "Utbildning för förare av hjullastare"),
 				),
 			),*/
 			/*array(
 				'area' => "Utbildningar för arbete på väg",
 				'services' => array(
-					array('id' => 13301, 'name' => "SPV (Nivå 1)", 'description' => "Grundutbildning för personer som utför vägarbeten"),
-					array('id' => 30901, 'name' => "SPV (Nivå 2)", 'description' => "Utbildning för förare av arbetsfordon mm. Krav: nivå 1-utbildning"),
-					array('id' => 31001, 'name' => "SPV (Nivå 3)", 'description' => "Utbildning för personer som utför utmärkning av vägmärken. Krav: nivå 2-utbildning"),
-					array('id' => 31101, 'name' => "Vakt- eller lotsutbildning", 'description' => "Kontakta utbildaren gällande vilka delar de utbildar inom"),
-					array('id' => 13401, 'name' => "Hjälp på väg", 'description' => "Kurs i första hjälpen, HLR, brandkunskap mm för personer som har vägen som arbetsplats"),
-					array('id' => 13501, 'name' => "Miljö", 'description' => "Miljökurs för personer som har vägen som arbetsplats"),
+					array('id' => array(13301), 'name' => "SPV (Nivå 1)", 'description' => "Grundutbildning för personer som utför vägarbeten"),
+					array('id' => array(30901), 'name' => "SPV (Nivå 2)", 'description' => "Utbildning för förare av arbetsfordon mm. Krav: nivå 1-utbildning"),
+					array('id' => array(31001), 'name' => "SPV (Nivå 3)", 'description' => "Utbildning för personer som utför utmärkning av vägmärken. Krav: nivå 2-utbildning"),
+					array('id' => array(31101), 'name' => "Vakt- eller lotsutbildning", 'description' => "Kontakta utbildaren gällande vilka delar de utbildar inom"),
+					array('id' => array(13401), 'name' => "Hjälp på väg", 'description' => "Kurs i första hjälpen, HLR, brandkunskap mm för personer som har vägen som arbetsplats"),
+					array('id' => array(13501), 'name' => "Miljö", 'description' => "Miljökurs för personer som har vägen som arbetsplats"),
 				),
 			),*/
-			array(
+			/*array(
 				'area' => "EcoDriving",
 				'services' => array(
-					array('id' => 10101, 'name' => "EcoDriving", 'description' => "EcoDriving för personbilförare"),
-					array('id' => 10401, 'name' => "Heavy EcoDriving", 'description' => "EcoDriving för buss- och lastbilsförare"),
-					array('id' => 11101, 'name' => "Working EcoDriving", 'description' => "EcoDriving för förare av arbetsfordon"),
-					array('id' => 31201, 'name' => "EcoDriving Taxi", 'description' => "EcoDriving för taxiförare"),
+					array('id' => array(10101), 'name' => "EcoDriving", 'description' => "EcoDriving för personbilförare"),
+					array('id' => array(10401), 'name' => "Heavy EcoDriving", 'description' => "EcoDriving för buss- och lastbilsförare"),
+					array('id' => array(11101), 'name' => "Working EcoDriving", 'description' => "EcoDriving för förare av arbetsfordon"),
+					array('id' => array(31201), 'name' => "EcoDriving Taxi", 'description' => "EcoDriving för taxiförare"),
 				),
-			),
+			),*/
 		);
 
 		$arr_exclude = $arr_include = array();
@@ -907,20 +911,28 @@ class mf_theme_child
 	{
 		global $wpdb;
 
-		if(!isset($data['service_id'])){	$data['service_id'] = 0;}
-		if(!isset($data['parent'])){		$data['parent'] = 0;}
+		if(!isset($data['arr_service_id'])){	$data['arr_service_id'] = array();}
+		if(!isset($data['parent'])){			$data['parent'] = 0;}
 
 		$term_id = $rows = 0;
 
-		if($data['service_id'] > 0)
+		if(count($data['arr_service_id']) > 0)
 		{
-			$result = $wpdb->get_results($wpdb->prepare("SELECT ".$wpdb->termmeta.".term_id FROM ".$wpdb->termmeta." INNER JOIN ".$wpdb->term_taxonomy." USING (term_id) WHERE taxonomy = %s AND meta_key = %s AND meta_value = '%d' ORDER BY ".$wpdb->termmeta.".term_id ASC", $this->taxonomy_name, $this->meta_prefix.'service_id', $data['service_id']));
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ".$wpdb->termmeta.".term_id FROM ".$wpdb->termmeta." INNER JOIN ".$wpdb->term_taxonomy." USING (term_id) WHERE taxonomy = %s AND meta_key = %s AND meta_value IN ('".implode("','", $data['arr_service_id'])."') GROUP BY ".$wpdb->termmeta.".term_id ORDER BY ".$wpdb->termmeta.".term_id ASC", $this->taxonomy_name, $this->meta_prefix.'service_id'));
 
 			$rows = $wpdb->num_rows;
 
-			if($rows > 0 && $data['debug'] == true)
+			if($data['debug'] == true)
 			{
-				echo "<p><strong>".date("H:i:s")."</strong> Got term_id (".var_export($result, true).") from service_id #".$data['service_id']."</p>";
+				if($rows > 0)
+				{
+					echo "<p><strong>".date("H:i:s")."</strong> Got term_id (".var_export($result, true).") from service_id #".var_export($data['arr_service_id'], true)."</p>";
+				}
+
+				else
+				{
+					echo "<p><strong>".date("H:i:s")."</strong> Did NOT get term_id (".$wpdb->last_query.") from service_id #".var_export($data['arr_service_id'], true)."</p>";
+				}
 			}
 		}
 
@@ -928,7 +940,7 @@ class mf_theme_child
 		{
 			$slug = sanitize_title_with_dashes(sanitize_title($data['name']));
 
-			$result = $wpdb->get_results($wpdb->prepare("SELECT ".$wpdb->terms.".term_id FROM ".$wpdb->terms." INNER JOIN ".$wpdb->term_taxonomy." USING (term_id) WHERE (name = %s OR slug = %s) AND taxonomy = %s AND parent = '%d' ORDER BY ".$wpdb->terms.".term_id ASC", $data['name'], $slug, $this->taxonomy_name, $data['parent']));
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ".$wpdb->terms.".term_id FROM ".$wpdb->terms." INNER JOIN ".$wpdb->term_taxonomy." USING (term_id) WHERE (name = %s OR slug = %s) AND taxonomy = %s AND parent = '%d' GROUP BY ".$wpdb->terms.".term_id ORDER BY ".$wpdb->terms.".term_id ASC", $data['name'], $slug, $this->taxonomy_name, $data['parent']));
 
 			$rows = $wpdb->num_rows;
 
@@ -968,10 +980,10 @@ class mf_theme_child
 	{
 		global $wpdb;
 
-		if(!isset($data['service_id'])){	$data['service_id'] = 0;}
-		if(!isset($data['description'])){	$data['description'] = "";}
-		if(!isset($data['parent'])){		$data['parent'] = 0;}
-		if(!isset($data['services'])){		$data['services'] = array();}
+		if(!isset($data['arr_service_id'])){	$data['arr_service_id'] = array();}
+		if(!isset($data['description'])){		$data['description'] = "";}
+		if(!isset($data['parent'])){			$data['parent'] = 0;}
+		if(!isset($data['services'])){			$data['services'] = array();}
 
 		$slug = sanitize_title_with_dashes(sanitize_title($data['name']));
 
@@ -983,13 +995,16 @@ class mf_theme_child
 			// Terms
 			$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->term_taxonomy." SET term_taxonomy_id = '%d', term_id = '%d', taxonomy = %s, description = %s, parent = '%d'", $term_id, $term_id, $this->taxonomy_name, $data['description'], $data['parent']));
 
-			if($data['service_id'] > 0)
+			if(count($data['arr_service_id']) > 0)
 			{
-				$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->termmeta." SET term_id = '%d', meta_key = %s, meta_value = %s", $term_id, $this->meta_prefix.'service_id', $data['service_id']));
-
-				if($data['debug'] == true)
+				foreach($data['arr_service_id'] as $service_id)
 				{
-					//echo "<p><strong>".date("H:i:s")."</strong> Inserted ".$wpdb->last_query."</p>";
+					$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->termmeta." SET term_id = '%d', meta_key = %s, meta_value = %s", $term_id, $this->meta_prefix.'service_id', $service_id));
+
+					if($data['debug'] == true)
+					{
+						echo "<p><strong>".date("H:i:s")."</strong> Inserted ".$wpdb->last_query."</p>";
+					}
 				}
 			}
 
@@ -1000,7 +1015,7 @@ class mf_theme_child
 
 				foreach($data['services'] as $arr_service)
 				{
-					$arr_include[] = $this->get_term(array('service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
+					$arr_include[] = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
 				}
 
 				$count_temp = count($arr_include);
@@ -1016,67 +1031,60 @@ class mf_theme_child
 	{
 		global $wpdb;
 
-		if(!isset($data['service_id'])){	$data['service_id'] = 0;}
-		if(!isset($data['description'])){	$data['description'] = "";}
-		if(!isset($data['parent'])){		$data['parent'] = 0;}
-		if(!isset($data['services'])){		$data['services'] = array();}
+		if(!isset($data['arr_service_id'])){	$data['arr_service_id'] = array();}
+		if(!isset($data['description'])){		$data['description'] = "";}
+		if(!isset($data['parent'])){			$data['parent'] = 0;}
+		if(!isset($data['services'])){			$data['services'] = array();}
 
 		// Terms
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->terms." SET name = %s WHERE term_id = '%d'", $data['name'], $data['term_id']));
+		$slug = sanitize_title_with_dashes(sanitize_title($data['name']));
+
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->terms." SET name = %s, slug = %s WHERE term_id = '%d'", $data['name'], $slug, $data['term_id']));
 		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->term_taxonomy." SET parent = '%d', description = %s WHERE term_id = '%d'", $data['parent'], $data['description'], $data['term_id']));
 
-		if($data['service_id'] > 0)
+		if(count($data['arr_service_id']) > 0)
 		{
-			$result = $wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->termmeta." WHERE term_id = '%d' AND meta_key = %s", $data['term_id'], $this->meta_prefix.'service_id'));
+			$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->termmeta." WHERE term_id = '%d' AND meta_key = %s AND meta_value NOT IN ('".implode("','", $data['arr_service_id'])."')", $data['term_id'], $this->meta_prefix.'service_id'));
 
-			if($wpdb->num_rows > 0)
+			foreach($data['arr_service_id'] as $service_id)
 			{
-				$meta_id = 0;
+				$wpdb->get_results($wpdb->prepare("SELECT term_id FROM ".$wpdb->termmeta." WHERE term_id = '%d' AND meta_key = %s AND meta_value = %s", $data['term_id'], $this->meta_prefix.'service_id', $service_id));
 
-				foreach($result as $r)
+				if($wpdb->num_rows > 0)
 				{
-					if($meta_id == 0)
+					if($data['debug'] == true)
 					{
-						$meta_id = $r->meta_id;
-
-						$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->termmeta." SET meta_key = %s, meta_value = %s WHERE meta_id = '%d'", $this->meta_prefix.'service_id', $data['service_id'], $meta_id));
-					}
-
-					else
-					{
-						$meta_id = $r->meta_id;
-
-						$wpdb->get_results($wpdb->prepare("DELETE FROM ".$wpdb->termmeta." WHERE meta_id = '%d'", $meta_id));
+						echo "<p><strong>".date("H:i:s")."</strong> Already exists ".$wpdb->last_query."</p>";
 					}
 				}
-			}
 
-			else
-			{
-				$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->termmeta." SET term_id = '%d', meta_key = %s, meta_value = %s", $data['term_id'], $this->meta_prefix.'service_id', $data['service_id']));
-
-				if($data['debug'] == true)
+				else
 				{
-					echo "<p><strong>".date("H:i:s")."</strong> Inserted ".$wpdb->last_query."</p>";
+					$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->termmeta." SET term_id = '%d', meta_key = %s, meta_value = %s", $data['term_id'], $this->meta_prefix.'service_id', $service_id));
+
+					if($data['debug'] == true)
+					{
+						echo "<p><strong>".date("H:i:s")."</strong> Inserted ".$wpdb->last_query."</p>";
+					}
 				}
 			}
 		}
 
 		// Facets
-		$slug = sanitize_title_with_dashes(sanitize_title($data['name']));
-
 		if(count($data['services']) > 0)
 		{
+			$slug = sanitize_title_with_dashes(sanitize_title($data['name']));
+
 			$arr_include = array();
 
 			foreach($data['services'] as $arr_service)
 			{
-				$arr_include[] = $this->get_term(array('service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
+				$arr_include[] = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
 			}
 
 			if($data['debug'] == true)
 			{
-				//echo "<p><strong>".date("H:i:s")."</strong> Include '".implode("','", $arr_include)."'</p>";
+				echo "<p><strong>".date("H:i:s")."</strong> Include '".implode("','", $arr_include)."'</p>";
 			}
 
 			$count_temp = count($arr_include);
@@ -1246,9 +1254,9 @@ class mf_theme_child
 
 															foreach($arr_class['services'] as $arr_service)
 															{
-																if($property_id == $arr_service['id'])
+																if($property_id == $arr_service['id'] || is_array($arr_service['id']) && in_array($property_id, $arr_service['id']))
 																{
-																	$term_id = $this->get_term(array('service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
+																	$term_id = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
 
 																	if($term_id > 0)
 																	{
@@ -1587,7 +1595,7 @@ class mf_theme_child
 					{
 						if($data['debug'] == true)
 						{
-							//echo "<p><strong>".date("H:i:s")."</strong> Term parent already exist: ".$arr_class['area']."</p>";
+							echo "<p><strong>".date("H:i:s")."</strong> Term parent already exist: ".$arr_class['area']."</p>";
 						}
 
 						$this->update_term(array('term_id' => $term_id_parent, 'name' => $arr_class['area'], 'services' => $arr_class['services'], 'debug' => $data['debug']));
@@ -1611,16 +1619,16 @@ class mf_theme_child
 					{
 						foreach($arr_class['services'] as $arr_service)
 						{
-							$term_id = $this->get_term(array('service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'parent' => $term_id_parent, 'debug' => $data['debug']));
+							$term_id = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'parent' => $term_id_parent, 'debug' => $data['debug']));
 
 							if($term_id > 0)
 							{
 								if($data['debug'] == true)
 								{
-									//echo "<p><strong>".date("H:i:s")."</strong> Term already exist: ".$arr_class['area']." -> ".$arr_service['name']." -> ".$arr_service['id']." (".$term_id.", ".$term_id_parent.")</p>";
+									echo "<p><strong>".date("H:i:s")."</strong> Term already exist: ".$arr_class['area']." -> ".$arr_service['name']." -> ".$arr_service['id']." (".$term_id.", ".$term_id_parent.")</p>";
 								}
 
-								$this->update_term(array('term_id' => $term_id, 'service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'description' => $arr_service['description'], 'parent' => $term_id_parent, 'debug' => $data['debug']));
+								$this->update_term(array('term_id' => $term_id, 'arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'description' => $arr_service['description'], 'parent' => $term_id_parent, 'debug' => $data['debug']));
 
 								$terms_exists++;
 							}
@@ -1629,10 +1637,10 @@ class mf_theme_child
 							{
 								if($data['debug'] == true)
 								{
-									echo "<p><strong>".date("H:i:s")."</strong> Term does NOT exist: ".$arr_class['area']." -> ".$arr_service['name']." -> ".$arr_service['id']."</p>";
+									echo "<p><strong>".date("H:i:s")."</strong> Term does NOT exist: ".$arr_class['area']." -> ".$arr_service['name']." -> ".var_export($arr_service['id'], true)."</p>";
 								}
 
-								$this->insert_term(array('service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'description' => $arr_service['description'], 'parent' => $term_id_parent, 'debug' => $data['debug']));
+								$this->insert_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'description' => $arr_service['description'], 'parent' => $term_id_parent, 'debug' => $data['debug']));
 
 								$terms_added++;
 							}
