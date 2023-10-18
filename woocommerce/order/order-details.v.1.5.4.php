@@ -12,81 +12,86 @@
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 7.8.0
+ * @version 4.6.0
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 if(!isset($obj_theme_child))
 {
 	$obj_theme_child = new mf_theme_child();
 }
 
-$order = wc_get_order( $order_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+$order = wc_get_order($order_id); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-if ( ! $order ) {
+if(!$order)
+{
 	return;
 }
 
-$order_items           = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
-$show_purchase_note    = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
-//$show_customer_details = is_user_logged_in() && $order->get_user_id() === get_current_user_id();
-$downloads             = $order->get_downloadable_items();
-$show_downloads        = $order->has_downloadable_item() && $order->is_download_permitted();
+$order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
+$show_purchase_note = $order->has_status(apply_filters('woocommerce_purchase_note_order_statuses', array('completed', 'processing')));
+//$show_customer_details = (is_user_logged_in() && $order->get_user_id() === get_current_user_id());
+$downloads = $order->get_downloadable_items();
+$show_downloads = ($order->has_downloadable_item() && $order->is_download_permitted());
 
-if ( $show_downloads ) {
+if($show_downloads)
+{
 	wc_get_template(
 		'order/order-downloads.php',
 		array(
-			'downloads'  => $downloads,
+			'downloads' => $downloads,
 			'show_title' => true,
 		)
 	);
 }
 
-//if ( $show_customer_details ) {
-	wc_get_template( 'order/order-details-customer.php', array( 'order' => $order ) );
+/*if($show_customer_details)
+{*/
+	wc_get_template('order/order-details-customer.php', array('order' => $order));
 //}
-?>
-<section class="woocommerce-order-details">
-	<?php do_action( 'woocommerce_order_details_before_order_table', $order ); ?>
 
-	<table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
+echo "<section class='woocommerce-order-details'>";
 
+	do_action('woocommerce_order_details_before_order_table', $order);
+
+	//echo "<h2 class='woocommerce-order-details__title'>".__('Order details', 'woocommerce')."</h2>";
+
+	echo "<table class='woocommerce-table woocommerce-table--order-details shop_table order_details'>
 		<thead>
 			<tr>
-				<th class="woocommerce-table__product-name product-name"><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
-				<th class="woocommerce-table__product-table product-total"><?php esc_html_e( 'Total', 'woocommerce' ); ?></th>
+				<th class='woocommerce-table__product-name product-name'>".__('Product', 'woocommerce')."</th>
+				<th class='woocommerce-table__product-table product-total'>".__('Total', 'woocommerce')."</th>
 			</tr>
 		</thead>
+		<tbody>";
 
-		<tbody>
-			<?php
-			do_action( 'woocommerce_order_details_before_order_table_items', $order );
+			do_action('woocommerce_order_details_before_order_table_items', $order);
 
-			foreach ( $order_items as $item_id => $item ) {
+			foreach($order_items as $item_id => $item)
+			{
 				$product = $item->get_product();
 
 				wc_get_template(
 					'order/order-details-item.php',
 					array(
-						'order'              => $order,
-						'item_id'            => $item_id,
-						'item'               => $item,
+						'order' => $order,
+						'item_id' => $item_id,
+						'item' => $item,
 						'show_purchase_note' => $show_purchase_note,
-						'purchase_note'      => $product ? $product->get_purchase_note() : '',
-						'product'            => $product,
+						'purchase_note' => ($product ? $product->get_purchase_note() : ''),
+						'product' => $product,
 					)
 				);
 			}
 
-			do_action( 'woocommerce_order_details_after_order_table_items', $order );
-			?>
-		</tbody>
+			do_action('woocommerce_order_details_after_order_table_items', $order);
 
-		<tfoot>
-			<?php
-			foreach ( $order->get_order_item_totals() as $key => $total ) {
+		echo "</tbody>
+		<tfoot>";
+
+			foreach($order->get_order_item_totals() as $key => $total)
+			{
 				if($key != 'cart_subtotal')
 				{
 					echo "<tr class='".$key."'>" //
@@ -122,27 +127,29 @@ if ( $show_downloads ) {
 					</tr>";
 				}
 			}
-			?>
-			<?php if ( $order->get_customer_note() ) : ?>
-				<tr>
-					<th><?php esc_html_e( 'Note:', 'woocommerce' ); ?></th>
-					<td><?php echo wp_kses_post( nl2br( wptexturize( $order->get_customer_note() ) ) ); ?></td>
-				</tr>
-			<?php endif; ?>
-		</tfoot>
-	</table>
 
-	<?php do_action( 'woocommerce_order_details_after_order_table', $order ); ?>
-</section>
+			if($order->get_customer_note())
+			{
+				echo "<tr>
+					<th>".__('Note:', 'woocommerce')."</th>
+					<td>".wp_kses_post(nl2br(wptexturize($order->get_customer_note())))."</td>
+				</tr>";
+			}
 
-<?php
+		echo "</tfoot>
+	</table>";
+
+	do_action('woocommerce_order_details_after_order_table', $order);
+
+echo "</section>";
+
 /**
  * Action hook fired after the order details.
  *
  * @since 4.4.0
  * @param WC_Order $order Order data.
  */
-do_action( 'woocommerce_after_order_details', $order );
+do_action('woocommerce_after_order_details', $order);
 
 echo "<div class='fl-button-wrap fl-button-width-auto fl-button-center continue_buttons hide_on_print'>
 	<a href='#' onclick='window.print()' class='fl-button'>

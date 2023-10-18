@@ -11,12 +11,6 @@ if(!defined('ABSPATH'))
 
 echo "@media all
 {
-	/* Hitta utbildare */
-	.wpgb-facet-462 .wpgb-facet-title
-	{
-		display: none;
-	}
-
 	/* Checkout */
 	.woocommerce ul#shipping_method li label, .woocommerce-page ul#shipping_method li label
 	{
