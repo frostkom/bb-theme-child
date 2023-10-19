@@ -382,8 +382,19 @@ class mf_theme_child
 	{
 		global $wpdb;
 
-		$base_url = "https://sb-optima-prod.servicebus.windows.net";
-		$sas_key_value = "NjzpRsnZ1UBZKwvVBQk10GoXHNjuqygxu+ASbA4lYSs=";
+		$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
+
+		if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
+		{
+			$base_url = "https://sb-optima-dev.servicebus.windows.net";
+			$sas_key_value = "9Tnzw+k9lPLjSnNDIOzcc5ldyOECZ7hZP+ASbKeTuBA=";
+		}
+
+		else
+		{
+			$base_url = "https://sb-optima-prod.servicebus.windows.net";
+			$sas_key_value = "NjzpRsnZ1UBZKwvVBQk10GoXHNjuqygxu+ASbA4lYSs=";
+		}
 
 		$url = $base_url."/sbq-orders/messages";
 		$post_data = $this->get_post_data(array('order_id' => $order_id));
@@ -1668,6 +1679,37 @@ class mf_theme_child
 
 		if($obj_cron->is_running == false)
 		{
+			// Get order that has not been sent to Optima
+			#########################
+			global $wpdb;
+
+			$setting_theme_child_send_to_optima = get_option('setting_theme_child_send_to_optima');
+
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+
+			foreach($result as $r)
+			{
+				switch($setting_theme_child_send_to_optima)
+				{
+					case 'log':
+						do_log($r->ID." has not been sent to Optima");
+					break;
+
+					case 'email':
+						$mail_to = "marknad@str.se";
+						$mail_subject = __("An order was not sent to Optima", 'lang_bb-theme-child');
+						$mail_content = "<a href='".admin_url("post.php?post=".$r->ID."&action=edit")."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->ID)."</a>";
+
+						send_email(array('to' => $mail_to, 'subject' => $mail_subject, 'content' => $mail_content));
+					break;
+
+					case 'api':
+						$this->send_to_optima('completed', $r->ID, true);
+					break;
+				}
+			}
+			#########################
+
 			$this->get_educators();
 		}
 
@@ -1698,6 +1740,8 @@ class mf_theme_child
 
 		$arr_settings = array();
 
+		$arr_settings['setting_theme_child_mode'] = __("Mode", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_send_to_optima'] = __("Send to Optima", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_info'] = __("Information", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_company'] = __("Company", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_type'] = __("Type", 'lang_bb-theme-child');
@@ -1711,6 +1755,56 @@ class mf_theme_child
 		$setting_key = get_setting_key(__FUNCTION__);
 
 		echo settings_header($setting_key, __("Theme Child", 'lang_bb-theme-child'));
+	}
+
+	function setting_theme_child_mode_callback()
+	{
+		global $wpdb;
+
+		$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
+
+		$site_url = ($wpdb->blogid > 0 ? get_home_url($wpdb->blogid) : get_home_url());
+		$site_url_clean = remove_protocol(array('url' => $site_url, 'clean' => true));
+
+		echo "<p>";
+
+			if($site_url_clean == "staging.korkort.nu" && $woocommerce_dibs_easy_settings['test_mode'] == 'yes' || $site_url_clean == "korkort.nu" && $woocommerce_dibs_easy_settings['test_mode'] != 'yes')
+			{
+				echo "<i class='fa fa-check green'></i> ";
+			}
+
+			else
+			{
+				echo "<i class='fa fa-times red display_warning'></i> ";
+			}
+
+			switch($woocommerce_dibs_easy_settings['test_mode'])
+			{
+				case 'yes':
+					echo sprintf(__("The site URL is %s and test mode is activated", 'lang_bb-theme-child'), $site_url_clean);
+				break;
+
+				default:
+					echo sprintf(__("The site URL is %s and test mode is NOT activated", 'lang_bb-theme-child'), $site_url_clean);
+				break;
+			}
+		
+		echo "</p>";
+	}
+
+	function setting_theme_child_send_to_optima_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		$arr_data = array(
+			'' => "-- ".__("Choose Here", 'lang_bb-theme-child')." --",
+			'log' => __("Log", 'lang_bb-theme-child'),
+			'email' => __("Send E-mail", 'lang_bb-theme-child'),
+			'api' => __("Send Automatically to Optima", 'lang_bb-theme-child'),
+		);
+
+		echo show_select(array('data' => $arr_data, 'name' => $setting_key, 'value' => $option));
 	}
 
 	function setting_theme_child_info_callback()
