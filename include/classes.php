@@ -254,40 +254,42 @@ class mf_theme_child
 		$_shipping_city = get_post_meta($data['order_id'], '_shipping_city', true);
 		//$_shipping_phone = get_post_meta($data['order_id'], '_shipping_phone', true);
 
-		$post_data = "{
-			'source': 'korkort',
-			'orderId': '".$data['order_id']."',
-			'shippingFee': '".$_order_shipping."',"
-			/*."'reseller':
+		$post_data = '{
+			"source": "korkort",
+			"orderId": "'.$data['order_id'].'",
+			"shippingFee": "'.$_order_shipping.'",'
+			/*.'"reseller":
 			{
-				'customerNumber': '".$customerNumber."',
-				'name': '".$name."',
-				'address1': '".$address1."',
-				'address2': '".$address2."',
-				'postalCode': '".$postalCode."',
-				'city': '".$city."',
-				'phone': '".$phone."',
-				'mobilePhone': '".$mobilePhone."',
-				'homePage': '".$homePage."',
-				'email': '".$email."',
-				'contact': '".$contact."'
-			},"*/
-			."'customer':
+				"customerNumber": "'.$customerNumber.'",
+				"name": "'.$name.'",
+				"address1": "'.$address1.'",
+				"address2": "'.$address2.'",
+				"postalCode": "'.$postalCode.'",
+				"city": "'.$city.'",
+				"phone": "'.$phone.'",
+				"mobilePhone": "'.$mobilePhone.'",
+				"homePage": "'.$homePage.'",
+				"email": "'.$email.'",
+				"contact": "'.$contact.'"
+			},'*/
+			.'"customer":
 			{
-				'firstName': '".($_shipping_first_name != '' ? $_shipping_first_name : $_billing_first_name)."',
-				'lastName': '".($_shipping_last_name != '' ? $_shipping_last_name : $_billing_last_name)."',
-				'identityNumber': '".$_customer_user."',
-				'address': '".($_shipping_address_1 != '' ? $_shipping_address_1 : $_billing_address_1)."',
-				'postalCode': '".($_shipping_postcode != '' ? $_shipping_postcode : $_billing_postcode)."',
-				'city': '".($_shipping_city != '' ? $_shipping_city : $_billing_city)."',
-				'email': '".$_billing_email."',
-				'mobilePhone': '".$_billing_phone."'
+				"firstName": "'.($_shipping_first_name != '' ? $_shipping_first_name : $_billing_first_name).'",
+				"lastName": "'.($_shipping_last_name != "" ? $_shipping_last_name : $_billing_last_name).'",
+				"identityNumber": "'.$_customer_user.'",
+				"address": "'.($_shipping_address_1 != "" ? $_shipping_address_1 : $_billing_address_1).'",
+				"postalCode": "'.($_shipping_postcode != "" ? $_shipping_postcode : $_billing_postcode).'",
+				"city": "'.($_shipping_city != "" ? $_shipping_city : $_billing_city).'",
+				"email": "'.$_billing_email.'",
+				"mobilePhone": "'.$_billing_phone.'"
 			},
-			'orderRows':
-			[";
+			"orderRows":
+			[';
 
 				$order = wc_get_order($data['order_id']);
 				$order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
+
+				$i_limit = 1;
 
 				foreach($order_items as $item_id => $arr_item)
 				{
@@ -295,7 +297,7 @@ class mf_theme_child
 					$variation_id = $arr_item['variation_id'];
 					$quantity = $arr_item['quantity'];
 
-					for($i = 1; $i <= 1; $i++)
+					for($i = 1; $i <= $i_limit; $i++)
 					{
 						if($variation_id > 0)
 						{
@@ -358,22 +360,22 @@ class mf_theme_child
 						$unit = "S";
 						$unitPrice = 0;
 
-						$post_data .= "{
-							'sku': '".$sku."',
-							'description': '".$description."',
-							'quantity': '".$quantity."',
-							'unit': '".$unit."',
-							'unitPrice': '".$unitPrice."',
-							'user_idenifier': '".$_customer_user."',
-							'identityNumber': '".$product_ssn."',
-							'email': '".$product_email."',
-							'mobilePhone': '".$product_phone."'
-						},";
+						$post_data .= '{
+							"sku": "'.$sku.'",
+							"description": "'.$description.'",
+							"quantity": '.$quantity.',
+							"unit": "'.$unit.'",
+							"unitPrice": "'.$unitPrice.'",
+							"user_idenifier": "'.$_customer_user.'",
+							"identityNumber": "'.$product_ssn.'",
+							"email": "'.$product_email.'",
+							"mobilePhone": "'.$product_phone.'"
+						}'.($i < $i_limit ? "," : "");
 					}
 				}
 
-			$post_data .= "]
-		}";
+			$post_data .= ']
+		}';
 
 		return $post_data;
 	}
@@ -1897,9 +1899,18 @@ class mf_theme_child
 		return $cols;
 	}
 
-	function remove_spaces($data)
+	function format_post_data($data)
 	{
-		$data = str_replace(array("\t", "\r", "\n", " "), "", $data);
+		$arr_exclude = $arr_include = array();
+		$arr_exclude[] = "\t";					$arr_include[] = "";
+		$arr_exclude[] = "\r";					$arr_include[] = "";
+		$arr_exclude[] = "\n";					$arr_include[] = "";
+		$arr_exclude[] = " ";					$arr_include[] = "";
+		$arr_exclude[] = "'";					$arr_include[] = '"';
+		$arr_exclude[] = "},]";					$arr_include[] = "}]";
+		$arr_exclude[] = '"quantity":"1"';		$arr_include[] = '"quantity":1';
+
+		$data = str_replace($arr_exclude, $arr_include, $data);
 
 		return $data;
 	}
@@ -1914,7 +1925,7 @@ class mf_theme_child
 				switch($col)
 				{
 					case 'optima_http_code':
-						$post_data_send = $this->remove_spaces($this->get_post_data(array('order_id' => $id)));
+						$post_data_send = $this->format_post_data($this->get_post_data(array('order_id' => $id)));
 
 						$arr_post_data = get_post_meta($id, $this->meta_prefix.'optima_post_data', true);
 
@@ -1930,7 +1941,7 @@ class mf_theme_child
 									$post_data = $post_data[0];
 								}
 
-								$post_data_temp = $this->remove_spaces($post_data['data']);
+								$post_data_temp = $this->format_post_data($post_data['data']);
 								$http_code = $post_data['http_code'];
 								$user_id = (isset($post_data['user']) ? $post_data['user'] : 0);
 								$created = (isset($post_data['created']) && $post_data['created'] > DEFAULT_DATE ? format_date($post_data['created']) : "[?]");
@@ -1954,7 +1965,7 @@ class mf_theme_child
 
 						else if($arr_post_data != '')
 						{
-							$post_data_temp = $this->remove_spaces($arr_post_data);
+							$post_data_temp = $this->format_post_data($arr_post_data);
 							$http_code = get_post_meta($id, $this->meta_prefix.'optima_http_code', true);
 							//$user_id = $post_data['user_id'];
 							//$created = $post_data['created'];
@@ -1968,7 +1979,7 @@ class mf_theme_child
 
 						if($post_data_sent_title != '')
 						{
-							echo " <i class='fa ".($has_correct_post_data == true ? "fa-check green" : "fa-times red")."' title=\"".$post_data_sent_title."\"></i>";
+							echo " <i class='fa ".($has_correct_post_data == true ? "fa-check green" : "fa-times red")."' title='".$post_data_sent_title."'></i>";
 						}
 
 						else
