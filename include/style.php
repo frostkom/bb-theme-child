@@ -22,6 +22,11 @@ echo "@media all
 		display: none;
 	}
 
+	.button.wc-backward
+	{
+		color: #fff !important;
+	}
+
 	/* Order Details */
 	.fl-page .woocommerce ul.order_details
 	{
