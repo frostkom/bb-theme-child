@@ -485,7 +485,7 @@ class mf_theme_child
 			break;
 
 			default:
-				$log_message = "Error while sending data to Optima: ".$headers['http_code']." (".htmlspecialchars($content).")"; // (".var_export($arr_headers, true).")
+				$log_message = "Error while sending data to Optima: ".$headers['http_code']." (#".$order_id.", ".htmlspecialchars($content).")"; // (".var_export($arr_headers, true).")
 				do_log($log_message);
 				//echo $log_message;
 
@@ -1166,6 +1166,8 @@ class mf_theme_child
 		$headers = curl_getinfo($curl);
 		curl_close($curl);
 
+		$log_message = "Error while getting data from Lime: ".$data['url'];
+
 		switch($headers['http_code'])
 		{
 			case 200:
@@ -1560,10 +1562,12 @@ class mf_theme_child
 						}
 					}
 				}
+
+				do_log($log_message, 'trash');
 			break;
 
 			default:
-				$log_message = "Error while getting data from Lime: ".$data['url']." -> ".$headers['http_code']." (".htmlspecialchars($content).")";
+				$log_message .= " -> ".$headers['http_code']." (".htmlspecialchars($content).")";
 
 				if($data['debug'] == true)
 				{
