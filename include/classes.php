@@ -669,6 +669,11 @@ class mf_theme_child
 					'_about_us' => 'field_64efe73f91aca',
 				),
 			);
+					
+			if($data['debug'] == true)
+			{
+				echo "<p><strong>".date("H:i:s")."</strong> Post data #".$post_id.": ".var_export($post_data, true)."</p>";
+			}
 
 			// Get Properties
 			#######################################
@@ -1695,16 +1700,18 @@ class mf_theme_child
 
 			foreach($result as $r)
 			{
+				$log_message = "<a href='".admin_url("post.php?post=".$r->ID."&action=edit")."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->ID)."</a>";
+
 				switch($setting_theme_child_send_to_optima)
 				{
 					case 'log':
-						do_log($r->ID." has not been sent to Optima");
+						do_log($log_message);
 					break;
 
 					case 'email':
 						$mail_to = "marknad@str.se";
 						$mail_subject = __("An order was not sent to Optima", 'lang_bb-theme-child');
-						$mail_content = "<a href='".admin_url("post.php?post=".$r->ID."&action=edit")."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->ID)."</a>";
+						$mail_content = $log_message;
 
 						send_email(array('to' => $mail_to, 'subject' => $mail_subject, 'content' => $mail_content));
 					break;
@@ -2006,7 +2013,7 @@ class mf_theme_child
 							}
 						}
 
-						if(in_array(get_current_user_id(), array(1, 3, 12))) // && $http_code != '' && $http_code == 401
+						if(in_array(get_current_user_id(), array(1, 3, 5, 12))) // && $http_code != '' && $http_code == 401
 						{
 							echo " ";
 
@@ -2046,7 +2053,7 @@ class mf_theme_child
 									$link_url .= "&paged=".$post_paged;
 								}
 
-								echo "<a href='".wp_nonce_url($link_url, 'optima_resend_'.$id, '_wpnonce_optima_resend')."' rel='confirm'><i class='fa fa-recycle' title=\"".__("Send Again", 'lang_bb-theme-child').": ".$post_data_send."\"></i></a>";
+								echo "<a href='".wp_nonce_url($link_url, 'optima_resend_'.$id, '_wpnonce_optima_resend')."' rel='confirm'><i class='fa fa-recycle' title='".__("Send Again", 'lang_bb-theme-child').": ".$post_data_send."'></i></a>";
 							}
 						}
 					break;
