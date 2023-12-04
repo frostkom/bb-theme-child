@@ -1696,7 +1696,7 @@ class mf_theme_child
 
 			$setting_theme_child_send_to_optima = get_option('setting_theme_child_send_to_optima');
 
-			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND post_modified > DATE_SUB(NOW(), INTERVAL 150 MINUTE) AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
 
 			foreach($result as $r)
 			{
@@ -1709,11 +1709,15 @@ class mf_theme_child
 					break;
 
 					case 'email':
-						$mail_to = "marknad@str.se";
-						$mail_subject = __("An order was not sent to Optima", 'lang_bb-theme-child');
-						$mail_content = $log_message;
+						if(get_option('setting_theme_child_order_email_sent') < date("Y-m-d H:i:s", strtotime("-2 hour")))
+						{
+							$mail_to = "marknad@str.se";
+							$mail_subject = $mail_content = $log_message;
 
-						send_email(array('to' => $mail_to, 'subject' => $mail_subject, 'content' => $mail_content));
+							send_email(array('to' => $mail_to, 'subject' => $mail_subject, 'content' => $mail_content));
+
+							update_option('setting_theme_child_order_email_sent', date("Y-m-d H:i:s"), 'no');
+						}
 					break;
 
 					case 'api':
