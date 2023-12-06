@@ -222,19 +222,6 @@ class mf_theme_child
 
 		$_order_shipping = "";
 
-		// Reseller
-		/*$customerNumber = "";
-		$name = "";
-		$address1 = "";
-		$address2 = "";
-		$postalCode = "";
-		$city = "";
-		$phone = "";
-		$mobilePhone = "";
-		$homePage = "";
-		$email = "";
-		$contact = "";*/
-
 		// Customer
 		$_customer_user = "";
 
@@ -254,25 +241,11 @@ class mf_theme_child
 		$_shipping_city = get_post_meta($data['order_id'], '_shipping_city', true);
 		//$_shipping_phone = get_post_meta($data['order_id'], '_shipping_phone', true);
 
+		$_dibs_payment_id = get_post_meta($data['order_id'], '_dibs_payment_id', true);
+
 		$post_data = '{
 			"source": "korkort",
-			"orderId": "'.$data['order_id'].'",
-			"shippingFee": "'.$_order_shipping.'",'
-			/*.'"reseller":
-			{
-				"customerNumber": "'.$customerNumber.'",
-				"name": "'.$name.'",
-				"address1": "'.$address1.'",
-				"address2": "'.$address2.'",
-				"postalCode": "'.$postalCode.'",
-				"city": "'.$city.'",
-				"phone": "'.$phone.'",
-				"mobilePhone": "'.$mobilePhone.'",
-				"homePage": "'.$homePage.'",
-				"email": "'.$email.'",
-				"contact": "'.$contact.'"
-			},'*/
-			.'"customer":
+			"customer":
 			{
 				"firstName": "'.($_shipping_first_name != '' ? $_shipping_first_name : $_billing_first_name).'",
 				"lastName": "'.($_shipping_last_name != "" ? $_shipping_last_name : $_billing_last_name).'",
@@ -283,6 +256,9 @@ class mf_theme_child
 				"email": "'.$_billing_email.'",
 				"mobilePhone": "'.$_billing_phone.'"
 			},
+			"shippingFee": "'.$_order_shipping.'",
+			"orderId": "'.$data['order_id'].'",
+			"paymentId": "'.$_dibs_payment_id.'",
 			"orderRows":
 			[';
 
@@ -296,6 +272,8 @@ class mf_theme_child
 					$product_id = $arr_item['product_id'];
 					$variation_id = $arr_item['variation_id'];
 					$quantity = $arr_item['quantity'];
+
+					//do_log($product_id.": ".var_export($arr_item, true));
 
 					for($i = 1; $i <= $i_limit; $i++)
 					{
@@ -358,7 +336,7 @@ class mf_theme_child
 						$description = "";
 						//$quantity = 1;
 						$unit = "S";
-						$unitPrice = 0;
+						$unitPrice = $arr_item['subtotal']; // - $arr_item['subtotal_tax']
 
 						$post_data .= '{
 							"sku": "'.$sku.'",
@@ -1944,7 +1922,7 @@ class mf_theme_child
 
 						$arr_post_data = get_post_meta($id, $this->meta_prefix.'optima_post_data', true);
 
-						$has_correct_post_data = true;
+						$post_data_status = 'unknown';
 						$post_data_sent_title = $http_code = "";
 
 						if(is_array($arr_post_data) && count($arr_post_data) > 0)
@@ -1965,9 +1943,20 @@ class mf_theme_child
 
 								$post_data_sent_title .= ($post_data_sent_title != '' ? "\n" : "").sprintf(__("Created %s by %s and got the answer %d", 'lang_bb-theme-child'), $created, $user_name, $http_code);
 
-								if($post_data_temp != $post_data_send)
+								if($post_data_temp == $post_data_send)
 								{
-									$has_correct_post_data = false;
+									$post_data_status = 'correct';
+								}
+
+								else if($post_data_temp != '')
+								{
+									$post_data_status = 'old_format';
+									$post_data_sent_title .= "\n".$post_data_temp;
+								}
+
+								else
+								{
+									$post_data_status = 'incorrect';
 									$post_data_sent_title .= "\n".$post_data_temp;
 								}
 
@@ -1985,34 +1974,61 @@ class mf_theme_child
 							//$user_id = $post_data['user_id'];
 							//$created = $post_data['created'];
 
-							if($post_data_temp != $post_data_send)
+							if($post_data_temp == $post_data_send)
 							{
-								$has_correct_post_data = false;
+								$post_data_status = 'correct';
+							}
+
+							else if($post_data_temp != '')
+							{
+								$post_data_status = 'old_format';
+								$post_data_sent_title .= "\n".$post_data_temp;
+							}
+
+							else
+							{
+								$post_data_status = 'incorrect';
 								$post_data_sent_title .= $post_data_temp;
 							}
 						}
 
 						if($post_data_sent_title != '')
 						{
-							echo " <i class='fa ".($has_correct_post_data == true ? "fa-check green" : "fa-times red")."' title='".$post_data_sent_title."'></i>";
+							switch($post_data_status)
+							{
+								case 'correct':
+									echo "<i class='fa fa-check green' title='".$post_data_sent_title."'></i>";
+								break;
+
+								case 'old_format':
+									echo "<i class='fa fa-check grey' title='".$post_data_sent_title."'></i>";
+								break;
+
+								case 'incorrect':
+									echo "<i class='fa fa-times red' title='".$post_data_sent_title."'></i>";
+								break;
+
+								default:
+								case 'unknown':
+									echo "<i class='far fa-question-circle grey' title='".$post_data_sent_title."'></i>";
+								break;
+							}
 						}
 
 						else
 						{
-							$title_attr = " title=\"".$http_code."\"";
-
 							switch($http_code)
 							{
 								case 201:
-									echo "<i class='fa fa-check green'".$title_attr."></i>";
+									echo "<i class='fa fa-check green' title=\"".$http_code."\"></i>";
 								break;
 
 								case 401:
-									echo "<i class='fa red'".$title_attr."></i>";
+									echo "<i class='fa fa-times red' title=\"".$http_code."\"></i>";
 								break;
 
 								default:
-									echo "<i class='far fa-question-circle grey'".$title_attr."></i>";
+									echo "<i class='far fa-question-circle grey' title=\"".$http_code."\"></i>";
 								break;
 							}
 						}
