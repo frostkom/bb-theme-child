@@ -17,7 +17,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 	if(is_admin())
 	{
 		add_action('admin_init', array($obj_theme_child, 'admin_init'), 0);
-
 		add_action('admin_init', array($obj_theme_child, 'settings_theme_child'));
 
 		add_filter('manage_'.$obj_theme_child->post_type_shop_order.'_posts_columns', array($obj_theme_child, 'column_header'), 20);

@@ -360,118 +360,126 @@ class mf_theme_child
 
 	function send_to_optima($status, $order_id, $do_return)
 	{
-		global $wpdb;
+		//global $wpdb;
 
 		$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
 
 		if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
 		{
-			$base_url = "https://sb-optima-dev.servicebus.windows.net";
-			$sas_key_value = "9Tnzw+k9lPLjSnNDIOzcc5ldyOECZ7hZP+ASbKeTuBA=";
+			$base_url = get_option('setting_theme_child_api_url_test');
+			$sas_key_value = get_option('setting_theme_child_api_key_test');
 		}
 
 		else
 		{
-			$base_url = "https://sb-optima-prod.servicebus.windows.net";
-			$sas_key_value = "NjzpRsnZ1UBZKwvVBQk10GoXHNjuqygxu+ASbA4lYSs=";
+			$base_url = get_option('setting_theme_child_api_url_live');
+			$sas_key_value = get_option('setting_theme_child_api_key_live');
 		}
 
-		$url = $base_url."/sbq-orders/messages";
-		$post_data = $this->get_post_data(array('order_id' => $order_id));
-
-		$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
-
-		$arr_headers = array(
-			"Authorization: ".$this->generate_sas_token(
-				$base_url.'/sbq-orders',
-				'korkort.nu',
-				$sas_key_value
-			),
-			"Content-Type: application/js",
-			"Content-Length: ".strlen($post_data),
-		);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $arr_headers);
-
-		//for debug only!
-		//curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-		//curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-		$content = curl_exec($curl);
-		$headers = curl_getinfo($curl);
-		curl_close($curl);
-
-		$arr_post_data = get_post_meta($order_id, $this->meta_prefix.'optima_post_data');
-
-		if(!is_array($arr_post_data))
+		if($base_url != '' && $sas_key_value != '')
 		{
-			if($arr_post_data != '')
-			{
-				$arr_post_data_temp = $arr_post_data;
+			$url = $base_url."/sbq-orders/messages";
+			$post_data = $this->get_post_data(array('order_id' => $order_id));
 
-				$http_code = get_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_POST, true);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-				$arr_post_data = array();
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
 
-				$arr_post_data[] = array(
-					'data' => $arr_post_data_temp,
-					'http_code' => $http_code,
-					'user' => 0,
-					'created' => "",
-				);
-
-				delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
-			}
-
-			else
-			{
-				$arr_post_data = array();
-			}
-		}
-
-		if(is_array($arr_post_data))
-		{
-			$arr_post_data[] = array(
-				'data' => $post_data,
-				'http_code' => $headers['http_code'],
-				'user' => get_current_user_id(),
-				'created' => date("Y-m-d H:i:s"),
+			$arr_headers = array(
+				"Authorization: ".$this->generate_sas_token(
+					$base_url.'/sbq-orders',
+					'korkort.nu',
+					$sas_key_value
+				),
+				"Content-Type: application/js",
+				"Content-Length: ".strlen($post_data),
 			);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $arr_headers);
+
+			//for debug only!
+			//curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+			//curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+			$content = curl_exec($curl);
+			$headers = curl_getinfo($curl);
+			curl_close($curl);
+
+			$arr_post_data = get_post_meta($order_id, $this->meta_prefix.'optima_post_data');
+
+			if(!is_array($arr_post_data))
+			{
+				if($arr_post_data != '')
+				{
+					$arr_post_data_temp = $arr_post_data;
+
+					$http_code = get_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+
+					$arr_post_data = array();
+
+					$arr_post_data[] = array(
+						'data' => $arr_post_data_temp,
+						'http_code' => $http_code,
+						'user' => 0,
+						'created' => "",
+					);
+
+					delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+				}
+
+				else
+				{
+					$arr_post_data = array();
+				}
+			}
+
+			if(is_array($arr_post_data))
+			{
+				$arr_post_data[] = array(
+					'data' => $post_data,
+					'http_code' => $headers['http_code'],
+					'user' => get_current_user_id(),
+					'created' => date("Y-m-d H:i:s"),
+				);
+			}
+
+			update_post_meta($order_id, $this->meta_prefix.'optima_post_data', $arr_post_data);
+
+			switch($headers['http_code'])
+			{
+				case 200:
+				case 201:
+					//$arr_content = json_decode($content, true);
+
+					//echo "Successful: ".$headers['http_code']." (".htmlspecialchars($content).")";
+					//do_log("Order sent: #".$order_id." (Post: ".str_replace(array("\n", "\r"), "", var_export($arr_post_data, true)).")", 'notification');
+
+					//"UPDATE ".$wpdb->prefix."wc_order_stats SET status = '' WHERE order_id = '%d'" // wc-on-hold -> wc-processing
+
+					if($do_return == true)
+					{
+						return true;
+					}
+				break;
+
+				default:
+					$log_message = "Error while sending data to Optima: ".$headers['http_code']." (#".$order_id.", ".htmlspecialchars($content).")"; // (".var_export($arr_headers, true).")
+					do_log($log_message);
+					//echo $log_message;
+
+					if($do_return == true)
+					{
+						return false;
+					}
+				break;
+			}
 		}
 
-		update_post_meta($order_id, $this->meta_prefix.'optima_post_data', $arr_post_data);
-
-		switch($headers['http_code'])
+		else
 		{
-			case 200:
-			case 201:
-				//$arr_content = json_decode($content, true);
-
-				//echo "Successful: ".$headers['http_code']." (".htmlspecialchars($content).")";
-				//do_log("Order sent: #".$order_id." (Post: ".str_replace(array("\n", "\r"), "", var_export($arr_post_data, true)).")", 'notification');
-
-				//"UPDATE ".$wpdb->prefix."wc_order_stats SET status = '' WHERE order_id = '%d'" // wc-on-hold -> wc-processing
-
-				if($do_return == true)
-				{
-					return true;
-				}
-			break;
-
-			default:
-				$log_message = "Error while sending data to Optima: ".$headers['http_code']." (#".$order_id.", ".htmlspecialchars($content).")"; // (".var_export($arr_headers, true).")
-				do_log($log_message);
-				//echo $log_message;
-
-				if($do_return == true)
-				{
-					return false;
-				}
-			break;
+			do_log("Base URL and SAS Key must be set in <a href='".admin_url("options-general.php?page=settings_mf_base#settings_theme_child")."'>".__("Settings", 'lang_bb-theme-child')."</a>");
 		}
 	}
 
@@ -738,11 +746,11 @@ class mf_theme_child
 
 					$arr_image_types = array(
 						'image' => array(
-							'url' => "https://www.str.se/globalassets/korkortnu-bild/".$school_id,
+							'url' => get_option('setting_theme_child_lime_assets_url')."korkortnu-bild/".$school_id,
 							'file_name' => "schoold_id_".$school_id,
 						),
 						'logo' => array(
-							'url' => "https://www.str.se/globalassets/korkortnu-logga/".$school_id,
+							'url' => get_option('setting_theme_child_lime_assets_url')."korkortnu-logga/".$school_id,
 							'file_name' => "school_logo_".$school_id,
 						),
 					);
@@ -1096,7 +1104,7 @@ class mf_theme_child
 		sleep(0.1);
 		set_time_limit(600);
 
-		if(!isset($data['api_key'])){			$data['api_key'] = "5ACBC6145E2E7320F8132704F126263894A7BBB412EE46F1F0D4938EC9AFC808968343A1E57A9D51D8FB";}
+		if(!isset($data['api_key'])){			$data['api_key'] = get_option('setting_theme_child_lime_api_key');}
 		if(!isset($data['debug'])){				$data['debug'] = false;}
 		if(!isset($data['limit_amount'])){		$data['limit_amount'] = 50;}
 		if(!isset($data['date_start'])){		$data['date_start'] = date("Y-m-d H:i:s");}
@@ -1127,7 +1135,7 @@ class mf_theme_child
 
 			else
 			{
-				$data['url'] = "https://lime.str.se/lime_str/api/v1/limeobject/company/?_limit=".$data['limit_amount'];
+				$data['url'] = get_option('setting_theme_child_lime_api_url')."limeobject/company/?_limit=".$data['limit_amount'];
 			}
 		}
 
@@ -1136,269 +1144,34 @@ class mf_theme_child
 			echo "<p><strong>".date("H:i:s")."</strong> Request: ".$data['url']."</p>";
 		}
 
-		$curl = curl_init($data['url']);
-		curl_setopt($curl, CURLOPT_URL, $data['url']);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-		$arr_headers = array(
-			"x-api-key: ".$data['api_key'],
-		);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $arr_headers);
-
-		$content = curl_exec($curl);
-		$headers = curl_getinfo($curl);
-		curl_close($curl);
-
-		$log_message = "Error while getting data from Lime: ".$data['url'];
-
-		switch($headers['http_code'])
+		if($data['url'] != '' && $data['api_key'] != '')
 		{
-			case 200:
-			case 201:
-				$arr_content = json_decode($content, true);
+			$curl = curl_init($data['url']);
+			curl_setopt($curl, CURLOPT_URL, $data['url']);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-				if(strpos($data['url'], "/propertylink/"))
-				{
-					if($data['debug'] == true)
-					{
-						echo "<p><strong>".date("H:i:s")."</strong> PropertyLink: ".count($arr_content['_embedded']['limeobjects'])."</p>"; //str_replace(array("\n", "\r"), "", var_export($arr_content, true))
-					}
+			$arr_headers = array(
+				"x-api-key: ".$data['api_key'],
+			);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $arr_headers);
 
-					$next_page = "";
+			$content = curl_exec($curl);
+			$headers = curl_getinfo($curl);
+			curl_close($curl);
 
-					foreach($arr_content as $key => $arr_json)
-					{
-						/*"_links": 
-						{
-							"self": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/company/541001/propertylink/"}
-						}, 
-						"_embedded": 
-						{
-							"limeobjects": 
-							[
-								{
-									"property": 1001, 
-									"company": 541001, 
-									"person": 464301, 
-									"propertyid": "", "companyid": "", "localsocietyid": "", "personid": "", 
-									"_id": 1527801, 
-									"_timestamp": "2012-02-05T21:46:38.097000+01:00", 
-									"_descriptive": "1527801", 
-									"_updateduser": 2001, "_createduser": 2201, 
-									"_createdtime": "2011-11-02T13:14:07.673000+01:00", 
-									"_links": 
-									{
-										"limetype": {"href": "https://lime.str.se/lime_str/api/v1/limetype/propertylink/", "name": "propertylink"}, 
-										"self": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/propertylink/1527801/"}, 
-										"relation_property": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/propertylink/1527801/property/", "name": "property"}, 
-										"relation_company": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/propertylink/1527801/company/", "name": "company"}, 
-										"relation_person": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/propertylink/1527801/person/", "name": "person"}, 
-										"relation_region_person": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/propertylink/1527801/region_person/", "name": "region_person"}, 
-										"new_region_person": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/propertylink/1527801/region_person/new/"}
-									}
-								},
-								...
-							]
-						}*/
+			$log_message = "Error while getting data from Lime: ".$data['url'];
 
-						switch($key)
-						{
-							case '_links':
-								if(isset($arr_json['next']['href']))
-								{
-									$next_page = $arr_json['next']['href'];
-								}
-							break;
+			switch($headers['http_code'])
+			{
+				case 200:
+				case 201:
+					$arr_content = json_decode($content, true);
 
-							case '_embedded':
-								$post_id = 0;
-
-								foreach($arr_json as $key => $arr_embedded)
-								{
-									if($key == 'limeobjects')
-									{
-										foreach($arr_embedded as $key => $arr_item)
-										{
-											if($data['debug'] == true)
-											{
-												//echo "<p><strong>".date("H:i:s")."</strong> Item: ".var_export($arr_item, true)."</p>";
-											}
-
-											$property_id = $arr_item['property'];
-											$company_id = $arr_item['company'];
-
-											if($property_id > 0 && $company_id > 0)
-											{
-												if(!($post_id > 0))
-												{
-													$post_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM ".$wpdb->prefix."posts INNER JOIN ".$wpdb->prefix."postmeta ON ".$wpdb->prefix."posts.ID = ".$wpdb->prefix."postmeta.post_id WHERE post_type = %s AND meta_key = %s AND meta_value = '%d'", $this->post_type_instructor, 'school_id', $company_id));
-
-													if($data['debug'] == true && $post_id > 0)
-													{
-														echo "<p><strong>".date("H:i:s")."</strong> Got PostID: ".$company_id." -> ".$post_id." -> ".get_post_title($post_id)."</p>";
-													}
-												}
-
-												if($post_id > 0)
-												{
-													foreach($this->arr_classes as $arr_class)
-													{
-														if(is_array($arr_class['services']) && count($arr_class['services']) > 0)
-														{
-															if($data['debug'] == true)
-															{
-																//echo "<p><strong>".date("H:i:s")."</strong> Terms: ".var_export($arr_class['services'], true)."</p>";
-															}
-
-															foreach($arr_class['services'] as $arr_service)
-															{
-																if($property_id == $arr_service['id'] || is_array($arr_service['id']) && in_array($property_id, $arr_service['id']))
-																{
-																	$term_id = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
-
-																	if($term_id > 0)
-																	{
-																		$this->arr_terms_id[] = $term_id;
-
-																		if($data['debug'] == true)
-																		{
-																			echo "<p><strong>".date("H:i:s")."</strong> Term exists: ".$property_id.", ".$term_id." -> ".$arr_service['name']."</p>";
-																		}
-																	}
-
-																	else if($data['debug'] == true)
-																	{
-																		echo "<p><strong>".date("H:i:s")."</strong> Term does NOT exist: ".$property_id." -> ".$arr_service['name']."</p>";
-																	}
-																}
-															}
-														}
-													}
-												}
-
-												else if($data['debug'] == true)
-												{
-													echo "<p><strong>".date("H:i:s")."</strong> Got NO PostID: ".$wpdb->last_query."</p>";
-												}
-											}
-
-											else if($data['debug'] == true)
-											{
-												echo "<p><strong>".date("H:i:s")."</strong> Got NO Property or Company: ".var_export($arr_item, true)."</p>";
-											}
-										}
-									}
-								}
-							break;
-						}
-					}
-
-					if($next_page != '')
-					{
-						if(strpos($next_page, "_limit="))
-						{
-							$next_page_temp = preg_replace("/_limit=(.*?)&/", "_limit=".$data['limit_amount']."&", $next_page);
-
-							if($next_page_temp != '')
-							{
-								$next_page = $next_page_temp;
-							}
-						}
-
-						$data_temp = $data;
-						$data_temp['url'] = $next_page;
-						$this->get_educators($data_temp);
-					}
-
-					else
-					{
-						// Populate classes
-						##############################
-						if($data['debug'] == true && count($this->arr_terms_id) > 0)
-						{
-							echo "<p><strong>".date("H:i:s")."</strong> Populate #".$post_id." (".var_export($this->arr_terms_id, true).")</p>";
-						}
-
-						$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->term_relationships." WHERE object_id = '%d' AND term_taxonomy_id NOT IN('".implode("', '", $this->arr_terms_id)."')", $post_id));
-
-						if($data['debug'] == true && $wpdb->rows_affected > 0)
-						{
-							echo "<p><strong>".date("H:i:s")."</strong> Removed ".$wpdb->rows_affected." classes from #".$post_id."</p>";
-						}
-
-						$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."wpgb_index WHERE object_id = '%d' AND facet_id NOT IN('".implode("', '", $this->arr_terms_id)."')", $post_id));
-
-						if($data['debug'] == true && $wpdb->rows_affected > 0)
-						{
-							echo "<p><strong>".date("H:i:s")."</strong> Removed ".$wpdb->rows_affected." indexes from #".$post_id."</p>";
-						}
-
-						foreach($this->arr_terms_id as $term_id)
-						{
-							$wpdb->get_results($wpdb->prepare("SELECT object_id FROM ".$wpdb->term_relationships." WHERE object_id = '%d' AND term_taxonomy_id = '%d'", $post_id, $term_id));
-
-							if($wpdb->num_rows == 0)
-							{
-								if($data['debug'] == true)
-								{
-									echo "<p><strong>".date("H:i:s")."</strong> Insert class ".$term_id." to #".$post_id." (".get_post_title($post_id).")</p>";
-								}
-
-								$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->term_relationships." SET object_id = '%d', term_taxonomy_id = '%d'", $post_id, $term_id));
-							}
-
-							$wpdb->get_results($wpdb->prepare("SELECT object_id FROM ".$wpdb->prefix."wpgb_index WHERE object_id = '%d' AND facet_id = '%d'", $post_id, $term_id));
-
-							if($wpdb->num_rows > 0)
-							{
-								//$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."wpgb_index SET object_id = '%d' AND facet_id = '%d'", $post_id, $term_id));
-							}
-
-							else
-							{
-								$result = $wpdb->get_results($wpdb->prepare("SELECT name, slug FROM ".$wpdb->terms." WHERE term_id = '%d'", $term_id));
-
-								foreach($result as $r)
-								{
-									$name = $r->name;
-									$slug = $r->slug;
-
-									$parent_slug = $wpdb->query($wpdb->prepare("SELECT slug FROM ".$wpdb->terms." INNER JOIN ".$wpdb->term_taxonomy." ON ".$wpdb->terms.".term_id = ".$wpdb->term_taxonomy.".parent WHERE ".$wpdb->term_taxonomy.".term_id = '%d'", $term_id));
-
-									if($data['debug'] == true)
-									{
-										echo "<p><strong>".date("H:i:s")."</strong> Insert index ".$term_id."/".$name." to #".$post_id." (".get_post_title($post_id).")</p>";
-									}
-
-									$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."wpgb_index SET object_id = '%d', slug = %s, facet_value = %s, facet_name = %s, facet_id = '%d'", $post_id, $parent_slug, $slug, $name, $term_id));
-								}
-							}
-						}
-
-						$this->arr_terms_id = array();
-						##############################
-					}
-				}
-
-				else
-				{
-					if(isset($arr_content['name']))
+					if(strpos($data['url'], "/propertylink/"))
 					{
 						if($data['debug'] == true)
 						{
-							//echo "<p><strong>".date("H:i:s")."</strong> Get Company (".var_export($arr_content, true).")</p>";
-						}
-
-						$data_temp = $data;
-						$data_temp['array'] = $arr_content;
-						$this->get_company_item($data_temp);
-					}
-
-					else
-					{
-						if($data['debug'] == true)
-						{
-							echo "<p><strong>".date("H:i:s")."</strong> Get ".count($arr_content['_embedded']['limeobjects'])." Companies</p>";
+							echo "<p><strong>".date("H:i:s")."</strong> PropertyLink: ".count($arr_content['_embedded']['limeobjects'])."</p>"; //str_replace(array("\n", "\r"), "", var_export($arr_content, true))
 						}
 
 						$next_page = "";
@@ -1407,55 +1180,34 @@ class mf_theme_child
 						{
 							/*"_links": 
 							{
-								"self": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/company/"}, 
-								"next": {"href": "https://lime.str.se/lime_str/api/v1/limeobject/company/?_offset=10"}
+								"self": {"href": "[api_url]limeobject/company/541001/propertylink/"}
 							}, 
 							"_embedded": 
 							{
 								"limeobjects": 
 								[
 									{
-										'name': 'Nybrons Trafikskola AB', 'legalname' => 'Nybrons Trafikskola AB', '_descriptive' => 'Nybrons Trafikskola AB',
-										'phone' => '018122311',	'phone2' => '',
-										'www' => 'www.nybronstrafikskola.se',
-										'address' => 'Västra Ågatan 16', 'visitingaddress' => 'Västra Ågatan 16',
-										'customerno' => '10482',
-										'registrationno' => '556500-9205', 'gln' => '5565009205',
-										'zipcode' => '753 09',
-										'city' => 'UPPSALA', 'searchcity' => 'UPPSALA', 'searchcity2' => '', 'searchcity3' => '',
-										'visitingzipcode' => '', 'visitingcity' => 'UPPSALA',
-										'relation' => array ( 'id' => 99101, 'key' => '99101', 'text' => 'Kund', ),
-										'customertype' => array ( 'id' => 537701, 'key' => '537701', 'text' => 'Trafikskola Guldmedlem', ),
-										'memberno' => '2905',
-										'email' => 'info@nybronstrafikskola.se',
-										'active' => true,
-										'invoiceaddress1' => 'Västra Ågatan 16','invoiceaddress2' => '753 09 UPPSALA',
-										'deliveryaddress1' => 'Västra Ågatan 16','deliveryaddress2' => '753 09 UPPSALA',
-										'properties' => array ( ),
-										'address2' => '', 'visitingaddress2' => '', 'invoiceaddress3' => '', 'deliveryaddress3' => '',
-										'description' => 'Att ta körkort...',
-										'map_long' => '17.6386409', 'map_lat' => '59.8569079',
-										'pricelist' => array ( 'id' => 514301, 'key' => '1', 'text' => 'Guldmedlem', ),
-										'hideweb' => true,
-										'region' => 1004,
-										'companytype' => array ( 'id' => 509301, 'key' => 'FMG', 'text' => 'Företagsmedlem Guld', ),
-										'creditlimit' => 30000,
-										'ismember' => true, 'iscustomer' => true,
-										'companycolor' => array ( 'id' => 513801, 'key' => '513801', 'text' => 'Kund & Medlem', ),
-										'teachercount' => 5,
-										'edi' => array ( 'id' => 532001, 'key' => 'INVOICGB', 'text' => 'INVOICGB', ),
-										'iaid_member' => 'SVTRAFIKRIKSF_NYBRONSTRAFIKSK', 'iaid_service' => 'STRSERVICE_NYBRONSTRAFIKSK',
-										'blanket_version' => 'E',
-										'updated_website' => '2023-05-04T00:00:00+02:00',
-										'_id' => 19401,
-										'_links' => array (
-											...
-											'self' => array ( 'href' => 'https://lime.str.se/lime_str/api/v1/limeobject/company/842501/', ), 
-											...
-											'relation_propertylink' => array ( 'href' => 'https://lime.str.se/lime_str/api/v1/limeobject/company/19401/propertylink/', 'name' => 'propertylink', ),
-											...
-										),
-									}
+										"property": 1001, 
+										"company": 541001, 
+										"person": 464301, 
+										"propertyid": "", "companyid": "", "localsocietyid": "", "personid": "", 
+										"_id": 1527801, 
+										"_timestamp": "2012-02-05T21:46:38.097000+01:00", 
+										"_descriptive": "1527801", 
+										"_updateduser": 2001, "_createduser": 2201, 
+										"_createdtime": "2011-11-02T13:14:07.673000+01:00", 
+										"_links": 
+										{
+											"limetype": {"href": "[api_url]limetype/propertylink/", "name": "propertylink"}, 
+											"self": {"href": "[api_url]limeobject/propertylink/1527801/"}, 
+											"relation_property": {"href": "[api_url]limeobject/propertylink/1527801/property/", "name": "property"}, 
+											"relation_company": {"href": "[api_url]limeobject/propertylink/1527801/company/", "name": "company"}, 
+											"relation_person": {"href": "[api_url]limeobject/propertylink/1527801/person/", "name": "person"}, 
+											"relation_region_person": {"href": "[api_url]limeobject/propertylink/1527801/region_person/", "name": "region_person"}, 
+											"new_region_person": {"href": "[api_url]limeobject/propertylink/1527801/region_person/new/"}
+										}
+									},
+									...
 								]
 							}*/
 
@@ -1469,29 +1221,83 @@ class mf_theme_child
 								break;
 
 								case '_embedded':
+									$post_id = 0;
+
 									foreach($arr_json as $key => $arr_embedded)
 									{
 										if($key == 'limeobjects')
 										{
-											if($data['debug'] == true)
-											{
-												//echo "<p><strong>".date("H:i:s")."</strong> Get ".count($arr_embedded)." Companies...</p>";
-											}
-
 											foreach($arr_embedded as $key => $arr_item)
 											{
-												$data_temp = $data;
-												$data_temp['array'] = $arr_item;
-												$this->get_company_item($data_temp);
+												if($data['debug'] == true)
+												{
+													//echo "<p><strong>".date("H:i:s")."</strong> Item: ".var_export($arr_item, true)."</p>";
+												}
+
+												$property_id = $arr_item['property'];
+												$company_id = $arr_item['company'];
+
+												if($property_id > 0 && $company_id > 0)
+												{
+													if(!($post_id > 0))
+													{
+														$post_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM ".$wpdb->prefix."posts INNER JOIN ".$wpdb->prefix."postmeta ON ".$wpdb->prefix."posts.ID = ".$wpdb->prefix."postmeta.post_id WHERE post_type = %s AND meta_key = %s AND meta_value = '%d'", $this->post_type_instructor, 'school_id', $company_id));
+
+														if($data['debug'] == true && $post_id > 0)
+														{
+															echo "<p><strong>".date("H:i:s")."</strong> Got PostID: ".$company_id." -> ".$post_id." -> ".get_post_title($post_id)."</p>";
+														}
+													}
+
+													if($post_id > 0)
+													{
+														foreach($this->arr_classes as $arr_class)
+														{
+															if(is_array($arr_class['services']) && count($arr_class['services']) > 0)
+															{
+																if($data['debug'] == true)
+																{
+																	//echo "<p><strong>".date("H:i:s")."</strong> Terms: ".var_export($arr_class['services'], true)."</p>";
+																}
+
+																foreach($arr_class['services'] as $arr_service)
+																{
+																	if($property_id == $arr_service['id'] || is_array($arr_service['id']) && in_array($property_id, $arr_service['id']))
+																	{
+																		$term_id = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
+
+																		if($term_id > 0)
+																		{
+																			$this->arr_terms_id[] = $term_id;
+
+																			if($data['debug'] == true)
+																			{
+																				echo "<p><strong>".date("H:i:s")."</strong> Term exists: ".$property_id.", ".$term_id." -> ".$arr_service['name']."</p>";
+																			}
+																		}
+
+																		else if($data['debug'] == true)
+																		{
+																			echo "<p><strong>".date("H:i:s")."</strong> Term does NOT exist: ".$property_id." -> ".$arr_service['name']."</p>";
+																		}
+																	}
+																}
+															}
+														}
+													}
+
+													else if($data['debug'] == true)
+													{
+														echo "<p><strong>".date("H:i:s")."</strong> Got NO PostID: ".$wpdb->last_query."</p>";
+													}
+												}
+
+												else if($data['debug'] == true)
+												{
+													echo "<p><strong>".date("H:i:s")."</strong> Got NO Property or Company: ".var_export($arr_item, true)."</p>";
+												}
 											}
 										}
-									}
-								break;
-
-								default:
-									if($data['debug'] == true)
-									{
-										echo "<p><strong>".date("H:i:s")."</strong> Unknown key: ".$key."</p>";
 									}
 								break;
 							}
@@ -1499,69 +1305,279 @@ class mf_theme_child
 
 						if($next_page != '')
 						{
-							$date_end = date("Y-m-d H:i:s");
-							$time_difference = time_between_dates(array('start' => $data['date_start'], 'end' => $date_end, 'type' => 'ceil', 'return' => 'seconds'));
-
-							if($time_difference < (6 * 60))
+							if(strpos($next_page, "_limit="))
 							{
-								if(strpos($next_page, "_limit="))
-								{
-									$next_page_temp = preg_replace("/_limit=(.*?)&/", "_limit=".$data['limit_amount']."&", $next_page);
+								$next_page_temp = preg_replace("/_limit=(.*?)&/", "_limit=".$data['limit_amount']."&", $next_page);
 
-									if($next_page_temp != '')
-									{
-										$next_page = $next_page_temp;
-									}
+								if($next_page_temp != '')
+								{
+									$next_page = $next_page_temp;
 								}
-
-								/*if($data['debug'] == true)
-								{
-									echo "<p><strong>".date("H:i:s")."</strong> Replace ".$next_page." -> ".$next_page_temp."</p>";
-								}*/
-
-								update_option('option_theme_educators_url', $next_page, 'no');
-
-								$data_temp = $data;
-								$data_temp['url'] = $next_page;
-								$this->get_educators($data_temp);
 							}
 
-							else if($data['debug'] == true)
-							{
-								echo "<p><strong>".date("H:i:s")."</strong> Had to stop because it took ".$time_difference." seconds (".$data['date_start']." -> ".$date_end.") and I stopped at ".$data['url']."</p>";
-							}
+							$data_temp = $data;
+							$data_temp['url'] = $next_page;
+							$this->get_educators($data_temp);
 						}
 
 						else
 						{
-							delete_option('option_theme_educators_url');
-						}
+							// Populate classes
+							##############################
+							if($data['debug'] == true && count($this->arr_terms_id) > 0)
+							{
+								echo "<p><strong>".date("H:i:s")."</strong> Populate #".$post_id." (".var_export($this->arr_terms_id, true).")</p>";
+							}
 
-						if($data['debug'] == true)
-						{
-							echo "<p><strong>".date("H:i:s")."</strong> Inserted: ".$this->insert_count.", Updated: ".$this->update_count.", Deleted: ".$this->delete_count.", Ignored: ".$this->ignore_count."</p>";
+							$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->term_relationships." WHERE object_id = '%d' AND term_taxonomy_id NOT IN('".implode("', '", $this->arr_terms_id)."')", $post_id));
 
-							$this->insert_count = $this->update_count = $this->delete_count = $this->ignore_count = 0;
+							if($data['debug'] == true && $wpdb->rows_affected > 0)
+							{
+								echo "<p><strong>".date("H:i:s")."</strong> Removed ".$wpdb->rows_affected." classes from #".$post_id."</p>";
+							}
+
+							$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."wpgb_index WHERE object_id = '%d' AND facet_id NOT IN('".implode("', '", $this->arr_terms_id)."')", $post_id));
+
+							if($data['debug'] == true && $wpdb->rows_affected > 0)
+							{
+								echo "<p><strong>".date("H:i:s")."</strong> Removed ".$wpdb->rows_affected." indexes from #".$post_id."</p>";
+							}
+
+							foreach($this->arr_terms_id as $term_id)
+							{
+								$wpdb->get_results($wpdb->prepare("SELECT object_id FROM ".$wpdb->term_relationships." WHERE object_id = '%d' AND term_taxonomy_id = '%d'", $post_id, $term_id));
+
+								if($wpdb->num_rows == 0)
+								{
+									if($data['debug'] == true)
+									{
+										echo "<p><strong>".date("H:i:s")."</strong> Insert class ".$term_id." to #".$post_id." (".get_post_title($post_id).")</p>";
+									}
+
+									$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->term_relationships." SET object_id = '%d', term_taxonomy_id = '%d'", $post_id, $term_id));
+								}
+
+								$wpdb->get_results($wpdb->prepare("SELECT object_id FROM ".$wpdb->prefix."wpgb_index WHERE object_id = '%d' AND facet_id = '%d'", $post_id, $term_id));
+
+								if($wpdb->num_rows > 0)
+								{
+									//$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."wpgb_index SET object_id = '%d' AND facet_id = '%d'", $post_id, $term_id));
+								}
+
+								else
+								{
+									$result = $wpdb->get_results($wpdb->prepare("SELECT name, slug FROM ".$wpdb->terms." WHERE term_id = '%d'", $term_id));
+
+									foreach($result as $r)
+									{
+										$name = $r->name;
+										$slug = $r->slug;
+
+										$parent_slug = $wpdb->query($wpdb->prepare("SELECT slug FROM ".$wpdb->terms." INNER JOIN ".$wpdb->term_taxonomy." ON ".$wpdb->terms.".term_id = ".$wpdb->term_taxonomy.".parent WHERE ".$wpdb->term_taxonomy.".term_id = '%d'", $term_id));
+
+										if($data['debug'] == true)
+										{
+											echo "<p><strong>".date("H:i:s")."</strong> Insert index ".$term_id."/".$name." to #".$post_id." (".get_post_title($post_id).")</p>";
+										}
+
+										$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."wpgb_index SET object_id = '%d', slug = %s, facet_value = %s, facet_name = %s, facet_id = '%d'", $post_id, $parent_slug, $slug, $name, $term_id));
+									}
+								}
+							}
+
+							$this->arr_terms_id = array();
+							##############################
 						}
 					}
-				}
 
-				do_log($log_message, 'trash');
-			break;
+					else
+					{
+						if(isset($arr_content['name']))
+						{
+							if($data['debug'] == true)
+							{
+								//echo "<p><strong>".date("H:i:s")."</strong> Get Company (".var_export($arr_content, true).")</p>";
+							}
 
-			default:
-				$log_message .= " -> ".$headers['http_code']." (".htmlspecialchars($content).")";
+							$data_temp = $data;
+							$data_temp['array'] = $arr_content;
+							$this->get_company_item($data_temp);
+						}
 
-				if($data['debug'] == true)
-				{
-					echo "<p><strong>".date("H:i:s")."</strong> ".$log_message."</p>";
-				}
+						else
+						{
+							if($data['debug'] == true)
+							{
+								echo "<p><strong>".date("H:i:s")."</strong> Get ".count($arr_content['_embedded']['limeobjects'])." Companies</p>";
+							}
 
-				else
-				{
-					do_log($log_message);
-				}
-			break;
+							$next_page = "";
+
+							foreach($arr_content as $key => $arr_json)
+							{
+								/*"_links": 
+								{
+									"self": {"href": "[api_url]limeobject/company/"}, 
+									"next": {"href": "[api_url]limeobject/company/?_offset=10"}
+								}, 
+								"_embedded": 
+								{
+									"limeobjects": 
+									[
+										{
+											'name': 'Nybrons Trafikskola AB', 'legalname' => 'Nybrons Trafikskola AB', '_descriptive' => 'Nybrons Trafikskola AB',
+											'phone' => '018122311',	'phone2' => '',
+											'www' => 'www.nybronstrafikskola.se',
+											'address' => 'Västra Ågatan 16', 'visitingaddress' => 'Västra Ågatan 16',
+											'customerno' => '10482',
+											'registrationno' => '556500-9205', 'gln' => '5565009205',
+											'zipcode' => '753 09',
+											'city' => 'UPPSALA', 'searchcity' => 'UPPSALA', 'searchcity2' => '', 'searchcity3' => '',
+											'visitingzipcode' => '', 'visitingcity' => 'UPPSALA',
+											'relation' => array ( 'id' => 99101, 'key' => '99101', 'text' => 'Kund', ),
+											'customertype' => array ( 'id' => 537701, 'key' => '537701', 'text' => 'Trafikskola Guldmedlem', ),
+											'memberno' => '2905',
+											'email' => 'info@nybronstrafikskola.se',
+											'active' => true,
+											'invoiceaddress1' => 'Västra Ågatan 16','invoiceaddress2' => '753 09 UPPSALA',
+											'deliveryaddress1' => 'Västra Ågatan 16','deliveryaddress2' => '753 09 UPPSALA',
+											'properties' => array ( ),
+											'address2' => '', 'visitingaddress2' => '', 'invoiceaddress3' => '', 'deliveryaddress3' => '',
+											'description' => 'Att ta körkort...',
+											'map_long' => '17.6386409', 'map_lat' => '59.8569079',
+											'pricelist' => array ( 'id' => 514301, 'key' => '1', 'text' => 'Guldmedlem', ),
+											'hideweb' => true,
+											'region' => 1004,
+											'companytype' => array ( 'id' => 509301, 'key' => 'FMG', 'text' => 'Företagsmedlem Guld', ),
+											'creditlimit' => 30000,
+											'ismember' => true, 'iscustomer' => true,
+											'companycolor' => array ( 'id' => 513801, 'key' => '513801', 'text' => 'Kund & Medlem', ),
+											'teachercount' => 5,
+											'edi' => array ( 'id' => 532001, 'key' => 'INVOICGB', 'text' => 'INVOICGB', ),
+											'iaid_member' => 'SVTRAFIKRIKSF_NYBRONSTRAFIKSK', 'iaid_service' => 'STRSERVICE_NYBRONSTRAFIKSK',
+											'blanket_version' => 'E',
+											'updated_website' => '2023-05-04T00:00:00+02:00',
+											'_id' => 19401,
+											'_links' => array (
+												...
+												'self' => array ( 'href' => '[api_url]limeobject/company/842501/', ), 
+												...
+												'relation_propertylink' => array ( 'href' => '[api_url]limeobject/company/19401/propertylink/', 'name' => 'propertylink', ),
+												...
+											),
+										}
+									]
+								}*/
+
+								switch($key)
+								{
+									case '_links':
+										if(isset($arr_json['next']['href']))
+										{
+											$next_page = $arr_json['next']['href'];
+										}
+									break;
+
+									case '_embedded':
+										foreach($arr_json as $key => $arr_embedded)
+										{
+											if($key == 'limeobjects')
+											{
+												if($data['debug'] == true)
+												{
+													//echo "<p><strong>".date("H:i:s")."</strong> Get ".count($arr_embedded)." Companies...</p>";
+												}
+
+												foreach($arr_embedded as $key => $arr_item)
+												{
+													$data_temp = $data;
+													$data_temp['array'] = $arr_item;
+													$this->get_company_item($data_temp);
+												}
+											}
+										}
+									break;
+
+									default:
+										if($data['debug'] == true)
+										{
+											echo "<p><strong>".date("H:i:s")."</strong> Unknown key: ".$key."</p>";
+										}
+									break;
+								}
+							}
+
+							if($next_page != '')
+							{
+								$date_end = date("Y-m-d H:i:s");
+								$time_difference = time_between_dates(array('start' => $data['date_start'], 'end' => $date_end, 'type' => 'ceil', 'return' => 'seconds'));
+
+								if($time_difference < (6 * 60))
+								{
+									if(strpos($next_page, "_limit="))
+									{
+										$next_page_temp = preg_replace("/_limit=(.*?)&/", "_limit=".$data['limit_amount']."&", $next_page);
+
+										if($next_page_temp != '')
+										{
+											$next_page = $next_page_temp;
+										}
+									}
+
+									/*if($data['debug'] == true)
+									{
+										echo "<p><strong>".date("H:i:s")."</strong> Replace ".$next_page." -> ".$next_page_temp."</p>";
+									}*/
+
+									update_option('option_theme_educators_url', $next_page, 'no');
+
+									$data_temp = $data;
+									$data_temp['url'] = $next_page;
+									$this->get_educators($data_temp);
+								}
+
+								else if($data['debug'] == true)
+								{
+									echo "<p><strong>".date("H:i:s")."</strong> Had to stop because it took ".$time_difference." seconds (".$data['date_start']." -> ".$date_end.") and I stopped at ".$data['url']."</p>";
+								}
+							}
+
+							else
+							{
+								delete_option('option_theme_educators_url');
+							}
+
+							if($data['debug'] == true)
+							{
+								echo "<p><strong>".date("H:i:s")."</strong> Inserted: ".$this->insert_count.", Updated: ".$this->update_count.", Deleted: ".$this->delete_count.", Ignored: ".$this->ignore_count."</p>";
+
+								$this->insert_count = $this->update_count = $this->delete_count = $this->ignore_count = 0;
+							}
+						}
+					}
+
+					do_log($log_message, 'trash');
+				break;
+
+				default:
+					$log_message .= " -> ".$headers['http_code']." (".htmlspecialchars($content).")";
+
+					if($data['debug'] == true)
+					{
+						echo "<p><strong>".date("H:i:s")."</strong> ".$log_message."</p>";
+					}
+
+					else
+					{
+						do_log($log_message);
+					}
+				break;
+			}
+		}
+
+		else
+		{
+			do_log("Lime API URL and API Key must be set in <a href='".admin_url("options-general.php?page=settings_mf_base#settings_theme_child")."'>".__("Settings", 'lang_bb-theme-child')."</a>");
 		}
 	}
 
@@ -1689,7 +1705,7 @@ class mf_theme_child
 					case 'email':
 						if(get_option('setting_theme_child_order_email_sent') < date("Y-m-d H:i:s", strtotime("-2 hour")))
 						{
-							$mail_to = "marknad@str.se";
+							$mail_to = get_option('setting_theme_child_send_to_optima_email');
 							$mail_subject = $mail_content = $log_message;
 
 							send_email(array('to' => $mail_to, 'subject' => $mail_subject, 'content' => $mail_content));
@@ -1735,9 +1751,17 @@ class mf_theme_child
 
 		$arr_settings = array();
 
-		$arr_settings['setting_theme_child_mode'] = __("Mode", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_mode'] = __("Optima", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_api_url_test'] = __("API URL", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
+		$arr_settings['setting_theme_child_api_key_test'] = __("API Key", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
+		$arr_settings['setting_theme_child_api_url_live'] = __("API URL", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
+		$arr_settings['setting_theme_child_api_key_live'] = __("API Key", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_send_to_optima'] = __("Send to Optima", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_info'] = __("Information", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_send_to_optima_email'] = __("E-mail", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_info'] = __("Lime", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_lime_api_url'] = __("API URL", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_lime_api_key'] = __("API Key", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_lime_assets_url'] = __("Assets URL", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_company'] = __("Company", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_type'] = __("Type", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_debug'] = __("Test API", 'lang_bb-theme-child');
@@ -1787,6 +1811,38 @@ class mf_theme_child
 		echo "</p>";
 	}
 
+	function setting_theme_child_api_url_test_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_theme_child_api_key_test_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_theme_child_api_url_live_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_theme_child_api_key_live_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option));
+	}
+
 	function setting_theme_child_send_to_optima_callback()
 	{
 		$setting_key = get_setting_key(__FUNCTION__);
@@ -1800,6 +1856,14 @@ class mf_theme_child
 		);
 
 		echo show_select(array('data' => $arr_data, 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_theme_child_send_to_optima_email_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('type' => 'email', 'name' => $setting_key, 'value' => $option));
 	}
 
 	function setting_theme_child_info_callback()
@@ -1821,6 +1885,30 @@ class mf_theme_child
 		}
 
 		echo "<p>".get_option('option_theme_educators_url')."</p>";
+	}
+
+	function setting_theme_child_lime_api_url_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_theme_child_lime_api_key_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_theme_child_lime_assets_url_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
 	}
 
 	function setting_theme_child_company_callback()
@@ -2573,11 +2661,11 @@ class mf_theme_child
 				{
 					default:
 					case 'company':
-						$data['url'] = "https://lime.str.se/lime_str/api/v1/limeobject/company/".$school_id."/";
+						$data['url'] = get_option('setting_theme_child_lime_api_url')."limeobject/company/".$school_id."/";
 					break;
 
 					case 'properties':
-						$data['url'] = "https://lime.str.se/lime_str/api/v1/limeobject/company/".$school_id."/propertylink/?_limit=50";
+						$data['url'] = get_option('setting_theme_child_lime_api_url')."limeobject/company/".$school_id."/propertylink/?_limit=50";
 					break;
 
 					case 'terms':
