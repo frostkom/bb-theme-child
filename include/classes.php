@@ -262,6 +262,8 @@ class mf_theme_child
 			"orderRows":
 			[';
 
+				$order_row_count = 0;
+
 				$order = wc_get_order($data['order_id']);
 				$order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
 
@@ -338,7 +340,7 @@ class mf_theme_child
 						$unit = "S";
 						$unitPrice = $arr_item['subtotal']; // - $arr_item['subtotal_tax']
 
-						$post_data .= '{
+						$post_data .= ($order_row_count > 0 ? "," : "").'{
 							"sku": "'.$sku.'",
 							"description": "'.$description.'",
 							"quantity": '.$quantity.',
@@ -348,7 +350,9 @@ class mf_theme_child
 							"identityNumber": "'.$product_ssn.'",
 							"email": "'.$product_email.'",
 							"mobilePhone": "'.$product_phone.'"
-						}'.($i < $i_limit ? "," : "");
+						}';
+
+						$order_row_count++;
 					}
 				}
 
@@ -2318,7 +2322,7 @@ class mf_theme_child
 				{
 					$product_title_temp = $product_title;
 
-					/*if(IS_ADMIN || 1 == 1)
+					/*if(IS_ADMINISTRATOR || 1 == 1)
 					{
 						$product_title_temp .= " (SKU: ".get_post_meta($variation_id, '_sku', true).")";
 					}*/
