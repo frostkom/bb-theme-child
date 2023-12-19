@@ -220,10 +220,7 @@ class mf_theme_child
 	{
 		global $wpdb;
 
-		$_order_shipping = "";
-
-		// Customer
-		$_customer_user = "";
+		$_order_shipping = $_customer_user = "";
 
 		$_billing_first_name = get_post_meta($data['order_id'], '_billing_first_name', true);
 		$_billing_last_name = get_post_meta($data['order_id'], '_billing_last_name', true);
@@ -275,16 +272,12 @@ class mf_theme_child
 					$variation_id = $arr_item['variation_id'];
 					$quantity = $arr_item['quantity'];
 
-					//do_log($product_id.": ".var_export($arr_item, true));
-
 					for($i = 1; $i <= $i_limit; $i++)
 					{
 						if($variation_id > 0)
 						{
 							$product_virtual = get_post_meta($variation_id, '_virtual', true);
 							$product_downloadable = get_post_meta($variation_id, '_downloadable', true);
-
-							$product_title = mf_get_post_content($variation_id, 'post_title');
 
 							$item_id = $product_id."_v".$variation_id;
 						}
@@ -293,8 +286,6 @@ class mf_theme_child
 						{
 							$product_virtual = get_post_meta($product_id, '_virtual', true);
 							$product_downloadable = get_post_meta($product_id, '_downloadable', true);
-
-							$product_title = mf_get_post_content($product_id, 'post_title');
 
 							$item_id = $product_id;
 						}
@@ -336,9 +327,8 @@ class mf_theme_child
 						}
 
 						$description = "";
-						//$quantity = 1;
 						$unit = "S";
-						$unitPrice = $arr_item['subtotal']; // - $arr_item['subtotal_tax']
+						$unitPrice = number_format((float)$arr_item['subtotal'], 2, '.', ''); // - $arr_item['subtotal_tax']
 
 						$post_data .= ($order_row_count > 0 ? "," : "").'{
 							"sku": "'.$sku.'",
@@ -364,8 +354,6 @@ class mf_theme_child
 
 	function send_to_optima($status, $order_id, $do_return)
 	{
-		//global $wpdb;
-
 		$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
 
 		if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
@@ -455,13 +443,6 @@ class mf_theme_child
 			{
 				case 200:
 				case 201:
-					//$arr_content = json_decode($content, true);
-
-					//echo "Successful: ".$headers['http_code']." (".htmlspecialchars($content).")";
-					//do_log("Order sent: #".$order_id." (Post: ".str_replace(array("\n", "\r"), "", var_export($arr_post_data, true)).")", 'notification');
-
-					//"UPDATE ".$wpdb->prefix."wc_order_stats SET status = '' WHERE order_id = '%d'" // wc-on-hold -> wc-processing
-
 					if($do_return == true)
 					{
 						return true;
@@ -469,9 +450,7 @@ class mf_theme_child
 				break;
 
 				default:
-					$log_message = "Error while sending data to Optima: ".$headers['http_code']." (#".$order_id.", ".htmlspecialchars($content).")"; // (".var_export($arr_headers, true).")
-					do_log($log_message);
-					//echo $log_message;
+					do_log("Error while sending data to Optima: ".$headers['http_code']." (#".$order_id.", ".htmlspecialchars($content).")");
 
 					if($do_return == true)
 					{
@@ -503,8 +482,6 @@ class mf_theme_child
 			}
 
 			$street_number = $arr_parts[$count_temp - 1];
-
-			//echo "<p>".$str_address." -> ".$street_name." + ".$street_number."</p>";
 		}
 
 		return array($street_name, $street_number);
@@ -845,7 +822,6 @@ class mf_theme_child
 
 						if($image_id > 0)
 						{
-							//$post_data['meta_input']['_pods_image_gallery_'.$meta_key_count] = array(0 => $image_id);
 							$post_data['meta_input']['image_gallery_'.$meta_key_count] = $image_id;
 							$post_data['meta_input']['_image_gallery_'.$meta_key_count] = $arr_image_data[$meta_key_count];
 
@@ -906,7 +882,7 @@ class mf_theme_child
 			{
 				if($data['debug'] == true)
 				{
-					echo "<p><strong>".date("H:i:s")."</strong> Company is not active</p>"; //: ".var_export($data['array'], true)."
+					echo "<p><strong>".date("H:i:s")."</strong> Company is not active</p>";
 				}
 
 				$this->ignore_count++;
@@ -1175,7 +1151,7 @@ class mf_theme_child
 					{
 						if($data['debug'] == true)
 						{
-							echo "<p><strong>".date("H:i:s")."</strong> PropertyLink: ".count($arr_content['_embedded']['limeobjects'])."</p>"; //str_replace(array("\n", "\r"), "", var_export($arr_content, true))
+							echo "<p><strong>".date("H:i:s")."</strong> PropertyLink: ".count($arr_content['_embedded']['limeobjects'])."</p>";
 						}
 
 						$next_page = "";
@@ -1429,35 +1405,35 @@ class mf_theme_child
 									"limeobjects": 
 									[
 										{
-											'name': 'Nybrons Trafikskola AB', 'legalname' => 'Nybrons Trafikskola AB', '_descriptive' => 'Nybrons Trafikskola AB',
-											'phone' => '018122311',	'phone2' => '',
-											'www' => 'www.nybronstrafikskola.se',
-											'address' => 'Västra Ågatan 16', 'visitingaddress' => 'Västra Ågatan 16',
-											'customerno' => '10482',
-											'registrationno' => '556500-9205', 'gln' => '5565009205',
-											'zipcode' => '753 09',
-											'city' => 'UPPSALA', 'searchcity' => 'UPPSALA', 'searchcity2' => '', 'searchcity3' => '',
-											'visitingzipcode' => '', 'visitingcity' => 'UPPSALA',
-											'relation' => array ( 'id' => 99101, 'key' => '99101', 'text' => 'Kund', ),
-											'customertype' => array ( 'id' => 537701, 'key' => '537701', 'text' => 'Trafikskola Guldmedlem', ),
-											'memberno' => '2905',
-											'email' => 'info@nybronstrafikskola.se',
+											'name': '[text]', 'legalname' => '[text]', '_descriptive' => '[text]',
+											'phone' => '[number]',	'phone2' => '',
+											'www' => '[url]',
+											'address' => '[text]', 'visitingaddress' => '[text]',
+											'customerno' => '[number]',
+											'registrationno' => '[osn]', 'gln' => '[osn]',
+											'zipcode' => '[zipcode]',
+											'city' => '[CITY]', 'searchcity' => '[CITY]', 'searchcity2' => '', 'searchcity3' => '',
+											'visitingzipcode' => '', 'visitingcity' => '[CITY]',
+											'relation' => array ( 'id' => [id], 'key' => '[id]', 'text' => 'Kund', ),
+											'customertype' => array ( 'id' => [id], 'key' => '[id]', 'text' => '[text]', ),
+											'memberno' => '[number]',
+											'email' => '[email]',
 											'active' => true,
-											'invoiceaddress1' => 'Västra Ågatan 16','invoiceaddress2' => '753 09 UPPSALA',
-											'deliveryaddress1' => 'Västra Ågatan 16','deliveryaddress2' => '753 09 UPPSALA',
+											'invoiceaddress1' => '[text]','invoiceaddress2' => '[zipcode] [CITY]',
+											'deliveryaddress1' => '[text]','deliveryaddress2' => '[zipcode] [CITY]',
 											'properties' => array ( ),
 											'address2' => '', 'visitingaddress2' => '', 'invoiceaddress3' => '', 'deliveryaddress3' => '',
-											'description' => 'Att ta körkort...',
+											'description' => '[text]',
 											'map_long' => '17.6386409', 'map_lat' => '59.8569079',
-											'pricelist' => array ( 'id' => 514301, 'key' => '1', 'text' => 'Guldmedlem', ),
+											'pricelist' => array ( 'id' => [id], 'key' => '1', 'text' => 'Guldmedlem', ),
 											'hideweb' => true,
 											'region' => 1004,
-											'companytype' => array ( 'id' => 509301, 'key' => 'FMG', 'text' => 'Företagsmedlem Guld', ),
+											'companytype' => array ( 'id' => [id], 'key' => 'FMG', 'text' => 'Företagsmedlem Guld', ),
 											'creditlimit' => 30000,
 											'ismember' => true, 'iscustomer' => true,
-											'companycolor' => array ( 'id' => 513801, 'key' => '513801', 'text' => 'Kund & Medlem', ),
+											'companycolor' => array ( 'id' => [id], 'key' => '[id]', 'text' => 'Kund & Medlem', ),
 											'teachercount' => 5,
-											'edi' => array ( 'id' => 532001, 'key' => 'INVOICGB', 'text' => 'INVOICGB', ),
+											'edi' => array ( 'id' => [id], 'key' => 'INVOICGB', 'text' => 'INVOICGB', ),
 											'iaid_member' => 'SVTRAFIKRIKSF_NYBRONSTRAFIKSK', 'iaid_service' => 'STRSERVICE_NYBRONSTRAFIKSK',
 											'blanket_version' => 'E',
 											'updated_website' => '2023-05-04T00:00:00+02:00',
@@ -1741,7 +1717,6 @@ class mf_theme_child
 			$theme_version = get_theme_version();
 
 			mf_enqueue_script('script_theme_child', $theme_include_url."script_wp.js", array(
-				//'theme_url' => $theme_include_url,
 				'ajax_url' => admin_url('admin-ajax.php'),
 			), $theme_version);
 		}
@@ -2189,38 +2164,6 @@ class mf_theme_child
 		}
 	}
 
-	/*function pre_get_posts($query)
-	{
-		if($_SERVER['REMOTE_ADDR'] == "2a02:aa1:1040:d95c:2132:bfa8:3f0d:a0a4")
-		{
-			//echo ("pre_get_posts: ".var_export($query, true));
-		}
-
-		if(1 == 2 && $query->is_main_query() && $query->is_search)
-		{
-			$strSearch = check_var('s');
-
-			$dteSearchDate = date("Y-m-d", strtotime($strSearch));
-
-			if($dteSearchDate > DEFAULT_DATE)
-			{
-				list($intYear, $intMonth, $intDay) = explode("-", $dteSearchDate);
-
-				$query->set('date_query', array(
-					array(
-						'column' => 'post_date_gmt',
-						'year' => $intYear,
-						'month' => $intMonth,
-						'day' => $intDay,
-						'inclusive' => true,
-					)
-				));
-			}
-		}
-
-		return $query;
-	}*/
-
 	function woocommerce_checkout_fields($fields)
 	{
 		//$fields['order']['order_comments']['placeholder'] = 'My new placeholder';
@@ -2230,39 +2173,6 @@ class mf_theme_child
 
 		return $fields;
 	}
-
-	/*function validate_ssn($ssn)
-	{
-		$ssn = str_replace(array('-', ' '), '', $ssn);
-
-		if(strlen($ssn) != 10)
-		{
-			return false;
-		}
-
-		if(!ctype_digit($ssn))
-		{
-			return false;
-		}
-
-		$ssn_year = substr($ssn, 0, 2);
-		$ssn_date = ($ssn_year > date("y") ? "19" : "20").substr($ssn, 0, 6);
-
-		if($ssn_date != date("Ymd", strtotime($ssn_date)))
-		{
-			return false;
-		}
-
-		$personal_numbers = substr($ssn, 0, 9);
-		$check_number = substr($ssn, 9, 1);
-
-		if($check_number != $this->calculate_ssn_check_number($personal_numbers))
-		{
-			return false;
-		}
-
-		return true;
-	}*/
 
 	function calculate_ssn_check_number($personal_numbers)
 	{
@@ -2322,11 +2232,6 @@ class mf_theme_child
 				{
 					$product_title_temp = $product_title;
 
-					/*if(IS_ADMINISTRATOR || 1 == 1)
-					{
-						$product_title_temp .= " (SKU: ".get_post_meta($variation_id, '_sku', true).")";
-					}*/
-
 					if($quantity > 1)
 					{
 						$product_title_temp .= " (".$i.")";
@@ -2338,7 +2243,7 @@ class mf_theme_child
 							$out_software .= "<h3>".$product_title_temp."</h3>"
 							."<p>".sprintf(__("Enter the details of the person who will use %s below", 'lang_bb-theme-child'), $product_title_temp)."</p>"
 							."<div class='flex_flow'>"
-								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child'), 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='10'")) //$data['obj_checkout']->get_value($this->meta_prefix.'ssn_'.$item_id)
+								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child'), 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='10'"))
 								//.show_textfield(array('name' => $this->meta_prefix.'name_'.$item_id, 'text' => __("Name", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'name_'.$item_id))) //, 'required' => true
 							."</div>"
 							."<div class='flex_flow'>"
@@ -2390,13 +2295,6 @@ class mf_theme_child
 								break 3;
 							}
 
-							/*if($this->validate_ssn($product_ssn) == false)
-							{
-								wc_add_notice(__("Please enter a Social Security Number according to the format YYMMDDXXXX", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
-
-								break 3;
-							}*/
-
 							else if(check_var($this->meta_prefix.'phone_'.$item_id, 'telno') == '' && check_var($this->meta_prefix.'email_'.$item_id, 'email') == '')
 							{
 								wc_add_notice(__("Please enter a Phone Number or E-mail Address", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
@@ -2404,7 +2302,7 @@ class mf_theme_child
 								break 3;
 							}
 
-							else// if(is_user_logged_in())
+							else
 							{
 								$product_phone = check_var($this->meta_prefix.'phone_'.$item_id, 'telno');
 								$product_email = check_var($this->meta_prefix.'email_'.$item_id, 'email');
@@ -2519,48 +2417,6 @@ class mf_theme_child
 		$this->run_checkout_part(array('type' => 'save', 'order_id' => $order_id));
 	}
 
-	/*function woocommerce_admin_order_data_after_billing_address($order)
-	{
-		global $woocommerce;
-
-		echo "Test 1";
-
-		echo "<p><strong>".__("Social Security Number", 'lang_bb-theme-child').":</strong> ".get_post_meta($order->id, $this->meta_prefix.'ssn', true)."</p>";
-		echo "<p><strong>".__("Name", 'lang_bb-theme-child').":</strong> ".get_post_meta($order->id, $this->meta_prefix.'name', true)."</p>";
-		echo "<p><strong>".__("Street Address", 'lang_bb-theme-child').":</strong> ".get_post_meta($order->id, $this->meta_prefix.'street_address', true)."</p>";
-		echo "<p><strong>".__("Zip Code", 'lang_bb-theme-child').":</strong> ".get_post_meta($order->id, $this->meta_prefix.'zipcode', true)."</p>";
-		echo "<p><strong>".__("City", 'lang_bb-theme-child').":</strong> ".get_post_meta($order->id, $this->meta_prefix.'city', true)."</p>";
-	}*/
-
-	/*function woocommerce_after_add_to_cart_button()
-	{
-		if(!session_id())
-		{
-			@session_start();
-		}
-
-		$session_campaign_id = check_var($this->meta_prefix.'campaign_id');
-		$campaign_id = check_var('campaign_id');
-
-		if($campaign_id > 0)
-		{
-			$_SESSION[$this->meta_prefix.'campaign_id'] = $campaign_id;
-
-			if(IS_SUPER_ADMIN)
-			{
-				echo "Session saved for campaign #".$campaign_id;
-			}
-		}
-
-		else if($session_campaign_id > 0)
-		{
-			if(IS_SUPER_ADMIN)
-			{
-				echo "Session already saved for campaign #".$session_campaign_id;
-			}
-		}
-	}*/
-
 	function send_payment_complete($function, $status, $order_id, $order)
 	{
 		$this->send_to_optima($status, $order_id, false);
@@ -2568,74 +2424,13 @@ class mf_theme_child
 
 	function woocommerce_payment_complete($order_id)
 	{
-		//do_log(__FUNCTION__.": #".$order_id, 'notification');
-
 		$this->send_payment_complete(__FUNCTION__, 'completed', $order_id, array());
-	}
-
-	function woocommerce_payment_complete_order_status($status, $order_id, $order)
-	{
-		do_log(__FUNCTION__.": #".$order_id, 'notification');
-
-		//$this->send_payment_complete(__FUNCTION__, $status, $order_id, $order);
-	}
-
-	function woocommerce_order_status_changed($order_id, $status_transition_from, $status_transition_to)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$status_transition_from." -> ".$status_transition_to.")", 'notification');
-	}
-
-	function dibs_easy_process_payment($order_id, $request)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".var_export($request, true).")", 'notification');
-	}
-
-	function woocommerce_pre_payment_complete($order_id, $transaction_id)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
-	}
-
-	function woocommerce_payment_complete_order_status_on_hold($order_id, $transaction_id)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
-	}
-
-	function woocommerce_payment_complete_order_status_pending($order_id, $transaction_id)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
-	}
-
-	function woocommerce_payment_complete_order_status_failed($order_id, $transaction_id)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
-	}
-
-	function woocommerce_payment_complete_order_status_cancelled($order_id, $transaction_id)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
-	}
-
-	function woocommerce_payment_complete_order_status_processing($order_id, $transaction_id)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
-	}
-
-	function woocommerce_payment_complete_order_status_completed($order_id, $transaction_id)
-	{
-		do_log(__FUNCTION__.": #".$order_id." (".$transaction_id.")", 'notification');
 	}
 
 	function woocommerce_proceed_to_checkout()
 	{
 		echo "<a href='".get_permalink(wc_get_page_id('shop'))."' class='checkout-button button alt wc-forward wp-element-button'>".__("Continue to shop", 'lang_bb-theme-child')."</a>";
 	}
-
-	/*function wc_tax_enabled($value)
-	{
-		$value = false;
-
-		return $value;
-	}*/
 
 	function debug_run()
 	{
