@@ -1670,7 +1670,7 @@ class mf_theme_child
 
 			$setting_theme_child_send_to_optima = get_option('setting_theme_child_send_to_optima');
 
-			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND post_modified > DATE_SUB(NOW(), INTERVAL 150 MINUTE) AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND post_modified < DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND post_modified > DATE_SUB(NOW(), INTERVAL 150 MINUTE) AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
 
 			foreach($result as $r)
 			{
