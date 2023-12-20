@@ -328,7 +328,10 @@ class mf_theme_child
 
 						$description = "";
 						$unit = "S";
-						$unitPrice = number_format((float)$arr_item['subtotal'], 2, '.', ''); // - $arr_item['subtotal_tax']
+						//$unitPrice = $arr_item['subtotal']; // - $arr_item['subtotal_tax']
+						$unitPrice = $wpdb->get_var($wpdb->prepare("SELECT product_net_revenue FROM ".$wpdb->prefix."wc_order_product_lookup WHERE order_id = '%d' AND product_id = '%d' AND variation_id = '%d'", $data['order_id'], $product_id, $variation_id));
+
+						$unitPrice = number_format((float)$unitPrice, 2, '.', '');
 
 						$post_data .= ($order_row_count > 0 ? "," : "").'{
 							"sku": "'.$sku.'",
