@@ -220,6 +220,8 @@ class mf_theme_child
 	{
 		global $wpdb;
 
+		$success = true;
+
 		$_order_shipping = $_customer_user = "";
 
 		$_billing_first_name = get_post_meta($data['order_id'], '_billing_first_name', true);
@@ -239,6 +241,7 @@ class mf_theme_child
 		//$_shipping_phone = get_post_meta($data['order_id'], '_shipping_phone', true);
 
 		$_dibs_payment_id = get_post_meta($data['order_id'], '_dibs_payment_id', true);
+		//$_cart_discount = get_post_meta($data['order_id'], '_cart_discount', true);
 
 		$post_data = '{
 			"source": "korkort",
@@ -328,8 +331,19 @@ class mf_theme_child
 
 						$description = "";
 						$unit = "S";
-						//$unitPrice = $arr_item['subtotal']; // - $arr_item['subtotal_tax']
-						$unitPrice = $wpdb->get_var($wpdb->prepare("SELECT product_net_revenue FROM ".$wpdb->prefix."wc_order_product_lookup WHERE order_id = '%d' AND product_id = '%d' AND variation_id = '%d'", $data['order_id'], $product_id, $variation_id));
+						$unitPrice = $arr_item['total']; //$arr_item['subtotal'] = before discount, $arr_item['subtotal_tax'] = tax before discount
+
+						/*if($_cart_discount > 0)
+						{
+							$unitPrice = $wpdb->get_var($wpdb->prepare("SELECT product_net_revenue FROM ".$wpdb->prefix."wc_order_product_lookup WHERE order_id = '%d' AND product_id = '%d' AND variation_id = '%d'", $data['order_id'], $product_id, $variation_id));
+						}*/
+
+						//do_log("unitPrice: ".$data['order_id'].", ".$product_id.", ".$variation_id." -> ".$wpdb->last_query." -> ".$unitPrice." -> ".number_format((float)$unitPrice, 2, '.', ''));
+
+						if(!($unitPrice > 0))
+						{
+							$success = false;
+						}
 
 						$unitPrice = number_format((float)$unitPrice, 2, '.', '');
 
@@ -352,7 +366,7 @@ class mf_theme_child
 			$post_data .= ']
 		}';
 
-		return $post_data;
+		return array($success, $post_data);
 	}
 
 	function send_to_optima($status, $order_id, $do_return)
@@ -362,104 +376,114 @@ class mf_theme_child
 		if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
 		{
 			$base_url = get_option('setting_theme_child_api_url_test');
+			$sas_key_name = get_option('setting_theme_child_api_name_test', 'korkort.nu_2');
 			$sas_key_value = get_option('setting_theme_child_api_key_test');
 		}
 
 		else
 		{
 			$base_url = get_option('setting_theme_child_api_url_live');
+			$sas_key_name = get_option('setting_theme_child_api_name_live', 'korkort.nu_2');
 			$sas_key_value = get_option('setting_theme_child_api_key_live');
 		}
 
 		if($base_url != '' && $sas_key_value != '')
 		{
 			$url = $base_url."/sbq-orders/messages";
-			$post_data = $this->get_post_data(array('order_id' => $order_id));
+			list($success, $post_data) = $this->get_post_data(array('order_id' => $order_id));
 
-			$curl = curl_init($url);
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
-
-			$arr_headers = array(
-				"Authorization: ".$this->generate_sas_token(
-					$base_url.'/sbq-orders',
-					'korkort.nu',
-					$sas_key_value
-				),
-				"Content-Type: application/js",
-				"Content-Length: ".strlen($post_data),
-			);
-			curl_setopt($curl, CURLOPT_HTTPHEADER, $arr_headers);
-
-			//for debug only!
-			//curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-			//curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-			$content = curl_exec($curl);
-			$headers = curl_getinfo($curl);
-			curl_close($curl);
-
-			$arr_post_data = get_post_meta($order_id, $this->meta_prefix.'optima_post_data');
-
-			if(!is_array($arr_post_data))
+			if($success == true)
 			{
-				if($arr_post_data != '')
-				{
-					$arr_post_data_temp = $arr_post_data;
+				$curl = curl_init($url);
+				curl_setopt($curl, CURLOPT_URL, $url);
+				curl_setopt($curl, CURLOPT_POST, true);
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-					$http_code = get_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
 
-					$arr_post_data = array();
-
-					$arr_post_data[] = array(
-						'data' => $arr_post_data_temp,
-						'http_code' => $http_code,
-						'user' => 0,
-						'created' => "",
-					);
-
-					delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
-				}
-
-				else
-				{
-					$arr_post_data = array();
-				}
-			}
-
-			if(is_array($arr_post_data))
-			{
-				$arr_post_data[] = array(
-					'data' => $post_data,
-					'http_code' => $headers['http_code'],
-					'user' => get_current_user_id(),
-					'created' => date("Y-m-d H:i:s"),
+				$arr_headers = array(
+					"Authorization: ".$this->generate_sas_token(
+						$base_url.'/sbq-orders',
+						$sas_key_name,
+						$sas_key_value
+					),
+					"Content-Type: application/js",
+					"Content-Length: ".strlen($post_data),
 				);
+				curl_setopt($curl, CURLOPT_HTTPHEADER, $arr_headers);
+
+				//for debug only!
+				//curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+				//curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+				$content = curl_exec($curl);
+				$headers = curl_getinfo($curl);
+				curl_close($curl);
+
+				$arr_post_data = get_post_meta($order_id, $this->meta_prefix.'optima_post_data');
+
+				if(!is_array($arr_post_data))
+				{
+					if($arr_post_data != '')
+					{
+						$arr_post_data_temp = $arr_post_data;
+
+						$http_code = get_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+
+						$arr_post_data = array();
+
+						$arr_post_data[] = array(
+							'data' => $arr_post_data_temp,
+							'http_code' => $http_code,
+							'user' => 0,
+							'created' => "",
+						);
+
+						delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+					}
+
+					else
+					{
+						$arr_post_data = array();
+					}
+				}
+
+				if(is_array($arr_post_data))
+				{
+					$arr_post_data[] = array(
+						'data' => $post_data,
+						'http_code' => $headers['http_code'],
+						'user' => get_current_user_id(),
+						'created' => date("Y-m-d H:i:s"),
+					);
+				}
+
+				update_post_meta($order_id, $this->meta_prefix.'optima_post_data', $arr_post_data);
+
+				switch($headers['http_code'])
+				{
+					case 200:
+					case 201:
+						if($do_return == true)
+						{
+							return true;
+						}
+					break;
+
+					default:
+						do_log("Error while sending data to Optima: ".$headers['http_code']." (#".$order_id.", ".htmlspecialchars($content).")");
+
+						if($do_return == true)
+						{
+							return false;
+						}
+					break;
+				}
 			}
 
-			update_post_meta($order_id, $this->meta_prefix.'optima_post_data', $arr_post_data);
-
-			switch($headers['http_code'])
+			else
 			{
-				case 200:
-				case 201:
-					if($do_return == true)
-					{
-						return true;
-					}
-				break;
-
-				default:
-					do_log("Error while sending data to Optima: ".$headers['http_code']." (#".$order_id.", ".htmlspecialchars($content).")");
-
-					if($do_return == true)
-					{
-						return false;
-					}
-				break;
+				do_log("Error while sending data to Optima: get_post_data() returned ".$post_data);
 			}
 		}
 
@@ -1735,8 +1759,10 @@ class mf_theme_child
 
 		$arr_settings['setting_theme_child_mode'] = __("Optima", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_api_url_test'] = __("API URL", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
+		$arr_settings['setting_theme_child_api_name_test'] = __("API Key Name", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_key_test'] = __("API Key", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_url_live'] = __("API URL", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
+		$arr_settings['setting_theme_child_api_name_live'] = __("API Key Name", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_key_live'] = __("API Key", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_send_to_optima'] = __("Send to Optima", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_send_to_optima_email'] = __("E-mail", 'lang_bb-theme-child');
@@ -1801,6 +1827,14 @@ class mf_theme_child
 		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
 	}
 
+	function setting_theme_child_api_name_test_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option));
+	}
+
 	function setting_theme_child_api_key_test_callback()
 	{
 		$setting_key = get_setting_key(__FUNCTION__);
@@ -1815,6 +1849,14 @@ class mf_theme_child
 		$option = get_option($setting_key);
 
 		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_theme_child_api_name_live_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option));
 	}
 
 	function setting_theme_child_api_key_live_callback()
@@ -1988,7 +2030,8 @@ class mf_theme_child
 				switch($col)
 				{
 					case 'optima_http_code':
-						$post_data_send = $this->format_post_data($this->get_post_data(array('order_id' => $id)));
+						list($success, $post_data_send) = $this->get_post_data(array('order_id' => $id));
+						$post_data_send = $this->format_post_data($post_data_send);
 
 						$arr_post_data = get_post_meta($id, $this->meta_prefix.'optima_post_data', true);
 

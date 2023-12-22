@@ -32,7 +32,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('woocommerce_checkout_process', array($obj_theme_child, 'woocommerce_checkout_process'));
 		add_action('woocommerce_checkout_update_order_meta', array($obj_theme_child, 'woocommerce_checkout_update_order_meta'));
 
-		add_action('woocommerce_payment_complete', array($obj_theme_child, 'woocommerce_payment_complete'));
+		add_action('woocommerce_payment_complete', array($obj_theme_child, 'woocommerce_payment_complete'), 20);
 
 		add_action('woocommerce_proceed_to_checkout', array($obj_theme_child, 'woocommerce_proceed_to_checkout'), 20);
 	}
