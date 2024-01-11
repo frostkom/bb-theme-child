@@ -331,7 +331,7 @@ class mf_theme_child
 
 						$description = "";
 						$unit = "S";
-						$unitPrice = $arr_item['total']; //$arr_item['subtotal'] = before discount, $arr_item['subtotal_tax'] = tax before discount
+						$unitPrice = ($arr_item['total'] / $quantity); //$arr_item['subtotal'] = before discount, $arr_item['subtotal_tax'] = tax before discount
 
 						/*if($_cart_discount > 0)
 						{
