@@ -2353,6 +2353,16 @@ class mf_theme_child
 								$product_phone = check_var($this->meta_prefix.'phone_'.$item_id, 'telno');
 								$product_email = check_var($this->meta_prefix.'email_'.$item_id, 'email');
 
+								if($product_email != '')
+								{
+									if(!is_domain_valid($product_email))
+									{
+										wc_add_notice(__("Please enter a valid E-mail Address. The one you entered does not seam to be correct", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+
+										break 3;
+									}
+								}
+
 								if(isset($arr_item_data[$product_ssn]))
 								{
 									if($product_phone != $arr_item_data[$product_ssn]['phone'])
@@ -2443,6 +2453,16 @@ class mf_theme_child
 						<h2>".__("Recipient", 'lang_bb-theme-child')."</h2>"
 						.$out_software
 					."</div>";
+
+					if(IS_SUPER_ADMIN)
+					{
+						$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
+
+						if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
+						{
+							echo "<p><a href='//developer.nexigroup.com/nexi-checkout/en-EU/docs/test-card-processing/'>".__("Test Card Processing", 'lang_bb-theme-child')." <i class='fas fa-arrow-right'></i></a></p>";
+						}
+					}
 				}
 			break;
 		}

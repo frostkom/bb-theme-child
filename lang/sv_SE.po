@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-19 12:06+0100\n"
+"POT-Creation-Date: 2024-01-15 11:09+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,201 +15,241 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../include/classes.php:1700
-msgid "An order was not sent to Optima"
-msgstr "En order skickades inte till Optima"
+#: ../include/classes.php:492
+#: ../include/classes.php:1587
+msgid "Settings"
+msgstr "Inställningar"
 
-#: ../include/classes.php:1701
+#: ../include/classes.php:1704
 #, php-format
 msgid "The order %s was not sent to Optima"
 msgstr "Ordern %s skickades inte till Optima"
 
-#: ../include/classes.php:1743
-msgid "Mode"
-msgstr "Läge"
+#: ../include/classes.php:1760
+#: ../include/classes.php:2000
+msgid "Optima"
+msgstr ""
 
-#: ../include/classes.php:1744
+#: ../include/classes.php:1761
+#: ../include/classes.php:1764
+#: ../include/classes.php:1770
+msgid "API URL"
+msgstr ""
+
+#: ../include/classes.php:1761
+#: ../include/classes.php:1762
+#: ../include/classes.php:1763
+msgid "Test"
+msgstr ""
+
+#: ../include/classes.php:1762
+#: ../include/classes.php:1765
+msgid "API Key Name"
+msgstr ""
+
+#: ../include/classes.php:1763
+#: ../include/classes.php:1766
+#: ../include/classes.php:1771
+msgid "API Key"
+msgstr ""
+
+#: ../include/classes.php:1764
+#: ../include/classes.php:1765
+#: ../include/classes.php:1766
+msgid "Live"
+msgstr ""
+
+#: ../include/classes.php:1767
 msgid "Send to Optima"
 msgstr "Skicka till Optima"
 
-#: ../include/classes.php:1745
-msgid "Information"
+#: ../include/classes.php:1768
+#: ../include/classes.php:2297
+msgid "E-mail"
+msgstr "E-post"
+
+#: ../include/classes.php:1769
+msgid "Lime"
 msgstr ""
 
-#: ../include/classes.php:1746
-#: ../include/classes.php:1848
+#: ../include/classes.php:1772
+msgid "Assets URL"
+msgstr ""
+
+#: ../include/classes.php:1773
+#: ../include/classes.php:1955
 msgid "Company"
 msgstr "Företag"
 
-#: ../include/classes.php:1747
+#: ../include/classes.php:1774
 msgid "Type"
 msgstr "Typ"
 
-#: ../include/classes.php:1748
+#: ../include/classes.php:1775
 msgid "Test API"
 msgstr "Testa API"
 
-#: ../include/classes.php:1757
+#: ../include/classes.php:1784
 msgid "Theme Child"
 msgstr "STR-tema"
 
-#: ../include/classes.php:1784
+#: ../include/classes.php:1811
 #, php-format
 msgid "The site URL is %s and test mode is activated"
 msgstr "Webbplatsens URL är %s och testläget är aktiverat"
 
-#: ../include/classes.php:1788
+#: ../include/classes.php:1815
 #, php-format
 msgid "The site URL is %s and test mode is NOT activated"
 msgstr "Webbplatsens URL är %s och testläget är INTE aktiverat"
 
-#: ../include/classes.php:1801
+#: ../include/classes.php:1876
 msgid "Choose Here"
 msgstr "Välj här"
 
-#: ../include/classes.php:1802
+#: ../include/classes.php:1877
 msgid "Log"
 msgstr "Logga"
 
-#: ../include/classes.php:1803
+#: ../include/classes.php:1878
 msgid "Send E-mail"
 msgstr "Skicka e-post"
 
-#: ../include/classes.php:1804
+#: ../include/classes.php:1879
 msgid "Send Automatically to Optima"
 msgstr "Skicka automatiskt till Optima"
 
-#: ../include/classes.php:1818
+#: ../include/classes.php:1901
 #, php-format
 msgid "The oldest instructor to be updated was %s (%s)"
 msgstr "Den första utbildaren som har uppdaterats var %s (%s)"
 
-#: ../include/classes.php:1825
+#: ../include/classes.php:1908
 #, php-format
 msgid "The newest instructor to be updated was %s (%s)"
 msgstr "Den senaste utbildaren som har uppdaterats var %s (%s)"
 
-#: ../include/classes.php:1849
+#: ../include/classes.php:1956
 msgid "Properties"
 msgstr "Attribut"
 
-#: ../include/classes.php:1850
+#: ../include/classes.php:1957
 msgid "Terms"
 msgstr "Klasser"
 
-#: ../include/classes.php:1881
+#: ../include/classes.php:1988
 msgid "Run Now"
 msgstr "Kör nu"
 
-#: ../include/classes.php:1893
-msgid "Optima"
-msgstr ""
-
-#: ../include/classes.php:1938
+#: ../include/classes.php:2055
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../include/classes.php:1940
+#: ../include/classes.php:2057
 #, php-format
 msgid "Created %s by %s and got the answer %d"
 msgstr "Skapad %s av %s och fick svaret %d"
 
-#: ../include/classes.php:2002
+#: ../include/classes.php:2157
 msgid "The information was successfully sent"
 msgstr "Informationen skickades"
 
-#: ../include/classes.php:2007
+#: ../include/classes.php:2162
 msgid "The information could not be sent"
 msgstr "Informationen kunde inte skickas"
 
-#: ../include/classes.php:2034
+#: ../include/classes.php:2189
 msgid "Send Again"
 msgstr "Skicka igen"
 
-#: ../include/classes.php:2205
+#: ../include/classes.php:2290
 #, php-format
 msgid "Enter the details of the person who will use %s below"
 msgstr "Ange nedan uppgifter på den som ska använda %s"
 
-#: ../include/classes.php:2207
+#: ../include/classes.php:2292
 msgid "Social Security Number"
 msgstr "Personnummer"
 
-#: ../include/classes.php:2207
+#: ../include/classes.php:2292
 msgid "YYMMDDXXXX"
 msgstr "ÅÅMMDDXXXX"
 
-#: ../include/classes.php:2211
+#: ../include/classes.php:2296
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
-#: ../include/classes.php:2211
-#: ../include/classes.php:2212
+#: ../include/classes.php:2296
+#: ../include/classes.php:2297
 msgid "to the user"
 msgstr "till den som ska använda materialet"
 
-#: ../include/classes.php:2212
-msgid "E-mail"
-msgstr "E-post"
-
-#: ../include/classes.php:2233
+#: ../include/classes.php:2318
 msgid "Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits"
 msgstr "Var vänlig ange personnummer enligt formatet ÅÅMMDDXXXX med endast tio siffror"
 
-#: ../include/classes.php:2240
+#: ../include/classes.php:2325
 msgid "Please enter a Social Security Number with only digits in it"
 msgstr "Var vänlig ange personnummer endast med siffror"
 
-#: ../include/classes.php:2247
+#: ../include/classes.php:2332
 msgid "Please enter a Social Security Number with a correct YYMMDD"
 msgstr "Var vänlig ange personnummer med korrekt ÅÅMMDD"
 
-#: ../include/classes.php:2254
+#: ../include/classes.php:2339
 msgid "Please enter a Social Security Number with the correct last check number"
 msgstr "Var vänlig ange personnummer med korrekt kontrollsiffra i slutet"
 
-#: ../include/classes.php:2268
+#: ../include/classes.php:2346
 msgid "Please enter a Phone Number or E-mail Address"
 msgstr "Var vänlig ange telefonnummer eller e-postadress"
 
-#: ../include/classes.php:2282
+#: ../include/classes.php:2360
+msgid "Please enter a valid E-mail Address. The one you entered does not seam to be correct"
+msgstr "Var vänlig ange en korrekt e-postadress. Den som du angav verkar vara felaktig."
+
+#: ../include/classes.php:2370
 msgid "The Social Security Number and Phone Number does not match on all products. If you enter the same Social Security Number on several products, you can't enter different Phone Numbers on those products."
 msgstr "Personnumret och telefonnumret stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika telefonnummer på dessa produkter."
 
-#: ../include/classes.php:2289
+#: ../include/classes.php:2377
 msgid "The Social Security Number and E-mail Address does not match on all products. If you enter the same Social Security Number on several products, you can't enter different E-mail Addresses on those products."
 msgstr "Personnumret och e-postadressen stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika e-postadresser på dessa produkter."
 
-#: ../include/classes.php:2322
+#: ../include/classes.php:2410
 #: ../woocommerce/checkout/form-shipping.php:31
 msgid "Ship to a different address?"
 msgstr "Leverera till en annan adress?"
 
-#: ../include/classes.php:2325
+#: ../include/classes.php:2413
 msgid "First Name"
 msgstr "Förnamn"
 
-#: ../include/classes.php:2326
+#: ../include/classes.php:2414
 msgid "Last Name"
 msgstr "Efternamn"
 
-#: ../include/classes.php:2328
+#: ../include/classes.php:2416
 msgid "Street Address"
 msgstr "Gatuadress"
 
-#: ../include/classes.php:2331
+#: ../include/classes.php:2419
 msgid "Zipcode"
 msgstr "Postnummer"
 
-#: ../include/classes.php:2332
+#: ../include/classes.php:2420
 msgid "City"
 msgstr "Ort"
 
-#: ../include/classes.php:2365
+#: ../include/classes.php:2453
 msgid "Recipient"
 msgstr "Mottagare"
 
-#: ../include/classes.php:2496
+#: ../include/classes.php:2463
+msgid "Test Card Processing"
+msgstr ""
+
+#: ../include/classes.php:2498
 #: ../woocommerce/order/order-details.php:152
 #: ../woocommerce/order/order-details.v.1.5.4.php:159
 msgid "Continue to shop"
@@ -324,6 +364,12 @@ msgstr "Ladda nu ner den från %s eller %s. Första gången du ska logga in så 
 msgid "There you use the social security number that you entered when you bought your periods and that you see above in your order. When you have created an account and logged in, your periods are there waiting for you. Good luck!"
 msgstr "Där använder du det personnummer som du angav när du köpte dina perioder och som du ser ovan i din beställning. När du skapat ett konto och loggat in så ligger dina perioder där och väntar på dig. Lycka till!"
 
+#~ msgid "An order was not sent to Optima"
+#~ msgstr "En order skickades inte till Optima"
+
+#~ msgid "Mode"
+#~ msgstr "Läge"
+
 #~ msgid "Enter details below for the user"
 #~ msgstr "Ange nedan uppgifter på den som ska använda"
 
@@ -374,9 +420,6 @@ msgstr "Där använder du det personnummer som du angav när du köpte dina peri
 
 #~ msgid "Body Class"
 #~ msgstr "Klass på Body"
-
-#~ msgid "Content Settings"
-#~ msgstr "Inställningar för innehåll"
 
 #~ msgid "Primary Navigation"
 #~ msgstr "Primär navigation"
