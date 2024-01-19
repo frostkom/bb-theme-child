@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-15 11:09+0100\n"
+"POT-Creation-Date: 2024-01-19 13:54+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -64,7 +64,7 @@ msgid "Send to Optima"
 msgstr "Skicka till Optima"
 
 #: ../include/classes.php:1768
-#: ../include/classes.php:2297
+#: ../include/classes.php:2327
 msgid "E-mail"
 msgstr "E-post"
 
@@ -162,94 +162,98 @@ msgstr "Informationen kunde inte skickas"
 msgid "Send Again"
 msgstr "Skicka igen"
 
-#: ../include/classes.php:2290
+#: ../include/classes.php:2200
+msgid "WooCommerce Customers"
+msgstr "Kunder i WooCommerce"
+
+#: ../include/classes.php:2320
 #, php-format
 msgid "Enter the details of the person who will use %s below"
 msgstr "Ange nedan uppgifter på den som ska använda %s"
 
-#: ../include/classes.php:2292
+#: ../include/classes.php:2322
 msgid "Social Security Number"
 msgstr "Personnummer"
 
-#: ../include/classes.php:2292
+#: ../include/classes.php:2322
 msgid "YYMMDDXXXX"
 msgstr "ÅÅMMDDXXXX"
 
-#: ../include/classes.php:2296
+#: ../include/classes.php:2326
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
-#: ../include/classes.php:2296
-#: ../include/classes.php:2297
+#: ../include/classes.php:2326
+#: ../include/classes.php:2327
 msgid "to the user"
 msgstr "till den som ska använda materialet"
 
-#: ../include/classes.php:2318
+#: ../include/classes.php:2348
 msgid "Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits"
 msgstr "Var vänlig ange personnummer enligt formatet ÅÅMMDDXXXX med endast tio siffror"
 
-#: ../include/classes.php:2325
+#: ../include/classes.php:2355
 msgid "Please enter a Social Security Number with only digits in it"
 msgstr "Var vänlig ange personnummer endast med siffror"
 
-#: ../include/classes.php:2332
+#: ../include/classes.php:2362
 msgid "Please enter a Social Security Number with a correct YYMMDD"
 msgstr "Var vänlig ange personnummer med korrekt ÅÅMMDD"
 
-#: ../include/classes.php:2339
+#: ../include/classes.php:2369
 msgid "Please enter a Social Security Number with the correct last check number"
 msgstr "Var vänlig ange personnummer med korrekt kontrollsiffra i slutet"
 
-#: ../include/classes.php:2346
+#: ../include/classes.php:2376
 msgid "Please enter a Phone Number or E-mail Address"
 msgstr "Var vänlig ange telefonnummer eller e-postadress"
 
-#: ../include/classes.php:2360
+#: ../include/classes.php:2390
 msgid "Please enter a valid E-mail Address. The one you entered does not seam to be correct"
 msgstr "Var vänlig ange en korrekt e-postadress. Den som du angav verkar vara felaktig."
 
-#: ../include/classes.php:2370
+#: ../include/classes.php:2400
 msgid "The Social Security Number and Phone Number does not match on all products. If you enter the same Social Security Number on several products, you can't enter different Phone Numbers on those products."
 msgstr "Personnumret och telefonnumret stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika telefonnummer på dessa produkter."
 
-#: ../include/classes.php:2377
+#: ../include/classes.php:2407
 msgid "The Social Security Number and E-mail Address does not match on all products. If you enter the same Social Security Number on several products, you can't enter different E-mail Addresses on those products."
 msgstr "Personnumret och e-postadressen stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika e-postadresser på dessa produkter."
 
-#: ../include/classes.php:2410
+#: ../include/classes.php:2440
 #: ../woocommerce/checkout/form-shipping.php:31
 msgid "Ship to a different address?"
 msgstr "Leverera till en annan adress?"
 
-#: ../include/classes.php:2413
+#: ../include/classes.php:2443
 msgid "First Name"
 msgstr "Förnamn"
 
-#: ../include/classes.php:2414
+#: ../include/classes.php:2444
 msgid "Last Name"
 msgstr "Efternamn"
 
-#: ../include/classes.php:2416
+#: ../include/classes.php:2446
 msgid "Street Address"
 msgstr "Gatuadress"
 
-#: ../include/classes.php:2419
+#: ../include/classes.php:2449
 msgid "Zipcode"
 msgstr "Postnummer"
 
-#: ../include/classes.php:2420
+#: ../include/classes.php:2450
 msgid "City"
 msgstr "Ort"
 
-#: ../include/classes.php:2453
+#: ../include/classes.php:2483
 msgid "Recipient"
 msgstr "Mottagare"
 
-#: ../include/classes.php:2463
+#: ../include/classes.php:2493
 msgid "Test Card Processing"
 msgstr ""
 
-#: ../include/classes.php:2498
+#: ../include/classes.php:2528
 #: ../woocommerce/order/order-details.php:152
 #: ../woocommerce/order/order-details.v.1.5.4.php:159
 msgid "Continue to shop"

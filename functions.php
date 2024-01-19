@@ -21,6 +21,8 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 
 		add_filter('manage_'.$obj_theme_child->post_type_shop_order.'_posts_columns', array($obj_theme_child, 'column_header'), 20);
 		add_action('manage_'.$obj_theme_child->post_type_shop_order.'_posts_custom_column', array($obj_theme_child, 'column_cell'), 20, 2);
+
+		add_filter('get_group_sync_type', array($obj_theme_child, 'get_group_sync_type'), 10);
 	}
 
 	else
@@ -37,11 +39,35 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('woocommerce_proceed_to_checkout', array($obj_theme_child, 'woocommerce_proceed_to_checkout'), 20);
 	}
 
+	add_filter('get_group_sync_addresses', array($obj_theme_child, 'get_group_sync_addresses'), 10, 2);
+
 	add_action('wp_ajax_debug_run', array($obj_theme_child, 'debug_run'), 10, 1);
 }
 
 add_filter('woocommerce_ship_to_different_address_checked', '__return_true');
 
 add_action('wp_enqueue_scripts', 'FLChildTheme::enqueue_scripts', 1000);
+
+/* Disable Password Reset */
+#######################################
+add_filter('allow_password_reset', 'disable_password_reset');
+add_action('login_init', 'lost_password_redirect');
+
+function disable_password_reset()
+{
+	return false;
+}
+
+function lost_password_redirect()
+{
+	if(isset($_GET['action']))
+	{
+		if(in_array($_GET['action'], array('lostpassword', 'retrievepassword')))
+		{
+			wp_redirect(wp_login_url(), 301);
+		}
+	}
+}
+#######################################
 
 // Remove option_theme_educators_url when uninstalling theme

@@ -2195,6 +2195,36 @@ class mf_theme_child
 		}
 	}
 
+	function get_group_sync_type($arr_data)
+	{
+		$arr_data['woocommerce_customers'] = __("WooCommerce Customers", 'lang_bb-theme-child');
+
+		return $arr_data;
+	}
+
+	function get_group_sync_addresses($arr_addresses, $sync_type)
+	{
+		global $wpdb;
+
+		switch($sync_type)
+		{
+			case 'woocommerce_customers':
+				$result = $wpdb->get_results($wpdb->prepare("SELECT ID, meta_value FROM ".$wpdb->posts." INNER JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE post_type = %s AND meta_key = %s GROUP BY meta_value", 'shop_order', '_billing_email'));
+
+				foreach($result as $r)
+				{
+					$arr_addresses[] = array(
+						'email' => $r->meta_value,
+						'first_name' => get_post_meta($r->ID, '_billing_first_name', true),
+						'sur_name' => get_post_meta($r->ID, '_billing_last_name', true),
+					);
+				}
+			break;
+		}
+
+		return $arr_addresses;
+	}
+
 	function wp_head()
 	{
 		global $post;
