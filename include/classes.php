@@ -568,7 +568,7 @@ class mf_theme_child
 				}
 			}
 
-			$is_updated = (date("Y-m-d", strtotime($data['array']['updated_website'])) >= date("Y-m-d", strtotime($post_modified)));
+			$is_updated = ($data['array']['updated_website'] > DEFAULT_DATE && date("Y-m-d", strtotime($data['array']['updated_website'])) >= date("Y-m-d", strtotime($post_modified)));
 
 			if($data['debug'] == true)
 			{
@@ -1108,7 +1108,7 @@ class mf_theme_child
 	{
 		global $wpdb;
 
-		sleep(0.1);
+		sleep(1);
 		set_time_limit(600);
 
 		if(!isset($data['api_key'])){			$data['api_key'] = get_option('setting_theme_child_lime_api_key');}
@@ -1258,6 +1258,8 @@ class mf_theme_child
 
 													if($post_id > 0)
 													{
+														$property_id_exists = false;
+
 														foreach($this->arr_classes as $arr_class)
 														{
 															if(is_array($arr_class['services']) && count($arr_class['services']) > 0)
@@ -1287,9 +1289,16 @@ class mf_theme_child
 																		{
 																			echo "<p><strong>".date("H:i:s")."</strong> Term does NOT exist: ".$property_id." -> ".$arr_service['name']."</p>";
 																		}
+
+																		$property_id_exists = true;
 																	}
 																}
 															}
+														}
+
+														if($property_id_exists == false && $data['debug'] == true)
+														{
+															echo "<p><strong>".date("H:i:s")."</strong> Property does NOT exist: ".$property_id." -> \$this->arr_classes</p>";
 														}
 													}
 
@@ -1943,7 +1952,7 @@ class mf_theme_child
 		$arr_data_instructors = array();
 		get_post_children(array('post_type' => $this->post_type_instructor, 'order_by' => 'post_title', 'add_choose_here' => true), $arr_data_instructors);
 
-		echo show_select(array('data' => $arr_data_instructors, 'name' => $setting_key, 'value' => $option));
+		echo show_select(array('data' => $arr_data_instructors, 'name' => $setting_key, 'value' => $option, 'suffix' => get_option_page_suffix(array('value' => $option))));
 	}
 
 	function setting_theme_child_type_callback()
@@ -2146,7 +2155,7 @@ class mf_theme_child
 							}
 						}
 
-						if(in_array(get_current_user_id(), array(1, 3, 5, 12))) // && $http_code != '' && $http_code == 401
+						if(IS_SUPER_ADMIN) //in_array(get_current_user_id(), array(1, 3, 5, 12))
 						{
 							echo " ";
 

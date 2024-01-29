@@ -50,7 +50,7 @@ add_action('wp_enqueue_scripts', 'FLChildTheme::enqueue_scripts', 1000);
 
 /* Disable Password Reset */
 #######################################
-add_filter('allow_password_reset', 'disable_password_reset');
+/*add_filter('allow_password_reset', 'disable_password_reset');
 add_action('login_init', 'lost_password_redirect');
 
 function disable_password_reset()
@@ -67,7 +67,7 @@ function lost_password_redirect()
 			wp_redirect(wp_login_url(), 301);
 		}
 	}
-}
+}*/
 #######################################
 
 // Remove option_theme_educators_url when uninstalling theme
