@@ -1752,7 +1752,7 @@ class mf_theme_child
 			$theme_include_url = get_stylesheet_directory_uri()."/include/";
 			$theme_version = get_theme_version();
 
-			mf_enqueue_script('script_theme_child', $theme_include_url."script_wp.js", array(
+			mf_enqueue_script('script_bb_theme_child_wp', $theme_include_url."script_wp.js", array(
 				'ajax_url' => admin_url('admin-ajax.php'),
 			), $theme_version);
 		}
@@ -2509,6 +2509,12 @@ class mf_theme_child
 
 	function woocommerce_after_order_notes($obj_checkout)
 	{
+		$theme_include_url = get_stylesheet_directory_uri()."/include/";
+		$theme_version = get_theme_version();
+
+		mf_enqueue_script('script_bb_theme_checkout', $theme_include_url."script_checkout.js", $theme_version);
+		mf_enqueue_style('style_bb_theme_checkout', $theme_include_url."style_checkout.css", $theme_version);
+
 		$this->run_checkout_part(array('type' => 'display', 'obj_checkout' => $obj_checkout));
 	}
 
