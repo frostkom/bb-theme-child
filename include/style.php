@@ -11,6 +11,12 @@ if(!defined('ABSPATH'))
 
 echo "@media all
 {
+	/* Slideshow */
+	.fl-page .fl-slide-photo .fl-slide-photo-img
+	{
+		border-radius: 0 !important;
+	}
+
 	/* Checkout */
 	.woocommerce ul#shipping_method li label, .woocommerce-page ul#shipping_method li label
 	{
@@ -46,12 +52,6 @@ echo "@media all
 		{
 			margin-right: 1em;
 		}
-
-	/*.continue_buttons a.fl-button, .download_buttons a.fl-button
-	{
-		background: #fb9678 !important;
-		border: 1px solid #cc694c !important;
-	}*/
 
 	.continue_buttons a.fl-button, .download_buttons a.fl-button
 	{

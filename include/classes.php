@@ -663,7 +663,7 @@ class mf_theme_child
 					'_about_us' => 'field_64efe73f91aca',
 				),
 			);
-					
+
 			if($data['debug'] == true)
 			{
 				echo "<p><strong>".date("H:i:s")."</strong> Post data #".$post_id.": ".var_export($post_data, true)."</p>";
@@ -1824,7 +1824,7 @@ class mf_theme_child
 					echo sprintf(__("The site URL is %s and test mode is NOT activated", 'lang_bb-theme-child'), $site_url_clean);
 				break;
 			}
-		
+
 		echo "</p>";
 	}
 
@@ -2239,7 +2239,8 @@ class mf_theme_child
 		global $post;
 
 		$theme_include_url = get_stylesheet_directory_uri()."/include/";
-		$theme_version = get_theme_version();
+		//$theme_version = get_theme_version();
+		$theme_version = filemtime(get_stylesheet_directory()."/include/style.php");
 
 		mf_enqueue_style('child-style', $theme_include_url."style.php", $theme_version);
 
