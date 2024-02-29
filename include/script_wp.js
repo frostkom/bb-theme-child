@@ -7,7 +7,7 @@ jQuery(function($)
 
 		$.ajax(
 		{
-			url: script_theme_child.ajax_url,
+			url: script_bb_theme_child_wp.ajax_url,
 			type: 'post',
 			dataType: 'json',
 			data: {
