@@ -57,12 +57,12 @@ class mf_theme_child
 			array(
 				'area' => "Motorcykel",
 				'services' => array(
-					//array('id' => array(38801), 'name' => "A - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
-					array('id' => array(35001, 38801), 'name' => "A - tung motorcykel", 'description' => "MC-utbildning med tung motorcykel"),
-					//array('id' => array(38901), 'name' => "A1 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
-					array('id' => array(38901, 34801), 'name' => "A1 - lätt motorcykel", 'description' => "MC-utbildning med lätt motorcykel"),
-					//array('id' => array(39001), 'name' => "A2 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
-					array('id' => array(39001, 34901), 'name' => "A2 - mellantung motorcykel", 'description' => "MC-utbildning med mellantung motorcykel"),
+					array('id' => array(38801), 'name' => "A - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
+					array('id' => array(35001), 'name' => "A - motorcykel klass A", 'description' => "MC-utbildning med tung motorcykel"),
+					array('id' => array(38901), 'name' => "A1 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
+					array('id' => array(34801), 'name' => "A1 - motorcykel klass 1", 'description' => "MC-utbildning med lätt motorcykel"),
+					array('id' => array(39001), 'name' => "A2 - låg motorcykel", 'description' => "Motorcykel vars höjd lämpar sig för korta personer"),
+					array('id' => array(34901), 'name' => "A2 - motorcykel klass 2", 'description' => "MC-utbildning med mellantung motorcykel"),
 					array('id' => array(15101), 'name' => "Riskutbildning del 1A", 'description' => "Riskutbildning 1A som handlar om alkohol, trötthet, riskfyllda faktorer och beteenden mm (minst 3 tim)"),
 					array('id' => array(15201), 'name' => "Riskutbildning del 2A", 'description' => "Riskutbildning 2A som handlar om hastighet, säkerhet och körning under särskilda förhållanden (minst 4 tim)"),
 					//array('id' => array(31601), 'name' => "Synprövning", 'description' => "Syntest (synscreening) som behövs för körkortstillstånd"),
@@ -1026,7 +1026,12 @@ class mf_theme_child
 
 				foreach($data['services'] as $arr_service)
 				{
-					$arr_include[] = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
+					$term_id_temp = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'debug' => $data['debug']));
+
+					if($term_id_temp > 0)
+					{
+						$arr_include[] = $term_id_temp;
+					}
 				}
 
 				$count_temp = count($arr_include);
@@ -2239,10 +2244,11 @@ class mf_theme_child
 		global $post;
 
 		$theme_include_url = get_stylesheet_directory_uri()."/include/";
-		//$theme_version = get_theme_version();
-		$theme_version = filemtime(get_stylesheet_directory()."/include/style.php");
+		$theme_version = get_theme_version();
 
-		mf_enqueue_style('child-style', $theme_include_url."style.php", $theme_version);
+		// This is loaded in bb-theme-child/style.css in Perfmatters instead and I can't affect the version number that way
+		//$theme_version = filemtime(get_stylesheet_directory()."/include/style.css");
+		//mf_enqueue_style('child-style', $theme_include_url."style.css", $theme_version);
 
 		if(isset($post->post_type) && $post->post_type == $this->post_type_instructor)
 		{

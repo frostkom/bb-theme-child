@@ -1,15 +1,4 @@
-<?php
-
-if(!defined('ABSPATH'))
-{
-	header("Content-Type: text/css; charset=utf-8");
-
-	$folder = str_replace("/wp-content/themes/bb-theme-child/include", "/", dirname(__FILE__));
-
-	require_once($folder."wp-load.php");
-}
-
-echo "@media all
+@media all
 {
 	/* Slideshow */
 	.fl-page .fl-slide-photo .fl-slide-photo-img
@@ -66,4 +55,4 @@ echo "@media all
 	{
 		display: none !important;
 	}
-}";
+}
