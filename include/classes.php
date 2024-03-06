@@ -2244,14 +2244,13 @@ class mf_theme_child
 		global $post;
 
 		$theme_include_url = get_stylesheet_directory_uri()."/include/";
-		$theme_version = get_theme_version();
-
-		// This is loaded in bb-theme-child/style.css in Perfmatters instead and I can't affect the version number that way
-		//$theme_version = filemtime(get_stylesheet_directory()."/include/style.css");
-		//mf_enqueue_style('child-style', $theme_include_url."style.css", $theme_version);
+		//$theme_version = get_theme_version();
+		$theme_version = filemtime(get_stylesheet_directory()."/include/style.css");
+		mf_enqueue_style('bb-theme-child-style', $theme_include_url."style.css", $theme_version);
 
 		if(isset($post->post_type) && $post->post_type == $this->post_type_instructor)
 		{
+			$theme_version = filemtime(get_stylesheet_directory()."/include/script_instructor.js");
 			mf_enqueue_script('script_bb_theme_instructor', $theme_include_url."script_instructor.js", $theme_version);
 		}
 	}

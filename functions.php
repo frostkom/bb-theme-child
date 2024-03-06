@@ -5,7 +5,6 @@ define('FL_CHILD_THEME_URL', get_stylesheet_directory_uri());
 
 if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_base/index.php"))
 {
-	require_once("classes/class-fl-child-theme.php");
 	include_once("include/classes.php");
 
 	load_theme_textdomain('lang_bb-theme-child', get_stylesheet_directory()."/lang");
@@ -45,8 +44,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 }
 
 add_filter('woocommerce_ship_to_different_address_checked', '__return_true');
-
-add_action('wp_enqueue_scripts', 'FLChildTheme::enqueue_scripts', 1000);
 
 /* Disable Password Reset */
 #######################################
