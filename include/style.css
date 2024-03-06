@@ -1,7 +1,7 @@
 @media all
 {
 	/* Slideshow */
-	.fl-page .fl-slide-photo .fl-slide-photo-img
+	.fl-page .fl-slide-photo .fl-slide-photo-img, .fl-page .fl-slide-mobile-photo .fl-slide-mobile-photo-img
 	{
 		border-radius: 0 !important;
 	}
