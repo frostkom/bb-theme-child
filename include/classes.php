@@ -586,6 +586,8 @@ class mf_theme_child
 
 			$post_content = "";
 
+			// Add searchable parameters
+			##################################
 			if($data['array']['city'] != '')
 			{
 				$post_content .= ($post_content != '' ? ", " : "").$data['array']['city'];
@@ -610,6 +612,12 @@ class mf_theme_child
 			{
 				$post_content .= ($post_content != '' ? ", " : "").$data['array']['description'];
 			}
+
+			if($data['array']['registrationno'] != '')
+			{
+				$post_content .= ($post_content != '' ? ", " : "").$data['array']['registrationno'];
+			}
+			##################################
 
 			$address = $data['array']['visitingaddress'].", ".$data['array']['zipcode']." ".$data['array']['city'];
 
@@ -859,7 +867,15 @@ class mf_theme_child
 
 				else if($data['debug'] == true)
 				{
-					echo "<p><strong>".date("H:i:s")."</strong> NOT modified so ignoring images #".$post_id.": ".date("Y-m-d H:i:s", strtotime($data['array']['updated_website']))." > ".$post_modified."</p>";
+					if($data['array']['updated_website'] > DEFAULT_DATE)
+					{
+						echo "<p><strong>".date("H:i:s")."</strong> NOT modified so ignoring images #".$post_id.": ".date("Y-m-d H:i:s", strtotime($data['array']['updated_website']))." > ".$post_modified."</p>";
+					}
+
+					else
+					{
+						echo "<p><strong>".date("H:i:s")."</strong> NOT modified so ignoring images #".$post_id.": ".$data['array']['updated_website']." > ".$post_modified."</p>";
+					}
 				}
 				#######################################
 
@@ -1656,7 +1672,12 @@ class mf_theme_child
 					{
 						foreach($arr_class['services'] as $arr_service)
 						{
-							$term_id = $this->get_term(array('arr_service_id' => $arr_service['id'], 'name' => $arr_service['name'], 'parent' => $term_id_parent, 'debug' => $data['debug']));
+							$term_id = $this->get_term(array(
+								'arr_service_id' => $arr_service['id'],
+								'name' => $arr_service['name'],
+								'parent' => $term_id_parent,
+								'debug' => $data['debug']
+							));
 
 							if($term_id > 0)
 							{
