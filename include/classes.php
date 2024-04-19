@@ -264,12 +264,12 @@ class mf_theme_child
 
 				$order_row_count = 0;
 
-				$order = wc_get_order($data['order_id']);
-				$order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
+				$arr_order = wc_get_order($data['order_id']);
+				$arr_order_items = $arr_order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
 
 				$i_limit = 1;
 
-				foreach($order_items as $item_id => $arr_item)
+				foreach($arr_order_items as $item_id => $arr_item)
 				{
 					$product_id = $arr_item['product_id'];
 					$variation_id = $arr_item['variation_id'];
@@ -1598,6 +1598,7 @@ class mf_theme_child
 
 				default:
 					$log_message .= " -> ".$headers['http_code']." (".htmlspecialchars($content).")";
+					//$log_message .= " + ".var_export($arr_headers, true)." -> ".var_export($headers, true)." (".htmlspecialchars($content).")";
 
 					if($data['debug'] == true)
 					{
@@ -2670,5 +2671,41 @@ class mf_theme_child
 		header('Content-Type: application/json');
 		echo json_encode($result);
 		die();
+	}
+
+	function wp_grid_builder_map_marker_content($content, $marker)
+	{
+		$title = get_the_title();
+		$address = get_field("address");
+		$phone = get_field("contact_no");
+		$email = get_field("email_address");
+		$website = get_field("website");
+	
+		$out = "<div class='pad--s'>
+			<h4>".$title."</h4>";
+
+			if($address != '')
+			{
+				$out .= "<p>".$address."</p>";
+			}
+
+			if($phone != '')
+			{
+				$out .= "<p><a href='tel:".$phone."'>".$phone."</a></p>";
+			}
+
+			if($email != '')
+			{
+				$out .= "<p><a href='mailto:".$email."'>".$email."</a></p>";
+			}
+
+			if($website != '')
+			{
+				$out .= "<p><a href='".$website."' target='_blank'>".$website."</a></p>";
+			}
+
+		$out .= "</div>";
+		
+		return $out;
 	}
 }
