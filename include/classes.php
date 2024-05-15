@@ -3,11 +3,11 @@
 class mf_theme_child
 {
 	var $post_type = 'mf_campaign';
-	var $meta_prefix = "";
+	var $meta_prefix;
 	var $post_type_shop_order = 'shop_order';
 	var $post_type_instructor = 'instructor';
 	var $taxonomy_name = 'class';
-	var $arr_classes = array();
+	var $arr_classes;
 	var $insert_count = 0;
 	var $update_count = 0;
 	var $delete_count = 0;
@@ -1787,30 +1787,57 @@ class mf_theme_child
 
 	function settings_theme_child()
 	{
-		$options_area = __FUNCTION__;
+		$options_area_orig = $options_area = __FUNCTION__;
+
+		// Generic
+		############################
+		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
+
+		$arr_settings = array();
+		$arr_settings['setting_theme_child_info'] = __("Lime", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_mode'] = __("Optima", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_ssn'] = __("Social Security Number", 'lang_bb-theme-child');
+
+		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
+		############################
+
+		// Lime
+		############################
+		$options_area = $options_area_orig."_lime";
 
 		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
 
 		$arr_settings = array();
+		$arr_settings['setting_theme_child_lime_api_url'] = __("API URL", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_lime_api_key'] = __("API Key", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_lime_assets_url'] = __("Assets URL", 'lang_bb-theme-child');
 
-		$arr_settings['setting_theme_child_mode'] = __("Optima", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_company'] = __("Company", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_type'] = __("Type", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_debug'] = __("Test API", 'lang_bb-theme-child');
+
+		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
+		############################
+
+		// Optima
+		############################
+		$options_area = $options_area_orig."_optima";
+
+		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
+
+		$arr_settings = array();
 		$arr_settings['setting_theme_child_api_url_test'] = __("API URL", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_name_test'] = __("API Key Name", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_key_test'] = __("API Key", 'lang_bb-theme-child')." (".__("Test", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_url_live'] = __("API URL", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_name_live'] = __("API Key Name", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
 		$arr_settings['setting_theme_child_api_key_live'] = __("API Key", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
-		$arr_settings['setting_theme_child_send_to_optima'] = __("Send to Optima", 'lang_bb-theme-child');
+
+		$arr_settings['setting_theme_child_send_to_optima'] = __("Send to", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_send_to_optima_email'] = __("E-mail", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_info'] = __("Lime", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_lime_api_url'] = __("API URL", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_lime_api_key'] = __("API Key", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_lime_assets_url'] = __("Assets URL", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_company'] = __("Company", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_type'] = __("Type", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_debug'] = __("Test API", 'lang_bb-theme-child');
 
 		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
+		############################
 	}
 
 	function settings_theme_child_callback()
@@ -1820,211 +1847,216 @@ class mf_theme_child
 		echo settings_header($setting_key, __("Theme Child", 'lang_bb-theme-child'));
 	}
 
-	function setting_theme_child_mode_callback()
-	{
-		global $wpdb;
-
-		$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
-
-		$site_url = ($wpdb->blogid > 0 ? get_home_url($wpdb->blogid) : get_home_url());
-		$site_url_clean = remove_protocol(array('url' => $site_url, 'clean' => true));
-
-		echo "<p>";
-
-			if($site_url_clean == "staging.korkort.nu" && $woocommerce_dibs_easy_settings['test_mode'] == 'yes' || $site_url_clean == "korkort.nu" && $woocommerce_dibs_easy_settings['test_mode'] != 'yes')
-			{
-				echo "<i class='fa fa-check green'></i> ";
-			}
-
-			else
-			{
-				echo "<i class='fa fa-times red display_warning'></i> ";
-			}
-
-			switch($woocommerce_dibs_easy_settings['test_mode'])
-			{
-				case 'yes':
-					echo sprintf(__("The site URL is %s and test mode is activated", 'lang_bb-theme-child'), $site_url_clean);
-				break;
-
-				default:
-					echo sprintf(__("The site URL is %s and test mode is NOT activated", 'lang_bb-theme-child'), $site_url_clean);
-				break;
-			}
-
-		echo "</p>";
-	}
-
-	function setting_theme_child_api_url_test_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_api_name_test_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_api_key_test_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_api_url_live_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_api_name_live_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_api_key_live_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_send_to_optima_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		$arr_data = array(
-			'' => "-- ".__("Choose Here", 'lang_bb-theme-child')." --",
-			'log' => __("Log", 'lang_bb-theme-child'),
-			'email' => __("Send E-mail", 'lang_bb-theme-child'),
-			'api' => __("Send Automatically to Optima", 'lang_bb-theme-child'),
-		);
-
-		echo show_select(array('data' => $arr_data, 'name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_send_to_optima_email_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('type' => 'email', 'name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_info_callback()
-	{
-		global $wpdb;
-
-		$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_title, post_modified FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s ORDER BY post_modified ASC LIMIT 0, 1", $this->post_type_instructor, 'publish'));
-
-		foreach($result as $r)
+		function setting_theme_child_info_callback()
 		{
-			echo "<p>".sprintf(__("The oldest instructor to be updated was %s (%s)", 'lang_bb-theme-child'), "<a href='/wp-admin/edit.php?s=".$r->post_title."&post_type=".$this->post_type_instructor."'>".$r->post_title."</a>", format_date($r->post_modified))."</p>";
+			global $wpdb;
+
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_title, post_modified FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s ORDER BY post_modified ASC LIMIT 0, 1", $this->post_type_instructor, 'publish'));
+
+			foreach($result as $r)
+			{
+				echo "<p><i class='".($r->post_modified > date("Y-m-d H:i:s", strtotime("-1 day")) ? "fa fa-check green" : "fa fa-times red display_warning")."'></i> ".sprintf(__("The oldest instructor to be updated was %s (%s)", 'lang_bb-theme-child'), "<a href='/wp-admin/edit.php?s=".$r->post_title."&post_type=".$this->post_type_instructor."'>".$r->post_title."</a>", format_date($r->post_modified))."</p>";
+			}
+
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_title, post_modified FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s ORDER BY post_modified DESC LIMIT 0, 1", $this->post_type_instructor, 'publish'));
+
+			foreach($result as $r)
+			{
+				echo "<p><i class='".($r->post_modified > date("Y-m-d H:i:s", strtotime("-1 day")) ? "fa fa-check green" : "fa fa-times red display_warning")."'></i> ".sprintf(__("The newest instructor to be updated was %s (%s)", 'lang_bb-theme-child'), "<a href='/wp-admin/edit.php?s=".$r->post_title."&post_type=".$this->post_type_instructor."'>".$r->post_title."</a>", format_date($r->post_modified))."</p>";
+			}
 		}
 
-		$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_title, post_modified FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s ORDER BY post_modified DESC LIMIT 0, 1", $this->post_type_instructor, 'publish'));
-
-		foreach($result as $r)
+		function setting_theme_child_mode_callback()
 		{
-			echo "<p>".sprintf(__("The newest instructor to be updated was %s (%s)", 'lang_bb-theme-child'), "<a href='/wp-admin/edit.php?s=".$r->post_title."&post_type=".$this->post_type_instructor."'>".$r->post_title."</a>", format_date($r->post_modified))."</p>";
+			global $wpdb;
+
+			$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
+
+			$site_url = ($wpdb->blogid > 0 ? get_home_url($wpdb->blogid) : get_home_url());
+			$site_url_clean = remove_protocol(array('url' => $site_url, 'clean' => true));
+
+			echo "<p>";
+
+				if($site_url_clean == "staging.korkort.nu" && $woocommerce_dibs_easy_settings['test_mode'] == 'yes' || $site_url_clean == "korkort.nu" && $woocommerce_dibs_easy_settings['test_mode'] != 'yes')
+				{
+					echo "<i class='fa fa-check green'></i> ";
+				}
+
+				else
+				{
+					echo "<i class='fa fa-times red display_warning'></i> ";
+				}
+
+				switch($woocommerce_dibs_easy_settings['test_mode'])
+				{
+					case 'yes':
+						echo sprintf(__("The site URL is %s and test mode is activated", 'lang_bb-theme-child'), $site_url_clean);
+					break;
+
+					default:
+						echo sprintf(__("The site URL is %s and test mode is NOT activated", 'lang_bb-theme-child'), $site_url_clean);
+					break;
+				}
+
+			echo "</p>";
 		}
 
-		echo "<p>".get_option('option_theme_educators_url')."</p>";
-	}
-
-	function setting_theme_child_lime_api_url_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_lime_api_key_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_lime_assets_url_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_company_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		$arr_data_instructors = array();
-		get_post_children(array('post_type' => $this->post_type_instructor, 'order_by' => 'post_title', 'add_choose_here' => true), $arr_data_instructors);
-
-		echo show_select(array('data' => $arr_data_instructors, 'name' => $setting_key, 'value' => $option, 'suffix' => get_option_page_suffix(array('value' => $option))));
-	}
-
-	function setting_theme_child_type_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		$arr_data_types = array(
-			'company' => __("Company", 'lang_bb-theme-child'),
-			'properties' => __("Properties", 'lang_bb-theme-child'),
-			'terms' => __("Terms", 'lang_bb-theme-child'),
-		);
-
-		echo show_select(array('data' => $arr_data_types, 'name' => $setting_key, 'value' => $option));
-	}
-
-	function setting_theme_child_debug_callback()
-	{
-		$text_suffix = "";
-
-		/*$setting_theme_child_company = get_option('setting_theme_child_company');
-		$setting_theme_child_type = get_option('setting_theme_child_type');
-
-		if($setting_theme_child_company > 0 || $setting_theme_child_type != '')
+		function setting_theme_child_ssn_callback()
 		{
-			$text_suffix .= " (";
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
 
-				if($setting_theme_child_company > 0)
-				{
-					$text_suffix .= get_post_title($setting_theme_child_company);
-				}
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'xtra' => "maxlength='10'"));
 
-				if($setting_theme_child_type != '')
-				{
-					$text_suffix .= ($setting_theme_child_company > 0 ? ", " : "").$setting_theme_child_type;
-				}
+			echo "<div class='form_button'>"
+				.show_button(array('type' => 'button', 'name' => 'btnDebugSSNRun', 'text' => __("Run Now", 'lang_bb-theme-child'), 'class' => 'button-secondary', 'xtra' => " rel='debug_ssn_run'"))
+			."</div>
+			<div id='debug_ssn_run'></div>";
+		}
 
-			$text_suffix .= ")";
-		}*/
+	function settings_theme_child_lime_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
 
-		echo "<div class='form_button'>"
-			.show_button(array('type' => 'button', 'name' => 'btnDebugRun', 'text' => __("Run Now", 'lang_bb-theme-child').$text_suffix, 'class' => 'button-secondary'))
-		."</div>
-		<div id='debug_run'></div>";
+		echo settings_header($setting_key, __("Theme Child", 'lang_bb-theme-child')." - ".__("Lime", 'lang_bb-theme-child'));
 	}
+
+		function setting_theme_child_lime_api_url_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_lime_api_key_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_lime_assets_url_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_company_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			$arr_data_instructors = array();
+			get_post_children(array('post_type' => $this->post_type_instructor, 'order_by' => 'post_title', 'add_choose_here' => true), $arr_data_instructors);
+
+			echo show_select(array('data' => $arr_data_instructors, 'name' => $setting_key, 'value' => $option, 'suffix' => get_option_page_suffix(array('value' => $option))));
+		}
+
+		function setting_theme_child_type_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			$arr_data_types = array(
+				'company' => __("Company", 'lang_bb-theme-child'),
+				'properties' => __("Properties", 'lang_bb-theme-child'),
+				'terms' => __("Terms", 'lang_bb-theme-child'),
+			);
+
+			echo show_select(array('data' => $arr_data_types, 'name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_debug_callback()
+		{
+			echo "<div class='form_button'>"
+				.show_button(array('type' => 'button', 'name' => 'btnDebugLimeRun', 'text' => __("Run Now", 'lang_bb-theme-child'), 'class' => 'button-secondary', 'xtra' => " rel='debug_lime_run'"))
+			."</div>
+			<div id='debug_lime_run'></div>";
+
+			echo "<p>".__("Last call", 'lang_bb-theme-child').": ".get_option('option_theme_educators_url')."</p>";
+		}
+
+	function settings_theme_child_optima_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+
+		echo settings_header($setting_key, __("Theme Child", 'lang_bb-theme-child')." - ".__("Optima", 'lang_bb-theme-child'));
+	}
+
+		function setting_theme_child_api_url_test_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_api_name_test_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_api_key_test_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_api_url_live_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_api_name_live_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_api_key_live_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_send_to_optima_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			$arr_data = array(
+				'' => "-- ".__("Choose Here", 'lang_bb-theme-child')." --",
+				'log' => __("Log", 'lang_bb-theme-child'),
+				'email' => __("E-mail", 'lang_bb-theme-child'),
+				'api' => __("API", 'lang_bb-theme-child'),
+			);
+
+			echo show_select(array('data' => $arr_data, 'name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_send_to_optima_email_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('type' => 'email', 'name' => $setting_key, 'value' => $option));
+		}
 
 	function column_header($cols)
 	{
@@ -2301,6 +2333,49 @@ class mf_theme_child
 		return ((10 - ($sum % 10)) % 10);
 	}
 
+	function check_product_ssn($product_ssn)
+	{
+		$out = "";
+
+		$product_ssn_year = substr($product_ssn, 0, 2);
+		$product_ssn_date = ($product_ssn_year > date("y") ? "19" : "20").substr($product_ssn, 0, 6);
+
+		$personal_numbers = substr($product_ssn, 0, 9);
+		$check_number = substr($product_ssn, 9, 1);
+
+		if(strlen($product_ssn) != 10)
+		{
+			$out = sprintf(__("Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits. You entered a number with %d digits.", 'lang_bb-theme-child'), strlen($product_ssn));
+		}
+
+		else if(!ctype_digit($product_ssn))
+		{
+			$out = __("Please enter a Social Security Number with only digits in it", 'lang_bb-theme-child');
+		}
+
+		else if($product_ssn_date != date("Ymd", strtotime($product_ssn_date)))
+		{
+			$out = __("Please enter a Social Security Number with a correct YYMMDD", 'lang_bb-theme-child');
+		}
+
+		else if($check_number != $this->calculate_ssn_check_number($personal_numbers))
+		{
+			$out = __("Please enter a Social Security Number with the correct last check number", 'lang_bb-theme-child');
+		}
+
+		if($out != '')
+		{
+			global $product_title_temp;
+
+			if($product_title_temp != '')
+			{
+				$out .= " (".$product_title_temp.")";
+			}
+		}
+
+		return $out;
+	}
+
 	function run_checkout_part($data)
 	{
 		global $woocommerce;
@@ -2356,7 +2431,7 @@ class mf_theme_child
 							$out_software .= "<h3>".$product_title_temp."</h3>"
 							."<p>".sprintf(__("Enter the details of the person who will use %s below", 'lang_bb-theme-child'), $product_title_temp)."</p>"
 							."<div class='flex_flow'>"
-								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child'), 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='10'"))
+								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child')." (".__("10 digits", 'lang_bb-theme-child').")", 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='10'"))
 								//.show_textfield(array('name' => $this->meta_prefix.'name_'.$item_id, 'text' => __("Name", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'name_'.$item_id))) //, 'required' => true
 							."</div>"
 							."<div class='flex_flow'>"
@@ -2372,38 +2447,12 @@ class mf_theme_child
 
 						case 'validate':
 							$product_ssn = check_var($this->meta_prefix.'ssn_'.$item_id, 'soc');
-							//$product_ssn = str_replace(array('-', ' '), '', $product_ssn);
 
-							$product_ssn_year = substr($product_ssn, 0, 2);
-							$product_ssn_date = ($product_ssn_year > date("y") ? "19" : "20").substr($product_ssn, 0, 6);
-
-							$personal_numbers = substr($product_ssn, 0, 9);
-							$check_number = substr($product_ssn, 9, 1);
-
-							if(strlen($product_ssn) != 10)
+							$ssn_error = $this->check_product_ssn($product_ssn);
+							
+							if($ssn_error != '')
 							{
-								wc_add_notice(__("Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
-
-								break 3;
-							}
-
-							else if(!ctype_digit($product_ssn))
-							{
-								wc_add_notice(__("Please enter a Social Security Number with only digits in it", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
-
-								break 3;
-							}
-
-							else if($product_ssn_date != date("Ymd", strtotime($product_ssn_date)))
-							{
-								wc_add_notice(__("Please enter a Social Security Number with a correct YYMMDD", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
-
-								break 3;
-							}
-
-							else if($check_number != $this->calculate_ssn_check_number($personal_numbers))
-							{
-								wc_add_notice(__("Please enter a Social Security Number with the correct last check number", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+								wc_add_notice($ssn_error, 'error');
 
 								break 3;
 							}
@@ -2527,7 +2576,7 @@ class mf_theme_child
 
 						if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
 						{
-							echo "<p><a href='//developer.nexigroup.com/nexi-checkout/en-EU/docs/test-card-processing/'>".__("Test Card Processing", 'lang_bb-theme-child')." <i class='fas fa-arrow-right'></i></a></p>";
+							echo "<p><a href='//developer.nexigroup.com/nexi-checkout/en-EU/docs/test-card-processing/'>".__("Test Card", 'lang_bb-theme-child')." <i class='fas fa-arrow-right'></i></a></p>";
 						}
 					}
 				}
@@ -2571,17 +2620,48 @@ class mf_theme_child
 		echo "<a href='".get_permalink(wc_get_page_id('shop'))."' class='checkout-button button alt wc-forward wp-element-button'>".__("Continue to shop", 'lang_bb-theme-child')."</a>";
 	}
 
-	function debug_run()
+	function debug_ssn_run()
 	{
-		$result = array();
+		$result = array(
+			'success' => false,	
+		);
+
+		$setting_theme_child_ssn = check_var('ssn');
+
+		$ssn_error = $this->check_product_ssn($setting_theme_child_ssn);
+
+		if($ssn_error != '')
+		{
+			$result['success'] = true;
+			$result['message'] = "<i class='fa fa-times red'></i> ".$setting_theme_child_ssn." -> ".$ssn_error;
+		}
+
+		else
+		{
+			$result['success'] = true;
+			$result['message'] = "<i class='fa fa-check green'></i> ".$setting_theme_child_ssn;
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($result);
+		die();
+	}
+
+	function debug_lime_run()
+	{
+		$result = array(
+			'success' => false,	
+		);
 
 		$data = array(
 			'debug' => true,
 			'limit_amount' => 10,
 		);
 
-		$setting_theme_child_company = get_option('setting_theme_child_company');
-		$setting_theme_child_type = get_option('setting_theme_child_type');
+		/*$setting_theme_child_company = get_option('setting_theme_child_company');
+		$setting_theme_child_type = get_option('setting_theme_child_type');*/
+		$setting_theme_child_company = check_var('company');
+		$setting_theme_child_type = check_var('type');
 
 		ob_start();
 
@@ -2590,7 +2670,6 @@ class mf_theme_child
 
 		if($obj_cron->is_running == false || $setting_theme_child_company > 0 || $setting_theme_child_type == 'terms')
 		{
-
 			if($setting_theme_child_company > 0)
 			{
 				$school_id = get_post_meta($setting_theme_child_company, 'school_id', true);

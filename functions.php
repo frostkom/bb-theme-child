@@ -40,7 +40,8 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 
 	add_filter('get_group_sync_addresses', array($obj_theme_child, 'get_group_sync_addresses'), 10, 2);
 
-	add_action('wp_ajax_debug_run', array($obj_theme_child, 'debug_run'), 10, 1);
+	add_action('wp_ajax_debug_ssn_run', array($obj_theme_child, 'debug_ssn_run'), 10, 1);
+	add_action('wp_ajax_debug_lime_run', array($obj_theme_child, 'debug_lime_run'), 10, 1);
 
 	add_filter('wp_grid_builder_map/marker_content', array($obj_theme_child, 'wp_grid_builder_map_marker_content'), 10, 2);
 }

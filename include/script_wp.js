@@ -10,9 +10,7 @@ jQuery(function($)
 			url: script_bb_theme_child_wp.ajax_url,
 			type: 'post',
 			dataType: 'json',
-			data: {
-				action: obj.action
-			},
+			data: obj.data,
 			success: function(data)
 			{
 				obj.button.removeClass('is_disabled');
@@ -32,18 +30,36 @@ jQuery(function($)
 		return false;
 	}
 
-	$(document).on('click', "button[name='btnDebugRun']:not(.is_disabled)", function(e)
+	$(document).on('click', "button[name='btnDebugSSNRun']:not(.is_disabled)", function(e)
 	{
+		var dom_obj = $(e.currentTarget),
+			dom_obj_action = $(e.currentTarget).attr('rel');
+
 		run_ajax(
 		{
-			'button': $(e.currentTarget),
-			'action': 'debug_run',
-			'selector': $("#debug_run")
+			'button': dom_obj,
+			'data': {
+				'action': dom_obj_action,
+				'ssn': $("#setting_theme_child_ssn").val(),
+			},
+			'selector': $("#" + dom_obj_action)
 		});
 	});
 
-	$(document).on('change blur', "#setting_theme_child_company, #setting_theme_child_type", function()
+	$(document).on('click', "button[name='btnDebugLimeRun']:not(.is_disabled)", function(e)
 	{
-		$("button[name='btnDebugRun']").addClass('is_disabled');
+		var dom_obj = $(e.currentTarget),
+			dom_obj_action = $(e.currentTarget).attr('rel');
+
+		run_ajax(
+		{
+			'button': dom_obj,
+			'data': {
+				'action': dom_obj_action,
+				'company': $("#setting_theme_child_company").val(),
+				'type': $("#setting_theme_child_type").val(),
+			},
+			'selector': $("#" + dom_obj_action)
+		});
 	});
 });
