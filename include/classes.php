@@ -2449,7 +2449,7 @@ class mf_theme_child
 							$product_ssn = check_var($this->meta_prefix.'ssn_'.$item_id, 'soc');
 
 							$ssn_error = $this->check_product_ssn($product_ssn);
-							
+
 							if($ssn_error != '')
 							{
 								wc_add_notice($ssn_error, 'error');
@@ -2623,7 +2623,7 @@ class mf_theme_child
 	function debug_ssn_run()
 	{
 		$result = array(
-			'success' => false,	
+			'success' => false,
 		);
 
 		$setting_theme_child_ssn = check_var('ssn');
@@ -2650,7 +2650,7 @@ class mf_theme_child
 	function debug_lime_run()
 	{
 		$result = array(
-			'success' => false,	
+			'success' => false,
 		);
 
 		$data = array(
@@ -2759,7 +2759,7 @@ class mf_theme_child
 		$phone = get_field("contact_no");
 		$email = get_field("email_address");
 		$website = get_field("website");
-	
+
 		$out = "<div class='pad--s'>
 			<h4>".$title."</h4>";
 
@@ -2784,7 +2784,7 @@ class mf_theme_child
 			}
 
 		$out .= "</div>";
-		
+
 		return $out;
 	}
 }

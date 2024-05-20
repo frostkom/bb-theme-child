@@ -28,63 +28,56 @@ echo "<section class='woocommerce-customer-details'>";
 
 	//if ( $show_shipping ) :
 ?>
-	<section class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses col2-set addresses">
-		<div class="woocommerce-column woocommerce-column--1 woocommerce-column--billing-address col-1">
+		<section class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses col2-set addresses">
+			<div class="woocommerce-column woocommerce-column--1 woocommerce-column--billing-address col-1">
 <?php 
 	//}
-?>
-			<h2 class="woocommerce-column__title"><?php esc_html_e( 'Billing address', 'woocommerce' ); ?></h2>
+				echo "<h2 class='woocommerce-column__title'>".__('Billing address', 'woocommerce')."</h2>
+				<address>"
+					.wp_kses_post($order->get_formatted_billing_address(esc_html__('N/A', 'woocommerce')));
 
-			<address>
-				<?php echo wp_kses_post( $order->get_formatted_billing_address( esc_html__( 'N/A', 'woocommerce' ) ) ); ?>
+					$billing_phone = esc_html($order->get_billing_phone());
 
-				<?php if ( $order->get_billing_phone() ) : ?>
-					<p class="woocommerce-customer-details--phone"><?php echo esc_html( $order->get_billing_phone() ); ?></p>
-				<?php endif; ?>
+					if($billing_phone != '')
+					{
+						echo "<p class='woocommerce-customer-details--phone'><a href='".format_phone_no($billing_phone)."'>".$billing_phone."</a></p>";
+					}
 
-				<?php if ( $order->get_billing_email() ) : ?>
-					<p class="woocommerce-customer-details--email"><?php echo esc_html( $order->get_billing_email() ); ?></p>
-				<?php endif; ?>
+					$billing_email = esc_html($order->get_billing_email());
 
-				<?php
-					/**
-					 * Action hook fired after an address in the order customer details.
-					 *
-					 * @since 8.7.0
-					 * @param string $address_type Type of address (billing or shipping).
-					 * @param WC_Order $order Order object.
-					 */
-					do_action( 'woocommerce_order_details_after_customer_address', 'billing', $order );
-				?>
-			</address>
+					if($billing_email != '')
+					{
+						echo "<p class='woocommerce-customer-details--email'><a href='mailto:".$billing_email."'>".$billing_email."</a></p>";
+					}
 
-<?php
+				echo "</address>";
+
 	//if ( $show_shipping ) :
 ?>
 
-		</div><!-- /.col-1 -->
+			</div><!-- /.col-1 -->
 <?php
-		$shipping_address = wp_kses_post($order->get_formatted_shipping_address(esc_html__('N/A', 'woocommerce')));
+			$shipping_address = wp_kses_post($order->get_formatted_shipping_address(esc_html__('N/A', 'woocommerce')));
 
-		if($shipping_address != esc_html__('N/A', 'woocommerce'))
-		{
-			echo "<div class='woocommerce-column woocommerce-column--2 woocommerce-column--shipping-address col-2'>
-				<h2 class='woocommerce-column__title'>".__('Shipping address', 'woocommerce')."</h2>
-				<address>"
-					.$shipping_address;
+			if($shipping_address != esc_html__('N/A', 'woocommerce'))
+			{
+				echo "<div class='woocommerce-column woocommerce-column--2 woocommerce-column--shipping-address col-2'>
+					<h2 class='woocommerce-column__title'>".__('Shipping address', 'woocommerce')."</h2>
+					<address>"
+						.$shipping_address;
 
-					$shipping_phone = esc_html($order->get_shipping_phone());
+						$shipping_phone = esc_html($order->get_shipping_phone());
 
-					if($shipping_phone != '')
-					{
-						echo "<p class='woocommerce-customer-details--phone'><a href='".format_phone_no($shipping_phone)."'>".$shipping_phone."</a></p>";
-					}
+						if($shipping_phone != '')
+						{
+							echo "<p class='woocommerce-customer-details--phone'><a href='".format_phone_no($shipping_phone)."'>".$shipping_phone."</a></p>";
+						}
 
-				echo "</address>
-			</div>";
-		}
+					echo "</address>
+				</div>";
+			}
 ?>
-	</section><!-- /.col2-set -->
+		</section><!-- /.col2-set -->
 
 <?php
 	//endif;

@@ -8,5 +8,10 @@ jQuery(function($)
 		dom_dibs_iframe.prepend(dom_checkout_description.clone());
 	}
 
-	console.log("Init" , dom_checkout_description , dom_dibs_iframe);
+	/*console.log("Init" , dom_checkout_description , dom_dibs_iframe);*/
+
+	$(document).on('keyup', ".woocommerce-additional-fields .mf_form_field", function()
+	{
+		$(".woocommerce-error, .blockUI.blockOverlay").addClass('hide');
+	});
 });
