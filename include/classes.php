@@ -1906,9 +1906,8 @@ class mf_theme_child
 			$setting_key = get_setting_key(__FUNCTION__);
 			$option = get_option($setting_key);
 
-			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'xtra' => "maxlength='10'"));
-
-			echo "<div class='form_button'>"
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'xtra' => "maxlength='13'"))
+			."<div class='form_button'>"
 				.show_button(array('type' => 'button', 'name' => 'btnDebugSSNRun', 'text' => __("Run Now", 'lang_bb-theme-child'), 'class' => 'button-secondary', 'xtra' => " rel='debug_ssn_run'"))
 			."</div>
 			<div id='debug_ssn_run'></div>";
@@ -2337,30 +2336,57 @@ class mf_theme_child
 	{
 		$out = "";
 
+		$product_ssn = str_replace("-" , "", $product_ssn);
+
+		if(strlen($product_ssn) > 10)
+		{
+			$product_ssn = substr($product_ssn, 2);
+		}
+
 		$product_ssn_year = substr($product_ssn, 0, 2);
 		$product_ssn_date = ($product_ssn_year > date("y") ? "19" : "20").substr($product_ssn, 0, 6);
 
 		$personal_numbers = substr($product_ssn, 0, 9);
 		$check_number = substr($product_ssn, 9, 1);
 
-		if(strlen($product_ssn) != 10)
+		/*if(strlen($product_ssn) != 10)
 		{
 			$out = sprintf(__("Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits. You entered a number with %d digits.", 'lang_bb-theme-child'), strlen($product_ssn));
+
+			if(IS_SUPER_ADMIN)
+			{
+				$out .= " (".$product_ssn." -> ".strlen($product_ssn).")";
+			}
 		}
 
-		else if(!ctype_digit($product_ssn))
+		else */if(!ctype_digit($product_ssn))
 		{
 			$out = __("Please enter a Social Security Number with only digits in it", 'lang_bb-theme-child');
+
+			if(IS_SUPER_ADMIN)
+			{
+				$out .= " (".$product_ssn.")";
+			}
 		}
 
 		else if($product_ssn_date != date("Ymd", strtotime($product_ssn_date)))
 		{
 			$out = __("Please enter a Social Security Number with a correct YYMMDD", 'lang_bb-theme-child');
+
+			if(IS_SUPER_ADMIN)
+			{
+				$out .= " (".$product_ssn." -> ".$product_ssn_date." != ".date("Ymd", strtotime($product_ssn_date)).")";
+			}
 		}
 
 		else if($check_number != $this->calculate_ssn_check_number($personal_numbers))
 		{
 			$out = __("Please enter a Social Security Number with the correct last check number", 'lang_bb-theme-child');
+
+			if(IS_SUPER_ADMIN)
+			{
+				$out .= " (".$product_ssn." -> ".$check_number." != ".$this->calculate_ssn_check_number($personal_numbers).")";
+			}
 		}
 
 		if($out != '')
@@ -2431,7 +2457,7 @@ class mf_theme_child
 							$out_software .= "<h3>".$product_title_temp."</h3>"
 							."<p>".sprintf(__("Enter the details of the person who will use %s below", 'lang_bb-theme-child'), $product_title_temp)."</p>"
 							."<div class='flex_flow'>"
-								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child')." (".__("10 digits", 'lang_bb-theme-child').")", 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='10'"))
+								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child')." (".__("10 digits", 'lang_bb-theme-child').")", 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='13'"))
 								//.show_textfield(array('name' => $this->meta_prefix.'name_'.$item_id, 'text' => __("Name", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'name_'.$item_id))) //, 'required' => true
 							."</div>"
 							."<div class='flex_flow'>"
