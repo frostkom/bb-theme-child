@@ -1834,7 +1834,11 @@ class mf_theme_child
 		$arr_settings['setting_theme_child_api_key_live'] = __("API Key", 'lang_bb-theme-child')." (".__("Live", 'lang_bb-theme-child').")";
 
 		$arr_settings['setting_theme_child_send_to_optima'] = __("Send to", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_send_to_optima_email'] = __("E-mail", 'lang_bb-theme-child');
+
+		if(get_option('setting_theme_child_send_to_optima') == 'email')
+		{
+			$arr_settings['setting_theme_child_send_to_optima_email'] = __("E-mail", 'lang_bb-theme-child');
+		}
 
 		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		############################
@@ -2457,7 +2461,7 @@ class mf_theme_child
 							$out_software .= "<h3>".$product_title_temp."</h3>"
 							."<p>".sprintf(__("Enter the details of the person who will use %s below", 'lang_bb-theme-child'), $product_title_temp)."</p>"
 							."<div class='flex_flow'>"
-								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child')." (".__("10 digits", 'lang_bb-theme-child').")", 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='13'"))
+								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child'), 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='13'")) //." (".__("10 digits", 'lang_bb-theme-child').")"
 								//.show_textfield(array('name' => $this->meta_prefix.'name_'.$item_id, 'text' => __("Name", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'name_'.$item_id))) //, 'required' => true
 							."</div>"
 							."<div class='flex_flow'>"
