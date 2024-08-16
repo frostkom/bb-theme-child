@@ -22,6 +22,9 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('manage_'.$obj_theme_child->post_type_shop_order.'_posts_custom_column', array($obj_theme_child, 'column_cell'), 20, 2);
 
 		add_filter('get_group_sync_type', array($obj_theme_child, 'get_group_sync_type'), 10);
+
+		add_action('woocommerce_product_options_general_product_data', array($obj_theme_child, 'woocommerce_product_options_general_product_data'));
+		add_action('woocommerce_process_product_meta', array($obj_theme_child, 'woocommerce_process_product_meta'));
 	}
 
 	else

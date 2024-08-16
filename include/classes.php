@@ -2273,6 +2273,31 @@ class mf_theme_child
 		return $arr_data;
 	}
 
+	function woocommerce_product_options_general_product_data()
+	{
+		$post_id = check_var('post', 'int');
+
+		woocommerce_wp_select(array(
+			'id' => $this->meta_prefix.'display_ssn',
+			'label' => __("Display Social Security Number", 'lang_bb-theme-child'),
+			'options' => array(
+				'' => "-- ".__("Choose Here", 'lang_bb-theme-child')." --",
+                'yes' => __("Yes", 'lang_bb-theme-child'),
+                'no' => __("No", 'lang_bb-theme-child'),
+            ),
+			'value' => get_post_meta_or_default($post_id, $this->meta_prefix.'display_ssn', true, 'yes')
+		));
+
+		// woocommerce_wp_text_input, woocommerce_wp_textarea_input, woocommerce_wp_checkbox, woocommerce_wp_hidden_input
+	}
+
+	function woocommerce_process_product_meta($post_id)
+	{
+		$post_meta = check_var($this->meta_prefix.'display_ssn');
+
+		update_post_meta($post_id, $this->meta_prefix.'display_ssn', sanitize_text_field($post_meta));
+	}
+
 	function get_group_sync_addresses($arr_addresses, $sync_type)
 	{
 		global $wpdb;
@@ -2455,16 +2480,26 @@ class mf_theme_child
 						$product_title_temp .= " (".$i.")";
 					}
 
+					$post_meta_display_ssn = get_post_meta_or_default($product_id, $this->meta_prefix.'display_ssn', true, 'yes');
+
 					switch($data['type'])
 					{
 						case 'display':
-							$out_software .= "<h3>".$product_title_temp."</h3>"
-							."<p>".sprintf(__("Enter the details of the person who will use %s below", 'lang_bb-theme-child'), $product_title_temp)."</p>"
-							."<div class='flex_flow'>"
-								.show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child'), 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='13'")) //." (".__("10 digits", 'lang_bb-theme-child').")"
-								//.show_textfield(array('name' => $this->meta_prefix.'name_'.$item_id, 'text' => __("Name", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'name_'.$item_id))) //, 'required' => true
-							."</div>"
-							."<div class='flex_flow'>"
+							$out_software .= "<h3><a href='".get_permalink($product_id)."'>".$product_title_temp."</a></h3>"
+							."<p>".sprintf(__("Enter the details of the person who will use %s below", 'lang_bb-theme-child'), $product_title_temp)."</p>";
+
+							//$out_software .= "<div class='flex_flow'>";
+
+								if($post_meta_display_ssn == 'yes')
+								{
+									$out_software .= show_textfield(array('name' => $this->meta_prefix.'ssn_'.$item_id, 'text' => __("Social Security Number", 'lang_bb-theme-child'), 'value' => check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'), 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'required' => true, 'xtra' => "maxlength='13'")); //." (".__("10 digits", 'lang_bb-theme-child').")"
+								}
+
+								//$out_software .= show_textfield(array('name' => $this->meta_prefix.'name_'.$item_id, 'text' => __("Name", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'name_'.$item_id))); //, 'required' => true
+
+							//$out_software .= "</div>";
+
+							$out_software .= "<div class='flex_flow'>"
 								.show_textfield(array('type' => 'tel', 'name' => $this->meta_prefix.'phone_'.$item_id, 'text' => __("Phone Number", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'phone_'.$item_id), 'placeholder' => __("to the user", 'lang_bb-theme-child')))
 								.show_textfield(array('type' => 'email', 'name' => $this->meta_prefix.'email_'.$item_id, 'text' => __("E-mail", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'email_'.$item_id), 'placeholder' => __("to the user", 'lang_bb-theme-child')))
 							."</div>";
@@ -2476,68 +2511,75 @@ class mf_theme_child
 						break;
 
 						case 'validate':
-							$product_ssn = check_var($this->meta_prefix.'ssn_'.$item_id, 'soc');
-
-							$ssn_error = $this->check_product_ssn($product_ssn);
-
-							if($ssn_error != '')
+							if($post_meta_display_ssn == 'yes')
 							{
-								wc_add_notice($ssn_error, 'error');
+								$product_ssn = check_var($this->meta_prefix.'ssn_'.$item_id, 'soc');
 
-								break 3;
-							}
+								$ssn_error = $this->check_product_ssn($product_ssn);
 
-							else if(check_var($this->meta_prefix.'phone_'.$item_id, 'telno') == '' && check_var($this->meta_prefix.'email_'.$item_id, 'email') == '')
-							{
-								wc_add_notice(__("Please enter a Phone Number or E-mail Address", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
-
-								break 3;
-							}
-
-							else
-							{
-								$product_phone = check_var($this->meta_prefix.'phone_'.$item_id, 'telno');
-								$product_email = check_var($this->meta_prefix.'email_'.$item_id, 'email');
-
-								if($product_email != '')
+								if($ssn_error != '')
 								{
-									if(!is_domain_valid($product_email))
-									{
-										wc_add_notice(__("Please enter a valid E-mail Address. The one you entered does not seam to be correct", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+									wc_add_notice($ssn_error, 'error');
 
-										break 3;
-									}
+									break 3;
 								}
 
-								if(isset($arr_item_data[$product_ssn]))
+								else if(check_var($this->meta_prefix.'phone_'.$item_id, 'telno') == '' && check_var($this->meta_prefix.'email_'.$item_id, 'email') == '')
 								{
-									if($product_phone != $arr_item_data[$product_ssn]['phone'])
-									{
-										wc_add_notice(__("The Social Security Number and Phone Number does not match on all products. If you enter the same Social Security Number on several products, you can't enter different Phone Numbers on those products.", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+									wc_add_notice(__("Please enter a Phone Number or E-mail Address", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
 
-										break 3;
-									}
-
-									else if($product_email != $arr_item_data[$product_ssn]['email'])
-									{
-										wc_add_notice(__("The Social Security Number and E-mail Address does not match on all products. If you enter the same Social Security Number on several products, you can't enter different E-mail Addresses on those products.", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
-
-										break 3;
-									}
+									break 3;
 								}
 
 								else
 								{
-									$arr_item_data[$product_ssn] = array(
-										'phone' => $product_phone,
-										'email' => $product_email,
-									);
+									$product_phone = check_var($this->meta_prefix.'phone_'.$item_id, 'telno');
+									$product_email = check_var($this->meta_prefix.'email_'.$item_id, 'email');
+
+									if($product_email != '')
+									{
+										if(!is_domain_valid($product_email))
+										{
+											wc_add_notice(__("Please enter a valid E-mail Address. The one you entered does not seam to be correct", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+
+											break 3;
+										}
+									}
+
+									if(isset($arr_item_data[$product_ssn]))
+									{
+										if($product_phone != $arr_item_data[$product_ssn]['phone'])
+										{
+											wc_add_notice(__("The Social Security Number and Phone Number does not match on all products. If you enter the same Social Security Number on several products, you can't enter different Phone Numbers on those products.", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+
+											break 3;
+										}
+
+										else if($product_email != $arr_item_data[$product_ssn]['email'])
+										{
+											wc_add_notice(__("The Social Security Number and E-mail Address does not match on all products. If you enter the same Social Security Number on several products, you can't enter different E-mail Addresses on those products.", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+
+											break 3;
+										}
+									}
+
+									else
+									{
+										$arr_item_data[$product_ssn] = array(
+											'phone' => $product_phone,
+											'email' => $product_email,
+										);
+									}
 								}
 							}
 						break;
 
 						case 'save':
-							update_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'));
+							if($post_meta_display_ssn == 'yes')
+							{
+								update_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'));
+							}
+
 							//update_post_meta($data['order_id'], $this->meta_prefix.'name_'.$item_id, check_var($this->meta_prefix.'name_'.$item_id));
 							update_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, check_var($this->meta_prefix.'phone_'.$item_id, 'telno'));
 							update_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, check_var($this->meta_prefix.'email_'.$item_id, 'email'));
