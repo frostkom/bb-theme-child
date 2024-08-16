@@ -2394,7 +2394,7 @@ class mf_theme_child
 
 			if(IS_SUPER_ADMIN)
 			{
-				$out .= " (".$product_ssn.")";
+				$out .= " (".($product_ssn != '' ? $product_ssn : "<em>".__("empty", 'lang_bb-theme-child')."</em>").")";
 			}
 		}
 
@@ -2571,6 +2571,13 @@ class mf_theme_child
 										);
 									}
 								}
+							}
+
+							else if(check_var($this->meta_prefix.'phone_'.$item_id, 'telno') == '' && check_var($this->meta_prefix.'email_'.$item_id, 'email') == '')
+							{
+								wc_add_notice(__("Please enter a Phone Number or E-mail Address", 'lang_bb-theme-child')." (".$product_title_temp.")", 'error');
+
+								break 3;
 							}
 						break;
 
