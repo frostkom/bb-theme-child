@@ -31,6 +31,9 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 	{
 		add_action('wp_head', array($obj_theme_child, 'wp_head'), 0);
 
+		add_filter('woocommerce_cart_shipping_method_full_label', array($obj_theme_child, 'woocommerce_cart_shipping_method_full_label'), 10, 2);
+		add_filter('woocommerce_shipping_rate_cost', array($obj_theme_child, 'woocommerce_shipping_rate_cost'));
+
 		add_filter('woocommerce_checkout_fields', array($obj_theme_child, 'woocommerce_checkout_fields'));
 		add_action('woocommerce_after_order_notes', array($obj_theme_child, 'woocommerce_after_order_notes'));
 		add_action('woocommerce_checkout_process', array($obj_theme_child, 'woocommerce_checkout_process'));

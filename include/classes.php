@@ -222,14 +222,13 @@ class mf_theme_child
 
 		$success = true;
 
-		$_order_shipping = $_customer_user = "";
+		$_customer_user = "";
 
 		$_billing_first_name = get_post_meta($data['order_id'], '_billing_first_name', true);
 		$_billing_last_name = get_post_meta($data['order_id'], '_billing_last_name', true);
 		$_billing_address_1 = get_post_meta($data['order_id'], '_billing_address_1', true);
 		$_billing_postcode = get_post_meta($data['order_id'], '_billing_postcode', true);
 		$_billing_city = get_post_meta($data['order_id'], '_billing_city', true);
-		//$_billing_country = get_post_meta($data['order_id'], '_billing_country', true);
 		$_billing_email = get_post_meta($data['order_id'], '_billing_email', true);
 		$_billing_phone = get_post_meta($data['order_id'], '_billing_phone', true);
 
@@ -238,10 +237,10 @@ class mf_theme_child
 		$_shipping_address_1 = get_post_meta($data['order_id'], '_shipping_address_1', true);
 		$_shipping_postcode = get_post_meta($data['order_id'], '_shipping_postcode', true);
 		$_shipping_city = get_post_meta($data['order_id'], '_shipping_city', true);
-		//$_shipping_phone = get_post_meta($data['order_id'], '_shipping_phone', true);
 
 		$_dibs_payment_id = get_post_meta($data['order_id'], '_dibs_payment_id', true);
-		//$_cart_discount = get_post_meta($data['order_id'], '_cart_discount', true);
+
+		$_order_shipping = get_post_meta($data['order_id'], '_order_shipping', true);
 
 		$post_data = '{
 			"source": "korkort",
@@ -301,12 +300,8 @@ class mf_theme_child
 						if($product_virtual == 'yes' || $product_downloadable == 'yes')
 						{
 							$product_ssn = get_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, true);
-							//$product_name = get_post_meta($data['order_id'], $this->meta_prefix.'name_'.$item_id, true);
 							$product_phone = get_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, true);
 							$product_email = get_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, true);
-							//$product_street_address = get_post_meta($data['order_id'], $this->meta_prefix.'street_address_'.$item_id, true);
-							//$product_zipcode = get_post_meta($data['order_id'], $this->meta_prefix.'zipcode_'.$item_id, true);
-							//$product_city = get_post_meta($data['order_id'], $this->meta_prefix.'city_'.$item_id, true);
 
 							if($product_ssn != '')
 							{
@@ -329,16 +324,7 @@ class mf_theme_child
 							$sku = get_post_meta($product_id, '_sku', true);
 						}
 
-						$description = "";
-						$unit = "S";
-						$unitPrice = ($arr_item['total'] / $quantity); //$arr_item['subtotal'] = before discount, $arr_item['subtotal_tax'] = tax before discount
-
-						/*if($_cart_discount > 0)
-						{
-							$unitPrice = $wpdb->get_var($wpdb->prepare("SELECT product_net_revenue FROM ".$wpdb->prefix."wc_order_product_lookup WHERE order_id = '%d' AND product_id = '%d' AND variation_id = '%d'", $data['order_id'], $product_id, $variation_id));
-						}*/
-
-						//do_log("unitPrice: ".$data['order_id'].", ".$product_id.", ".$variation_id." -> ".$wpdb->last_query." -> ".$unitPrice." -> ".number_format((float)$unitPrice, 2, '.', ''));
+						$unitPrice = ($arr_item['total'] / $quantity);
 
 						if(!($unitPrice > 0))
 						{
@@ -349,9 +335,9 @@ class mf_theme_child
 
 						$post_data .= ($order_row_count > 0 ? "," : "").'{
 							"sku": "'.$sku.'",
-							"description": "'.$description.'",
+							"description": "",
 							"quantity": '.$quantity.',
-							"unit": "'.$unit.'",
+							"unit": "S",
 							"unitPrice": "'.$unitPrice.'",
 							"user_idenifier": "'.$_customer_user.'",
 							"identityNumber": "'.$product_ssn.'",
@@ -362,6 +348,18 @@ class mf_theme_child
 						$order_row_count++;
 					}
 				}
+
+				$post_data .= ($order_row_count > 0 ? "," : "").'{
+					"sku": "9123",
+					"description": "",
+					"quantity": 1,
+					"unit": "S",
+					"unitPrice": "'.$_order_shipping.'",
+					"user_idenifier": "",
+					"identityNumber": "",
+					"email": "",
+					"mobilePhone": ""
+				}';
 
 			$post_data .= ']
 		}';
@@ -1842,6 +1840,19 @@ class mf_theme_child
 
 		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		############################
+
+		// Shipping
+		############################
+		$options_area = $options_area_orig."_shipping";
+
+		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
+
+		$arr_settings = array();
+		$arr_settings['setting_theme_child_shipping_order_limit'] = __("Free Shipping Order Limit", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_shipping_cost'] = __("Shipping Cost", 'lang_bb-theme-child');
+
+		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
+		############################
 	}
 
 	function settings_theme_child_callback()
@@ -2059,6 +2070,29 @@ class mf_theme_child
 			$option = get_option($setting_key);
 
 			echo show_textfield(array('type' => 'email', 'name' => $setting_key, 'value' => $option));
+		}
+
+	function settings_theme_child_shipping_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+
+		echo settings_header($setting_key, __("Theme Child", 'lang_bb-theme-child')." - ".__("Shipping", 'lang_bb-theme-child'));
+	}
+
+		function setting_theme_child_shipping_order_limit_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('type' => 'number', 'name' => $setting_key, 'value' => $option));
+		}
+
+		function setting_theme_child_shipping_cost_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('type' => 'number', 'name' => $setting_key, 'value' => $option));
 		}
 
 	function column_header($cols)
@@ -2337,6 +2371,44 @@ class mf_theme_child
 		}
 	}
 
+	function woocommerce_cart_shipping_method_full_label($label, $method)
+	{
+		$label = preg_replace('/^.+:/', '', $label);
+		$label = str_replace($method->get_label(), "", $label);
+
+		return $label;
+	}
+
+	function woocommerce_shipping_rate_cost($cost)
+	{
+		$has_physical_products = false;
+
+		foreach(WC()->cart->get_cart() as $cart_item)
+		{
+			$product_virtual = get_post_meta($cart_item['product_id'], '_virtual', true);
+
+			if($product_virtual == 'no')
+			{
+				$has_physical_products = true;
+				break;
+			}
+		}
+
+		$cart_total = WC()->cart->subtotal;
+
+		if($cart_total <= get_option('setting_theme_child_shipping_order_limit') && $has_physical_products == true)
+		{
+			$cost = get_option('setting_theme_child_shipping_cost');
+		}
+
+		else
+		{
+			$cost = 0;
+		}
+		
+		return $cost;
+	}
+
 	function woocommerce_checkout_fields($fields)
 	{
 		//$fields['order']['order_comments']['placeholder'] = 'My new placeholder';
@@ -2354,7 +2426,7 @@ class mf_theme_child
 
 		for($i = 0; $i < 9; $i++)
 		{
-			$product = ($personal_numbers[$i] * $weight[$i]);
+			$product = (substr($personal_numbers, $i, 1) * $weight[$i]);
 			$sum += (floor($product / 10) + $product % 10);
 		}
 

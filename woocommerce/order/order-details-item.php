@@ -26,7 +26,7 @@ if(!apply_filters('woocommerce_order_item_visible', true, $item))
 }
 
 echo "<tr class='".esc_attr(apply_filters('woocommerce_order_item_class', 'woocommerce-table__line-item order_item', $item, $order))."'>
-	<td class='woocommerce-table__product-name product-name product_id_'>";
+	<td class='woocommerce-table__product-name product-name'>"; // product_id_
 
 		$is_visible = ($product && $product->is_visible());
 		$product_permalink = apply_filters('woocommerce_order_item_permalink', $is_visible ? $product->get_permalink($item) : '', $item, $order);
