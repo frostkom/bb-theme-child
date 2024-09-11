@@ -623,6 +623,7 @@ class mf_theme_child
 
 			$post_data = array(
 				'post_title' => $data['array']['name'],
+				'post_name' => sanitize_title_with_dashes(sanitize_title($data['array']['name'])),
 				'post_type' => $this->post_type_instructor,
 				'post_status' => ($data['array']['active'] == true && strpos($data['array']['name'], "[STR TEST] ") === false ? 'publish' : 'draft'),
 				'post_content' => $post_content,
