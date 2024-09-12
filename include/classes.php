@@ -349,12 +349,34 @@ class mf_theme_child
 					}
 				}
 
+				$shipping_tax_rate = 1.06;
+
+				/*if($_order_shipping > 0)
+				{
+					$shipping_items = $arr_order->get_items('shipping');
+
+					foreach($shipping_items as $shipping_item)
+					{
+						$taxes = $shipping_item->get_taxes();
+
+						foreach($taxes['total'] as $tax_rate_id => $tax_amount)
+						{
+							$tax_rate = WC_Tax::_get_tax_rate($tax_rate_id);
+							$shipping_tax_rate = $tax_rate['tax_rate'];
+						}
+					}
+				}
+
+				//echo "TEST: ".var_export($shipping_items, true);
+				echo "TEST: ".var_export($taxes, true);
+				//echo "TEST: ".var_export($tax_rate, true);*/
+
 				$post_data .= ($order_row_count > 0 ? "," : "").'{
 					"sku": "9123",
 					"description": "",
 					"quantity": 1,
 					"unit": "S",
-					"unitPrice": "'.$_order_shipping.'",
+					"unitPrice": "'.number_format($_order_shipping / $shipping_tax_rate, 2).'",
 					"user_idenifier": "",
 					"identityNumber": "",
 					"email": "",
@@ -1850,7 +1872,7 @@ class mf_theme_child
 
 		$arr_settings = array();
 		$arr_settings['setting_theme_child_shipping_order_limit'] = __("Free Shipping Order Limit", 'lang_bb-theme-child');
-		$arr_settings['setting_theme_child_shipping_cost'] = __("Shipping Cost", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_shipping_cost'] = __("Shipping Cost incl. VAT", 'lang_bb-theme-child');
 
 		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		############################
