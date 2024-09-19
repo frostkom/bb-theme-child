@@ -254,9 +254,9 @@ class mf_theme_child
 				"city": "'.($_shipping_city != "" ? $_shipping_city : $_billing_city).'",
 				"email": "'.$_billing_email.'",
 				"mobilePhone": "'.$_billing_phone.'"
-			},
-			"shippingFee": "'.$_order_shipping.'",
-			"orderId": "'.$data['order_id'].'",
+			},'
+			//.'"shippingFee": "'.$_order_shipping.'",'
+			.'"orderId": "'.$data['order_id'].'",
 			"paymentId": "'.$_dibs_payment_id.'",
 			"orderRows":
 			[';
@@ -349,7 +349,7 @@ class mf_theme_child
 					}
 				}
 
-				$shipping_tax_rate = 1.06;
+				$shipping_tax_rate = (1 + ($this->get_tax_rate() / 100));
 
 				/*if($_order_shipping > 0)
 				{
@@ -365,11 +365,11 @@ class mf_theme_child
 							$shipping_tax_rate = $tax_rate['tax_rate'];
 						}
 					}
-				}
 
-				//echo "TEST: ".var_export($shipping_items, true);
-				echo "TEST: ".var_export($taxes, true);
-				//echo "TEST: ".var_export($tax_rate, true);*/
+					//echo "TEST: ".var_export($shipping_items, true);
+					echo "TEST: ".var_export($taxes, true);
+					//echo "TEST: ".var_export($tax_rate, true);
+				}*/
 
 				$post_data .= ($order_row_count > 0 ? "," : "").'{
 					"sku": "9123",
@@ -2401,6 +2401,13 @@ class mf_theme_child
 
 		return $label;
 	}
+	
+	function get_tax_rate()
+	{
+		global $wpdb;
+
+		return $wpdb->get_var($wpdb->prepare("SELECT tax_rate FROM ".$wpdb->prefix."woocommerce_tax_rates WHERE tax_rate_class = %s", get_option('woocommerce_shipping_tax_class')));
+	}
 
 	function woocommerce_shipping_rate_cost($cost)
 	{
@@ -2421,6 +2428,9 @@ class mf_theme_child
 
 		if($cart_total <= get_option('setting_theme_child_shipping_order_limit') && $has_physical_products == true)
 		{
+			//get_option('woocommerce_tax_display_cart') => incl/excl
+			//$this->get_tax_rate();
+
 			$cost = get_option('setting_theme_child_shipping_cost');
 		}
 
