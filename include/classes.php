@@ -349,39 +349,42 @@ class mf_theme_child
 					}
 				}
 
-				$shipping_tax_rate = (1 + ($this->get_tax_rate() / 100));
-
-				/*if($_order_shipping > 0)
+				if($_order_shipping > 0)
 				{
-					$shipping_items = $arr_order->get_items('shipping');
+					$shipping_tax_rate = (1 + ($this->get_tax_rate() / 100));
 
-					foreach($shipping_items as $shipping_item)
+					/*if($_order_shipping > 0)
 					{
-						$taxes = $shipping_item->get_taxes();
+						$shipping_items = $arr_order->get_items('shipping');
 
-						foreach($taxes['total'] as $tax_rate_id => $tax_amount)
+						foreach($shipping_items as $shipping_item)
 						{
-							$tax_rate = WC_Tax::_get_tax_rate($tax_rate_id);
-							$shipping_tax_rate = $tax_rate['tax_rate'];
+							$taxes = $shipping_item->get_taxes();
+
+							foreach($taxes['total'] as $tax_rate_id => $tax_amount)
+							{
+								$tax_rate = WC_Tax::_get_tax_rate($tax_rate_id);
+								$shipping_tax_rate = $tax_rate['tax_rate'];
+							}
 						}
-					}
 
-					//echo "TEST: ".var_export($shipping_items, true);
-					echo "TEST: ".var_export($taxes, true);
-					//echo "TEST: ".var_export($tax_rate, true);
-				}*/
+						//echo "TEST: ".var_export($shipping_items, true);
+						echo "TEST: ".var_export($taxes, true);
+						//echo "TEST: ".var_export($tax_rate, true);
+					}*/
 
-				$post_data .= ($order_row_count > 0 ? "," : "").'{
-					"sku": "9123",
-					"description": "",
-					"quantity": 1,
-					"unit": "S",
-					"unitPrice": "'.number_format($_order_shipping / $shipping_tax_rate, 2).'",
-					"user_idenifier": "",
-					"identityNumber": "",
-					"email": "",
-					"mobilePhone": ""
-				}';
+					$post_data .= ($order_row_count > 0 ? "," : "").'{
+						"sku": "9123",
+						"description": "",
+						"quantity": 1,
+						"unit": "S",
+						"unitPrice": "'.number_format($_order_shipping / $shipping_tax_rate, 2).'",
+						"user_idenifier": "",
+						"identityNumber": "",
+						"email": "",
+						"mobilePhone": ""
+					}';
+				}
 
 			$post_data .= ']
 		}';
