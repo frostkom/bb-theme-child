@@ -94,37 +94,15 @@ if ( $show_downloads ) {
 			foreach ( $order->get_order_item_totals() as $key => $total ) {
 				if($key != 'cart_subtotal')
 				{
-					echo "<tr class='".$key."'>" //
-						."<th>".esc_html($total['label'])."</th>" // scope='row'
-						."<td>";
+					$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
 
-							//." (".var_export($total, true).")"
-							//." (".$key.", ".$order_id.")"
-
-							switch($key)
-							{
-								case 'payment_method':
-									echo esc_html($total['value']);
-
-									$dibs_payment_method = get_post_meta($order_id, 'dibs_payment_method', true);
-
-									if($dibs_payment_method != '')
-									{
-										echo " - ".$dibs_payment_method;
-									}
-								break;
-
-								case 'order_total':
-									echo preg_replace("/<small class=\"includes_tax\">(.*?)<\/small>/i", "", wp_kses_post($total['value']));
-								break;
-
-								default:
-									echo wp_kses_post($total['value']);
-								break;
-							}
-
-						echo "</td>
-					</tr>";
+					if($out_temp != '')
+					{
+						echo "<tr class='order_details_row ".$key."'>"
+							."<th>".esc_html($total['label'])."</th>" // scope='row'
+							."<td>".$out_temp."</td>
+						</tr>";
+					}
 				}
 			}
 			?>

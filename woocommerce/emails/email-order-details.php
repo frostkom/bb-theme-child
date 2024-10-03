@@ -17,6 +17,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(!isset($obj_theme_child))
+{
+	$obj_theme_child = new mf_theme_child();
+}
+
 $text_align = (is_rtl() ? 'right' : 'left');
 
 do_action('woocommerce_email_before_order_table', $order, $sent_to_admin, $plain_text, $email);
@@ -68,38 +73,19 @@ echo "</h2>
 			{
 				if($key != 'cart_subtotal')
 				{
-					$i++;
+					$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
 
-					$cell_xtra = " class='td' style='text-align: ".esc_attr($text_align)."; ".(1 === $i ? 'border-top-width: 4px' : '')."'";
+					if($out_temp != '')
+					{
+						$i++;
 
-					echo "<tr class='".$key."'>
-						<th colspan='2'".$cell_xtra.">".wp_kses_post($total['label'])."</th>" // scope='row'
-						."<td".$cell_xtra.">";
+						$cell_xtra = " class='td' style='text-align: ".esc_attr($text_align)."; ".(1 === $i ? 'border-top-width: 4px' : '')."'";
 
-							switch($key)
-							{
-								case 'payment_method':
-									echo wp_kses_post($total['value']);
-
-									$dibs_payment_method = get_post_meta($order_id, 'dibs_payment_method', true);
-
-									if($dibs_payment_method != '')
-									{
-										echo " - ".$dibs_payment_method;
-									}
-								break;
-
-								case 'order_total':
-									echo preg_replace("/<small class=\"includes_tax\">(.*?)<\/small>/i", "", wp_kses_post($total['value']));
-								break;
-
-								default:
-									echo wp_kses_post($total['value']);
-								break;
-							}
-
-						echo "</td>
-					</tr>";
+						echo "<tr class='".$key."'>
+							<th colspan='2'".$cell_xtra.">".wp_kses_post($total['label'])."</th>" // scope='row'
+							."<td".$cell_xtra.">".$out_temp."</td>
+						</tr>";
+					}
 				}
 			}
 

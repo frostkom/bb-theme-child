@@ -2445,6 +2445,51 @@ class mf_theme_child
 		return $cost;
 	}
 
+	function get_order_detail_row($order_id, $key, $total)
+	{
+		global $wpdb;
+
+		$out = "";
+
+		switch($key)
+		{
+			case 'order_total':
+				$out .= preg_replace("/<small class=\"includes_tax\">(.*?)<\/small>/i", "", wp_kses_post($total['value']));
+			break;
+
+			case 'payment_method':
+				$out .= esc_html($total['value']);
+
+				$dibs_payment_method = get_post_meta($order_id, 'dibs_payment_method', true);
+
+				if($dibs_payment_method != '')
+				{
+					$out .= " - ".$dibs_payment_method;
+				}
+			break;
+
+			case 'shipping':
+				$result = $wpdb->get_results($wpdb->prepare("SELECT instance_id, method_id FROM ".$wpdb->prefix."woocommerce_shipping_zone_methods WHERE is_enabled = '%d'", 1));
+
+				foreach($result as $r)
+				{
+					$arr_value = get_option('woocommerce_'.$r->method_id.'_'.$r->instance_id.'_settings');
+
+					if($total['value'] == $arr_value['title'])
+					{
+						$out = "";
+					}
+				}
+			break;
+
+			default:
+				$out .= wp_kses_post($total['value']);
+			break;
+		}
+
+		return $out;
+	}
+
 	function woocommerce_checkout_fields($fields)
 	{
 		//$fields['order']['order_comments']['placeholder'] = 'My new placeholder';
@@ -2473,20 +2518,27 @@ class mf_theme_child
 	{
 		$out = "";
 
-		$product_ssn = str_replace("-" , "", $product_ssn);
-
-		if(strlen($product_ssn) > 10)
+		if(strpos($product_ssn, "-"))
 		{
-			$product_ssn = substr($product_ssn, 2);
+			list($product_ssn_date, $product_ssn_numbers) = explode("-", $product_ssn);
+
+			if(strlen($product_ssn_numbers) > 4)
+			{
+				$out = sprintf(__("Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits. You entered a number with %d digits.", 'lang_bb-theme-child'), strlen($product_ssn));
+
+				if(IS_SUPER_ADMIN)
+				{
+					$out .= " (".$product_ssn." -> ".strlen($product_ssn).")";
+				}
+			}
+
+			else
+			{
+				$product_ssn = $product_ssn_date.$product_ssn_numbers;
+			}
 		}
 
-		$product_ssn_year = substr($product_ssn, 0, 2);
-		$product_ssn_date = ($product_ssn_year > date("y") ? "19" : "20").substr($product_ssn, 0, 6);
-
-		$personal_numbers = substr($product_ssn, 0, 9);
-		$check_number = substr($product_ssn, 9, 1);
-
-		/*if(strlen($product_ssn) != 10)
+		if(strlen($product_ssn) > 12)
 		{
 			$out = sprintf(__("Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits. You entered a number with %d digits.", 'lang_bb-theme-child'), strlen($product_ssn));
 
@@ -2496,7 +2548,51 @@ class mf_theme_child
 			}
 		}
 
-		else */if(!ctype_digit($product_ssn))
+		if(strlen($product_ssn) > 10)
+		{
+			if(substr($product_ssn, 0, 4) >= date("Y"))
+			{
+				$out = sprintf(__("Please enter a Social Security Number with a birth year that is in the past.", 'lang_bb-theme-child'), strlen($product_ssn));
+
+				if(IS_SUPER_ADMIN)
+				{
+					$out .= " (".$product_ssn." -> ".strlen($product_ssn).")";
+				}
+			}
+
+			else if(substr($product_ssn, 0, 2) >= 19)
+			{
+				$product_ssn = substr($product_ssn, 2);
+			}
+
+			else
+			{
+				$out = sprintf(__("Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits. You entered a number with %d digits.", 'lang_bb-theme-child'), strlen($product_ssn));
+
+				if(IS_SUPER_ADMIN)
+				{
+					$out .= " (".$product_ssn." -> ".strlen($product_ssn).")";
+				}
+			}
+		}
+
+		$product_ssn_year = substr($product_ssn, 0, 2);
+		$product_ssn_date = ($product_ssn_year >= date("y") ? "19" : "20").substr($product_ssn, 0, 6);
+
+		$personal_numbers = substr($product_ssn, 0, 9);
+		$check_number = substr($product_ssn, 9, 1);
+
+		/*if($out == '' && strlen($product_ssn) != 10)
+		{
+			$out = sprintf(__("Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits. You entered a number with %d digits.", 'lang_bb-theme-child'), strlen($product_ssn));
+
+			if(IS_SUPER_ADMIN)
+			{
+				$out .= " (".$product_ssn." -> ".strlen($product_ssn).")";
+			}
+		}*/
+
+		if($out == '' && !ctype_digit($product_ssn))
 		{
 			$out = __("Please enter a Social Security Number with only digits in it", 'lang_bb-theme-child');
 
@@ -2506,7 +2602,7 @@ class mf_theme_child
 			}
 		}
 
-		else if($product_ssn_date != date("Ymd", strtotime($product_ssn_date)))
+		if($out == '' && $product_ssn_date != date("Ymd", strtotime($product_ssn_date)))
 		{
 			$out = __("Please enter a Social Security Number with a correct YYMMDD", 'lang_bb-theme-child');
 
@@ -2516,7 +2612,7 @@ class mf_theme_child
 			}
 		}
 
-		else if($check_number != $this->calculate_ssn_check_number($personal_numbers))
+		if($out == '' && $check_number != $this->calculate_ssn_check_number($personal_numbers))
 		{
 			$out = __("Please enter a Social Security Number with the correct last check number", 'lang_bb-theme-child');
 
