@@ -575,7 +575,7 @@ class mf_theme_child
 
 		$school_id = $data['array']['_id'];
 
-		if($data['array']['active'] == true && $data['array']['hideweb'] == false && $data['array']['memberno'] != '' && $data['array']['customertype']['id'] != '354601') //537701 = Trafikskola Guldmedlem, 354601 = Icke medlem, 144501 = Trafikskola Företagsmedlem
+		if($data['array']['active'] == true && $data['array']['hideweb'] == false && $data['array']['memberno'] != '' && in_array($data['array']['companytype']['id'], array('509201', '509301'))) //509201 = Företagsmedlem Företag, 509301 = Företagsmedlem Guld 
 		{
 			$post_id = 0;
 			$post_modified = DEFAULT_DATE;
@@ -592,6 +592,11 @@ class mf_theme_child
 			}
 
 			$is_updated = ($data['array']['updated_website'] > DEFAULT_DATE && date("Y-m-d", strtotime($data['array']['updated_website'])) >= date("Y-m-d", strtotime($post_modified)));
+
+			if($data['debug'] == true)
+			{
+				//echo "<p><strong>".date("H:i:s")."</strong> API Response #".$post_id.": ".var_export($data['array'], true)."</p>";
+			}
 
 			if($data['debug'] == true)
 			{
@@ -642,6 +647,21 @@ class mf_theme_child
 			}
 			##################################
 
+			switch($data['array']['companytype']['id'])
+			{
+				case '509201':
+					$membership_name = __("Company Member", 'lang_bb-theme-child');
+				break;
+
+				case '509301':
+					$membership_name = __("Gold Member", 'lang_bb-theme-child');
+				break;
+
+				default:
+					$membership_name = __("Unknown", 'lang_bb-theme-child');
+				break;
+			}
+
 			$address = $data['array']['visitingaddress'].", ".$data['array']['zipcode']." ".$data['array']['city'];
 
 			list($street_name, $street_number) = $this->split_street_address($data['array']['visitingaddress']);
@@ -655,7 +675,7 @@ class mf_theme_child
 				'meta_input' => array(
 					'school_id' => $school_id,
 					'school_name' => $data['array']['name'],
-					'membership' => $data['array']['pricelist']['text'],
+					'membership' => $membership_name,
 					//'membership_description' => ,
 					'website' => $data['array']['www'],
 					'contact_no' => $data['array']['phone'],
@@ -680,19 +700,6 @@ class mf_theme_child
 					'organisation_no' => $data['array']['registrationno'],
 					'training_and_services' => "-", //$data['array']['description']
 					'about_us' => $data['array']['description'],
-
-					'_school_name' => 'field_64efe5bd91abf',
-					'_membership' => 'field_64efe5f091ac0',
-					'_website' => 'field_64efe62a91ac2',
-					'_contact_no' => 'field_64efe64791ac3',
-					'_email_address' => 'field_64efe68391ac4',
-					'_address' => 'field_64efe69791ac5',
-					'_address_map' => 'field_64efe6a891ac6',
-					'_post_address' => 'field_64efe6f191ac7',
-					'_location' => 'field_64f1cd5254cc6',
-					'_organisation_no' => 'field_64efe70491ac8',
-					'_training_and_services' => 'field_64efe72791ac9',
-					'_about_us' => 'field_64efe73f91aca',
 				),
 			);
 
@@ -700,6 +707,19 @@ class mf_theme_child
 			{
 				echo "<p><strong>".date("H:i:s")."</strong> Post data #".$post_id.": ".var_export($post_data, true)."</p>";
 			}
+
+			$post_data['meta_input']['_school_name'] = "field_64efe5bd91abf";
+			$post_data['meta_input']['_membership'] = "field_64efe5f091ac0";
+			$post_data['meta_input']['_website'] = "field_64efe62a91ac2";
+			$post_data['meta_input']['_contact_no'] = "field_64efe64791ac3";
+			$post_data['meta_input']['_email_address'] = "field_64efe68391ac4";
+			$post_data['meta_input']['_address'] = "field_64efe69791ac5";
+			$post_data['meta_input']['_address_map'] = "field_64efe6a891ac6";
+			$post_data['meta_input']['_post_address'] = "field_64efe6f191ac7";
+			$post_data['meta_input']['_location'] = "field_64f1cd5254cc6";
+			$post_data['meta_input']['_organisation_no'] = "field_64efe70491ac8";
+			$post_data['meta_input']['_training_and_services'] = "field_64efe72791ac9";
+			$post_data['meta_input']['_about_us'] = "field_64efe73f91aca";
 
 			// Get Properties
 			#######################################
@@ -2017,7 +2037,12 @@ class mf_theme_child
 			."</div>
 			<div id='debug_lime_run'></div>";
 
-			echo "<p>".__("Last call", 'lang_bb-theme-child').": ".get_option('option_theme_educators_url')."</p>";
+			$option_theme_educators_url = get_option('option_theme_educators_url');
+
+			if($option_theme_educators_url != '')
+			{
+				echo "<p>".__("Last call", 'lang_bb-theme-child').": ".$option_theme_educators_url."</p>";
+			}
 		}
 
 	function settings_theme_child_optima_callback()
@@ -2941,8 +2966,6 @@ class mf_theme_child
 			'limit_amount' => 10,
 		);
 
-		/*$setting_theme_child_company = get_option('setting_theme_child_company');
-		$setting_theme_child_type = get_option('setting_theme_child_type');*/
 		$setting_theme_child_company = check_var('company');
 		$setting_theme_child_type = check_var('type');
 
