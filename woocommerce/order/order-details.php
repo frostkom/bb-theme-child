@@ -92,19 +92,18 @@ if ( $show_downloads ) {
 		<tfoot>
 			<?php
 			foreach ( $order->get_order_item_totals() as $key => $total ) {
-				if($key != 'cart_subtotal')
-				{
-					$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
+				$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
 
-					if($out_temp != '')
-					{
-						echo "<tr class='order_details_row ".$key."'>"
-							."<th>".esc_html($total['label'])."</th>" // scope='row'
-							."<td>".$out_temp."</td>
-						</tr>";
-					}
+				if($out_temp != '')
+				{
+					echo "<tr class='order_details ".$key."'>
+						<th>".esc_html($total['label'])."</th>
+						<td>".$out_temp."</td>
+					</tr>";
 				}
 			}
+
+			//echo "<tr><td colspan='2'>".var_export($order->get_order_item_totals(), true)."</td></tr>";
 			?>
 			<?php if ( $order->get_customer_note() ) : ?>
 				<tr>
@@ -141,8 +140,8 @@ echo "<div class='fl-button-wrap fl-button-width-auto fl-button-center continue_
 	."<p>".sprintf(__("Download from %s or %s. You need to create an account the first time you log in.", 'lang_bb-theme-child'), "App Store", "Google Play")."</p>"
 	."<p>".__("There you use the social security number that you entered when you bought your periods and that you see above in your order. When you have created an account and logged in, your periods are there waiting for you. Good luck!", 'lang_bb-theme-child')."</p>";
 
-	echo "<div class='download_buttons'>" //fl-button-wrap fl-button-width-auto fl-button-center 
-		."<a href='https://apps.apple.com/se/app/k%C3%B6rkortsboken/id6450051169' class='fl-button'>
+	echo "<div class='download_buttons'>
+		<a href='https://apps.apple.com/se/app/k%C3%B6rkortsboken/id6450051169' class='fl-button'>
 			<span class='fl-button-text'>App Store</span>
 		</a>
 		<a href='https://play.google.com/store/apps/details?id=se.str.korkortsboken&pli=1' class='fl-button'>

@@ -71,29 +71,26 @@ echo "</h2>
 
 			foreach($order->get_order_item_totals() as $key => $total)
 			{
-				if($key != 'cart_subtotal')
+				$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
+
+				if($out_temp != '')
 				{
-					$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
+					$i++;
 
-					if($out_temp != '')
-					{
-						$i++;
+					$cell_xtra = " class='td' style='text-align: ".esc_attr($text_align)."; ".(1 === $i ? 'border-top-width: 4px' : '')."'";
 
-						$cell_xtra = " class='td' style='text-align: ".esc_attr($text_align)."; ".(1 === $i ? 'border-top-width: 4px' : '')."'";
-
-						echo "<tr class='".$key."'>
-							<th colspan='2'".$cell_xtra.">".wp_kses_post($total['label'])."</th>" // scope='row'
-							."<td".$cell_xtra.">".$out_temp."</td>
-						</tr>";
-					}
+					echo "<tr class='email_order_details ".$key."'>
+						<th colspan='2'".$cell_xtra.">".wp_kses_post($total['label'])."</th>
+						<td".$cell_xtra.">".$out_temp."</td>
+					</tr>";
 				}
 			}
 
 			if($order->get_customer_note())
 			{
 				echo "<tr>
-					<th class='td' colspan='2' style='text-align: ".esc_attr($text_align)."'>".__('Note:', 'woocommerce')."</th>" // scope='row'
-					."<td class='td' style='text-align: ".esc_attr($text_align)."'>".wp_kses_post(nl2br(wptexturize($order->get_customer_note())))."</td>
+					<th class='td' colspan='2' style='text-align: ".esc_attr($text_align)."'>".__('Note:', 'woocommerce')."</th>
+					<td class='td' style='text-align: ".esc_attr($text_align)."'>".wp_kses_post(nl2br(wptexturize($order->get_customer_note())))."</td>
 				</tr>";
 			}
 

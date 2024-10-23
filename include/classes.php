@@ -13,6 +13,7 @@ class mf_theme_child
 	var $delete_count = 0;
 	var $ignore_count = 0;
 	var $arr_terms_id = array();
+	var $order_has_shipping;
 
 	function __construct()
 	{
@@ -651,10 +652,12 @@ class mf_theme_child
 			{
 				case '509201':
 					$membership_name = __("Company Member", 'lang_bb-theme-child');
+					$this->arr_terms_id[] = 660;
 				break;
 
 				case '509301':
 					$membership_name = __("Gold Member", 'lang_bb-theme-child');
+					$this->arr_terms_id[] = 661;
 				break;
 
 				default:
@@ -725,16 +728,6 @@ class mf_theme_child
 			#######################################
 			/*if($is_updated)
 			{*/
-				if($data['array']['customertype']['id'] == 537701)
-				{
-					$this->arr_terms_id[] = 661;
-				}
-
-				else if($data['array']['customertype']['id'] == 144501)
-				{
-					$this->arr_terms_id[] = 660;
-				}
-
 				if(strpos($data['array']['_links']['relation_propertylink']['href'], "_limit=") === false)
 				{
 					$data['array']['_links']['relation_propertylink']['href'] .= "?_limit=".$data['limit_amount'];
@@ -1363,7 +1356,7 @@ class mf_theme_child
 
 														if($property_id_exists == false && $data['debug'] == true)
 														{
-															echo "<p><strong>".date("H:i:s")."</strong> Property does NOT exist: ".$property_id." -> \$this->arr_classes</p>";
+															echo "<p><strong>".date("H:i:s")."</strong> Property does NOT exist: ".$property_id." (".$arr_service['name'].") -> \$this->arr_classes</p>";
 														}
 													}
 
@@ -2456,9 +2449,6 @@ class mf_theme_child
 
 		if($cart_total <= get_option('setting_theme_child_shipping_order_limit') && $has_physical_products == true)
 		{
-			//get_option('woocommerce_tax_display_cart') => incl/excl
-			//$this->get_tax_rate();
-
 			$cost = get_option('setting_theme_child_shipping_cost');
 		}
 
@@ -2468,6 +2458,110 @@ class mf_theme_child
 		}
 		
 		return $cost;
+	}
+
+	function get_shipping_label()
+	{
+		global $wpdb;
+
+		$out = "";
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT instance_id, method_id FROM ".$wpdb->prefix."woocommerce_shipping_zone_methods WHERE is_enabled = '%d'", 1));
+
+		foreach($result as $r)
+		{
+			$arr_value = get_option('woocommerce_'.$r->method_id.'_'.$r->instance_id.'_settings');
+
+			$out = $arr_value['title'];
+		}
+
+		return $out;
+	}
+
+	function order_has_shipping($value)
+	{
+		global $wpdb;
+
+		$this->order_has_shipping = true;
+
+		/*$result = $wpdb->get_results($wpdb->prepare("SELECT instance_id, method_id FROM ".$wpdb->prefix."woocommerce_shipping_zone_methods WHERE is_enabled = '%d'", 1));
+
+		foreach($result as $r)
+		{
+			$arr_value = get_option('woocommerce_'.$r->method_id.'_'.$r->instance_id.'_settings');
+
+			if($value == $arr_value['title'])*/
+			if($value == $this->get_shipping_label() || $value == 0)
+			{
+				$this->order_has_shipping = false;
+			}
+		//}
+	}
+
+	function get_raw_price($html)
+	{
+		$woocommerce_price_decimal_sep = get_option('woocommerce_price_decimal_sep');
+		$woocommerce_price_thousand_sep = get_option('woocommerce_price_thousand_sep');
+
+		preg_match("/>(.*?)&nbsp;(<span class=\"woocommerce-Price-currencySymbol\">.*?<\/span>)</", $html, $arr_tax_value);
+
+		$arr_tax_value[1] = str_replace($woocommerce_price_decimal_sep, ".", $arr_tax_value[1]);
+		$arr_tax_value[1] = str_replace($woocommerce_price_thousand_sep, "", $arr_tax_value[1]);
+		$arr_tax_value[1] = str_replace("<bdi>", "", $arr_tax_value[1]);
+
+		return array(floatval($arr_tax_value[1]), $arr_tax_value[2]);
+	}
+
+	function get_html_price($price, $suffix)
+	{
+		$woocommerce_price_num_decimals = get_option('woocommerce_price_num_decimals');
+		$woocommerce_price_decimal_sep = get_option('woocommerce_price_decimal_sep');
+		$woocommerce_price_thousand_sep = get_option('woocommerce_price_thousand_sep');
+
+		return number_format($price, $woocommerce_price_num_decimals, $woocommerce_price_decimal_sep, $woocommerce_price_thousand_sep)."&nbsp;".$suffix;
+	}
+
+	function get_shipping_html()
+	{
+		$out = "";
+
+		$get_cart_shipping_total = WC()->cart->get_cart_shipping_total();
+
+		list($price, $suffix) = $this->get_raw_price($get_cart_shipping_total);	
+
+		$this->order_has_shipping($price);
+
+		if($price > 0)
+		{
+			$out = "<tr class='woocommerce-shipping-totals shipping'>
+				<th>".$this->get_shipping_label()."</th>
+				<td>".$get_cart_shipping_total."</td>
+			</tr>";
+		}
+
+		return $out;
+	}
+
+	function get_taxes_html()
+	{
+		$out = "";
+
+		ob_start();
+
+			wc_cart_totals_taxes_total_html();
+
+		$wc_cart_totals_taxes_total_html = ob_get_clean();
+
+		list($price, $suffix) = $this->get_raw_price($wc_cart_totals_taxes_total_html);
+
+		if($this->order_has_shipping == true)
+		{
+			$price += (get_option('setting_theme_child_shipping_cost') * ($this->get_tax_rate() / 100));
+		}
+
+		$out .= $this->get_html_price($price, $suffix);
+
+		return $out;
 	}
 
 	function get_order_detail_row($order_id, $key, $total)
@@ -2494,17 +2588,32 @@ class mf_theme_child
 			break;
 
 			case 'shipping':
-				$result = $wpdb->get_results($wpdb->prepare("SELECT instance_id, method_id FROM ".$wpdb->prefix."woocommerce_shipping_zone_methods WHERE is_enabled = '%d'", 1));
+				$total['value'] = preg_replace("/<small class=\"shipped_via\">(.*?)<\/small>/i", "", wp_kses_post($total['value']));
+			
+				$this->order_has_shipping($total['value']);
 
-				foreach($result as $r)
+				if($this->order_has_shipping == false)
 				{
-					$arr_value = get_option('woocommerce_'.$r->method_id.'_'.$r->instance_id.'_settings');
-
-					if($total['value'] == $arr_value['title'])
-					{
-						$out = "";
-					}
+					$total['value'] = "";
 				}
+
+				$out .= $total['value'];
+			break;
+
+			case 'tax':
+				$total['value'] = wp_kses_post($total['value']);
+				list($price, $suffix) = $this->get_raw_price($total['value']);				
+
+				if($this->order_has_shipping == true)
+				{
+					$price += (get_option('setting_theme_child_shipping_cost') * ($this->get_tax_rate() / 100));
+				}
+
+				$out .= $this->get_html_price($price, $suffix);
+			break;
+
+			case 'cart_subtotal':
+				// Do nothing...
 			break;
 
 			default:

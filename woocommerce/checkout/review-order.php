@@ -16,6 +16,12 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+if(!isset($obj_theme_child))
+{
+	$obj_theme_child = new mf_theme_child();
+}
+
 ?>
 <table class="shop_table woocommerce-checkout-review-order-table">
 	<thead>
@@ -72,15 +78,17 @@ defined( 'ABSPATH' ) || exit;
 			</tr>
 		<?php endforeach; ?>
 
-		<?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) : ?>
+		<?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) :
 
-			<?php do_action( 'woocommerce_review_order_before_shipping' ); ?>
+			/*do_action( 'woocommerce_review_order_before_shipping' );
 
-			<?php wc_cart_totals_shipping_html(); ?>
+			wc_cart_totals_shipping_html();
 
-			<?php do_action( 'woocommerce_review_order_after_shipping' ); ?>
+			do_action( 'woocommerce_review_order_after_shipping' );*/
 
-		<?php endif; ?>
+			echo $obj_theme_child->get_shipping_html();
+
+		endif; ?>
 
 		<?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
 			<tr class="fee">
@@ -98,9 +106,13 @@ defined( 'ABSPATH' ) || exit;
 					</tr>
 				<?php endforeach; ?>
 			<?php else : ?>
-				<tr class="tax-total">
+				<tr class="tax-total review-order">
 					<th><?php echo esc_html( WC()->countries->tax_or_vat() ); ?></th>
-					<td><?php wc_cart_totals_taxes_total_html(); ?></td>
+					<td>
+<?php
+						echo $obj_theme_child->get_taxes_html();
+?>
+					</td>
 				</tr>
 			<?php endif; ?>
 		<?php endif; ?>

@@ -90,7 +90,7 @@ if ( $show_downloads ) {
 			foreach ( $order->get_order_item_totals() as $key => $total ) {
 				if($key != 'cart_subtotal')
 				{
-					echo "<tr class='".$key."'>" //
+					echo "<tr class='".$key."'>"
 						."<th>".esc_html($total['label'])."</th>" // scope='row'
 						."<td>";
 
