@@ -2542,6 +2542,14 @@ class mf_theme_child
 		return $out;
 	}
 
+	function get_shipping_tax()
+	{
+		$setting_theme_child_shipping_cost = get_option('setting_theme_child_shipping_cost');
+		$shipping_tax_rate = (1 + ($this->get_tax_rate() / 100));
+		
+		return ($setting_theme_child_shipping_cost - ($setting_theme_child_shipping_cost / $shipping_tax_rate));
+	}
+
 	function get_taxes_html()
 	{
 		$out = "";
@@ -2556,7 +2564,7 @@ class mf_theme_child
 
 		if($this->order_has_shipping == true)
 		{
-			$price += (get_option('setting_theme_child_shipping_cost') * ($this->get_tax_rate() / 100));
+			$price += $this->get_shipping_tax();
 		}
 
 		$out .= $this->get_html_price($price, $suffix);
@@ -2606,7 +2614,7 @@ class mf_theme_child
 
 				if($this->order_has_shipping == true)
 				{
-					$price += (get_option('setting_theme_child_shipping_cost') * ($this->get_tax_rate() / 100));
+					$price += $this->get_shipping_tax();
 				}
 
 				$out .= $this->get_html_price($price, $suffix);
@@ -2993,7 +3001,8 @@ class mf_theme_child
 
 						if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
 						{
-							echo "<p><a href='//developer.nexigroup.com/nexi-checkout/en-EU/docs/test-card-processing/'>".__("Test Card", 'lang_bb-theme-child')." <i class='fas fa-arrow-right'></i></a></p>";
+							echo "<p><a href='https://developer.nexigroup.com/nexi-checkout/en-EU/docs/test-invoice-installment-processing/#build-sample-invoice-nordic-addresses'>".__("Test invoice & installment processing", 'lang_bb-theme-child')." <i class='fas fa-arrow-right'></i></a></p>
+							<p><a href='https://developer.nexigroup.com/nexi-checkout/en-EU/docs/test-card-processing/#build-sample-credit-cards'>".__("Test Card Processing", 'lang_bb-theme-child')." <i class='fas fa-arrow-right'></i></a></p>";
 						}
 					}
 				}
