@@ -110,7 +110,7 @@ if(!isset($obj_theme_child))
 					<th><?php echo esc_html( WC()->countries->tax_or_vat() ); ?></th>
 					<td>
 <?php
-						echo $obj_theme_child->get_taxes_html();
+						wc_cart_totals_taxes_total_html();
 ?>
 					</td>
 				</tr>

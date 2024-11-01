@@ -352,34 +352,12 @@ class mf_theme_child
 
 				if($_order_shipping > 0)
 				{
-					$shipping_tax_rate = (1 + ($this->get_tax_rate() / 100));
-
-					/*if($_order_shipping > 0)
-					{
-						$shipping_items = $arr_order->get_items('shipping');
-
-						foreach($shipping_items as $shipping_item)
-						{
-							$taxes = $shipping_item->get_taxes();
-
-							foreach($taxes['total'] as $tax_rate_id => $tax_amount)
-							{
-								$tax_rate = WC_Tax::_get_tax_rate($tax_rate_id);
-								$shipping_tax_rate = $tax_rate['tax_rate'];
-							}
-						}
-
-						//echo "TEST: ".var_export($shipping_items, true);
-						echo "TEST: ".var_export($taxes, true);
-						//echo "TEST: ".var_export($tax_rate, true);
-					}*/
-
 					$post_data .= ($order_row_count > 0 ? "," : "").'{
 						"sku": "9123",
 						"description": "",
 						"quantity": 1,
 						"unit": "S",
-						"unitPrice": "'.number_format($_order_shipping / $shipping_tax_rate, 2).'",
+						"unitPrice": "'.number_format($_order_shipping, 2).'",
 						"user_idenifier": "",
 						"identityNumber": "",
 						"email": "",
@@ -2422,16 +2400,23 @@ class mf_theme_child
 
 		return $label;
 	}
-	
-	function get_tax_rate()
+
+	function get_shipping_tax()
 	{
 		global $wpdb;
 
-		return $wpdb->get_var($wpdb->prepare("SELECT tax_rate FROM ".$wpdb->prefix."woocommerce_tax_rates WHERE tax_rate_class = %s", get_option('woocommerce_shipping_tax_class')));
+		$setting_theme_child_shipping_cost = get_option('setting_theme_child_shipping_cost');
+
+		$tax_rate = $wpdb->get_var($wpdb->prepare("SELECT tax_rate FROM ".$wpdb->prefix."woocommerce_tax_rates WHERE tax_rate_class = %s", get_option('woocommerce_shipping_tax_class')));
+		$shipping_tax_rate = (1 + ($tax_rate / 100));
+
+		return ($setting_theme_child_shipping_cost - ($setting_theme_child_shipping_cost / $shipping_tax_rate));
 	}
 
-	function woocommerce_shipping_rate_cost($cost)
+	function woocommerce_package_rates($rates, $package)
 	{
+		global $wpdb;
+
 		$has_physical_products = false;
 
 		foreach(WC()->cart->get_cart() as $cart_item)
@@ -2449,15 +2434,37 @@ class mf_theme_child
 
 		if($cart_total <= get_option('setting_theme_child_shipping_order_limit') && $has_physical_products == true)
 		{
-			$cost = get_option('setting_theme_child_shipping_cost');
+			foreach($rates as $rate_key => $rate)
+			{
+				$extra_cost = (get_option('setting_theme_child_shipping_cost') - $this->get_shipping_tax());
+				$rates[$rate_key]->cost += $extra_cost;
+
+				$arr_taxes = $rate->get_taxes();
+
+				if(empty($arr_taxes))
+				{
+					$result = $wpdb->get_results($wpdb->prepare("SELECT tax_rate_id, tax_rate FROM ".$wpdb->prefix."woocommerce_tax_rates WHERE tax_rate_class = %s", get_option('woocommerce_shipping_tax_class')));
+
+					foreach($result as $r)
+					{
+						$arr_taxes[$r->tax_rate_id] = ($extra_cost * ($r->tax_rate / 100));
+					}
+				}
+
+				else
+				{
+					foreach($arr_taxes as $tax_id => $tax_amount)
+					{
+						$tax_rate = WC_Tax::get_rate_percent($tax_id);
+						$arr_taxes[$tax_id] += ($extra_cost * ($tax_rate / 100));
+					}
+				}
+
+				$rate->set_taxes($arr_taxes);
+			}
 		}
 
-		else
-		{
-			$cost = 0;
-		}
-		
-		return $cost;
+		return $rates;
 	}
 
 	function get_shipping_label()
@@ -2484,18 +2491,10 @@ class mf_theme_child
 
 		$this->order_has_shipping = true;
 
-		/*$result = $wpdb->get_results($wpdb->prepare("SELECT instance_id, method_id FROM ".$wpdb->prefix."woocommerce_shipping_zone_methods WHERE is_enabled = '%d'", 1));
-
-		foreach($result as $r)
+		if($value == $this->get_shipping_label() || $value == 0)
 		{
-			$arr_value = get_option('woocommerce_'.$r->method_id.'_'.$r->instance_id.'_settings');
-
-			if($value == $arr_value['title'])*/
-			if($value == $this->get_shipping_label() || $value == 0)
-			{
-				$this->order_has_shipping = false;
-			}
-		//}
+			$this->order_has_shipping = false;
+		}
 	}
 
 	function get_raw_price($html)
@@ -2505,9 +2504,22 @@ class mf_theme_child
 
 		preg_match("/>(.*?)&nbsp;(<span class=\"woocommerce-Price-currencySymbol\">.*?<\/span>)</", $html, $arr_tax_value);
 
-		$arr_tax_value[1] = str_replace($woocommerce_price_decimal_sep, ".", $arr_tax_value[1]);
-		$arr_tax_value[1] = str_replace($woocommerce_price_thousand_sep, "", $arr_tax_value[1]);
-		$arr_tax_value[1] = str_replace("<bdi>", "", $arr_tax_value[1]);
+		if(!isset($arr_tax_value[1]))
+		{
+			//do_log(__FUNCTION__." Error: No #1 value in ".htmlspecialchars($html));
+
+			$arr_tax_value = array(
+				1 => 0,
+				2 => "",
+			);
+		}
+
+		else
+		{
+			$arr_tax_value[1] = str_replace($woocommerce_price_decimal_sep, ".", $arr_tax_value[1]);
+			$arr_tax_value[1] = str_replace($woocommerce_price_thousand_sep, "", $arr_tax_value[1]);
+			$arr_tax_value[1] = str_replace("<bdi>", "", $arr_tax_value[1]);
+		}
 
 		return array(floatval($arr_tax_value[1]), $arr_tax_value[2]);
 	}
@@ -2538,36 +2550,6 @@ class mf_theme_child
 				<td>".$get_cart_shipping_total."</td>
 			</tr>";
 		}
-
-		return $out;
-	}
-
-	function get_shipping_tax()
-	{
-		$setting_theme_child_shipping_cost = get_option('setting_theme_child_shipping_cost');
-		$shipping_tax_rate = (1 + ($this->get_tax_rate() / 100));
-		
-		return ($setting_theme_child_shipping_cost - ($setting_theme_child_shipping_cost / $shipping_tax_rate));
-	}
-
-	function get_taxes_html()
-	{
-		$out = "";
-
-		ob_start();
-
-			wc_cart_totals_taxes_total_html();
-
-		$wc_cart_totals_taxes_total_html = ob_get_clean();
-
-		list($price, $suffix) = $this->get_raw_price($wc_cart_totals_taxes_total_html);
-
-		if($this->order_has_shipping == true)
-		{
-			$price += $this->get_shipping_tax();
-		}
-
-		$out .= $this->get_html_price($price, $suffix);
 
 		return $out;
 	}
