@@ -2562,9 +2562,9 @@ class mf_theme_child
 
 		switch($key)
 		{
-			case 'order_total':
+			/*case 'order_total':
 				$out .= preg_replace("/<small class=\"includes_tax\">(.*?)<\/small>/i", "", wp_kses_post($total['value']));
-			break;
+			break;*/
 
 			case 'payment_method':
 				$out .= esc_html($total['value']);

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-17 14:25+0100\n"
+"POT-Creation-Date: 2024-11-14 13:54+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,308 +15,343 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../include/classes.php:515
-#: ../include/classes.php:1662
+#: ../include/classes.php:494
+#: ../include/classes.php:1633
 msgid "Settings"
 msgstr "Inställningar"
 
-#: ../include/classes.php:653
+#: ../include/classes.php:632
 msgid "Company Member"
 msgstr "Företagsmedlem"
 
-#: ../include/classes.php:657
+#: ../include/classes.php:637
 msgid "Gold Member"
 msgstr "Guldmedlem"
 
-#: ../include/classes.php:661
-#: ../include/classes.php:2211
+#: ../include/classes.php:642
+#: ../include/classes.php:2182
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../include/classes.php:1784
+#: ../include/classes.php:1755
 #, php-format
 msgid "The order %s was not sent to Optima"
 msgstr "Ordern %s skickades inte till Optima"
 
-#: ../include/classes.php:1841
-#: ../include/classes.php:1981
+#: ../include/classes.php:1812
+#: ../include/classes.php:1952
 msgid "Lime"
 msgstr ""
 
-#: ../include/classes.php:1842
-#: ../include/classes.php:2052
-#: ../include/classes.php:2156
+#: ../include/classes.php:1813
+#: ../include/classes.php:2023
+#: ../include/classes.php:2127
 msgid "Optima"
 msgstr ""
 
-#: ../include/classes.php:1843
-#: ../include/classes.php:2724
+#: ../include/classes.php:1814
+#: ../include/classes.php:2823
 msgid "Social Security Number"
 msgstr "Personnummer"
 
-#: ../include/classes.php:1855
-#: ../include/classes.php:1873
-#: ../include/classes.php:1876
+#: ../include/classes.php:1826
+#: ../include/classes.php:1844
+#: ../include/classes.php:1847
 msgid "API URL"
 msgstr "API-URL"
 
-#: ../include/classes.php:1856
-#: ../include/classes.php:1875
-#: ../include/classes.php:1878
+#: ../include/classes.php:1827
+#: ../include/classes.php:1846
+#: ../include/classes.php:1849
 msgid "API Key"
 msgstr "API-nyckel"
 
-#: ../include/classes.php:1857
+#: ../include/classes.php:1828
 msgid "Assets URL"
 msgstr "Käll-URL"
 
-#: ../include/classes.php:1859
-#: ../include/classes.php:2025
+#: ../include/classes.php:1830
+#: ../include/classes.php:1996
 msgid "Company"
 msgstr "Företag"
 
-#: ../include/classes.php:1860
+#: ../include/classes.php:1831
 msgid "Type"
 msgstr "Typ"
 
-#: ../include/classes.php:1861
+#: ../include/classes.php:1832
 msgid "Test API"
 msgstr "Testa API"
 
-#: ../include/classes.php:1873
-#: ../include/classes.php:1874
-#: ../include/classes.php:1875
+#: ../include/classes.php:1844
+#: ../include/classes.php:1845
+#: ../include/classes.php:1846
 msgid "Test"
 msgstr ""
 
-#: ../include/classes.php:1874
-#: ../include/classes.php:1877
+#: ../include/classes.php:1845
+#: ../include/classes.php:1848
 msgid "API Key Name"
 msgstr "API-nyckelnamn"
 
-#: ../include/classes.php:1876
-#: ../include/classes.php:1877
-#: ../include/classes.php:1878
+#: ../include/classes.php:1847
+#: ../include/classes.php:1848
+#: ../include/classes.php:1849
 msgid "Live"
 msgstr ""
 
-#: ../include/classes.php:1880
+#: ../include/classes.php:1851
 msgid "Send to"
 msgstr "Skicka till"
 
-#: ../include/classes.php:1884
-#: ../include/classes.php:2111
-#: ../include/classes.php:2733
+#: ../include/classes.php:1855
+#: ../include/classes.php:2082
+#: ../include/classes.php:2832
 msgid "E-mail"
 msgstr "E-post"
 
-#: ../include/classes.php:1897
+#: ../include/classes.php:1868
 msgid "Free Shipping Order Limit"
 msgstr "Ordergräns för gratis frakt"
 
-#: ../include/classes.php:1898
+#: ../include/classes.php:1869
 msgid "Shipping Cost incl. VAT"
 msgstr "Fraktkostnad inkl. moms"
 
-#: ../include/classes.php:1908
-#: ../include/classes.php:1981
-#: ../include/classes.php:2052
-#: ../include/classes.php:2130
+#: ../include/classes.php:1879
+#: ../include/classes.php:1952
+#: ../include/classes.php:2023
+#: ../include/classes.php:2101
 msgid "Theme Child"
 msgstr "STR-tema"
 
-#: ../include/classes.php:1919
+#: ../include/classes.php:1890
 #, php-format
 msgid "The oldest instructor to be updated was %s (%s)"
 msgstr "Den första utbildaren som har uppdaterats var %s (%s)"
 
-#: ../include/classes.php:1926
+#: ../include/classes.php:1897
 #, php-format
 msgid "The newest instructor to be updated was %s (%s)"
 msgstr "Den senaste utbildaren som har uppdaterats var %s (%s)"
 
-#: ../include/classes.php:1954
+#: ../include/classes.php:1925
 #, php-format
 msgid "The site URL is %s and test mode is activated"
 msgstr "Webbplatsens URL är %s och testläget är aktiverat"
 
-#: ../include/classes.php:1958
+#: ../include/classes.php:1929
 #, php-format
 msgid "The site URL is %s and test mode is NOT activated"
 msgstr "Webbplatsens URL är %s och testläget är INTE aktiverat"
 
-#: ../include/classes.php:1970
-#: ../include/classes.php:2724
+#: ../include/classes.php:1941
+#: ../include/classes.php:2823
 msgid "YYMMDDXXXX"
 msgstr "ÅÅMMDDXXXX"
 
-#: ../include/classes.php:1972
-#: ../include/classes.php:2036
+#: ../include/classes.php:1943
+#: ../include/classes.php:2007
 msgid "Run Now"
 msgstr "Kör nu"
 
-#: ../include/classes.php:2026
+#: ../include/classes.php:1997
 msgid "Properties"
 msgstr "Attribut"
 
-#: ../include/classes.php:2027
+#: ../include/classes.php:1998
 msgid "Terms"
 msgstr "Klasser"
 
-#: ../include/classes.php:2044
+#: ../include/classes.php:2015
 msgid "Last call"
 msgstr "Senaste anrop"
 
-#: ../include/classes.php:2109
-#: ../include/classes.php:2369
+#: ../include/classes.php:2080
+#: ../include/classes.php:2340
 msgid "Choose Here"
 msgstr "Välj här"
 
-#: ../include/classes.php:2110
+#: ../include/classes.php:2081
 msgid "Log"
 msgstr "Logg"
 
-#: ../include/classes.php:2112
+#: ../include/classes.php:2083
 msgid "API"
 msgstr ""
 
-#: ../include/classes.php:2130
+#: ../include/classes.php:2101
+#: ../woocommerce/cart/cart-totals.php:59
+#: ../woocommerce/cart/cart-totals.php:60
 msgid "Shipping"
 msgstr "Frakt"
 
-#: ../include/classes.php:2213
+#: ../include/classes.php:2184
 #, php-format
 msgid "Created %s by %s and got the answer %d"
 msgstr "Skapad %s av %s och fick svaret %d"
 
-#: ../include/classes.php:2313
+#: ../include/classes.php:2284
 msgid "The information was successfully sent"
 msgstr "Informationen skickades"
 
-#: ../include/classes.php:2318
+#: ../include/classes.php:2289
 msgid "The information could not be sent"
 msgstr "Informationen kunde inte skickas"
 
-#: ../include/classes.php:2345
+#: ../include/classes.php:2316
 msgid "Send Again"
 msgstr "Skicka igen"
 
-#: ../include/classes.php:2356
+#: ../include/classes.php:2327
 msgid "WooCommerce Customers"
 msgstr "Kunder i WooCommerce"
 
-#: ../include/classes.php:2367
+#: ../include/classes.php:2338
 msgid "Display Social Security Number"
 msgstr "Visa personnummer"
 
-#: ../include/classes.php:2370
+#: ../include/classes.php:2341
 msgid "Yes"
 msgstr "Ja"
 
-#: ../include/classes.php:2371
+#: ../include/classes.php:2342
 msgid "No"
 msgstr "Nej"
 
-#: ../include/classes.php:2552
-#: ../include/classes.php:2568
-#: ../include/classes.php:2595
+#: ../include/classes.php:2651
+#: ../include/classes.php:2667
+#: ../include/classes.php:2694
 #, php-format
 msgid "Please enter a Social Security Number according to the format YYMMDDXXXX with only ten digits. You entered a number with %d digits."
 msgstr "Var vänlig ange ett personnummer enligt formatet ÅÅMMDDXXXX med endast tio siffror. Du angav ett tal med %d siffror."
 
-#: ../include/classes.php:2580
+#: ../include/classes.php:2679
 msgid "Please enter a Social Security Number with a birth year that is in the past."
 msgstr "Var vänlig ange ett personnummer med ett födelseår som har varit."
 
-#: ../include/classes.php:2622
+#: ../include/classes.php:2721
 msgid "Please enter a Social Security Number with only digits in it"
 msgstr "Var vänlig ange personnummer endast med siffror"
 
-#: ../include/classes.php:2626
+#: ../include/classes.php:2725
 msgid "empty"
 msgstr "tom"
 
-#: ../include/classes.php:2632
+#: ../include/classes.php:2731
 msgid "Please enter a Social Security Number with a correct YYMMDD"
 msgstr "Var vänlig ange personnummer med korrekt ÅÅMMDD"
 
-#: ../include/classes.php:2642
+#: ../include/classes.php:2741
 msgid "Please enter a Social Security Number with the correct last check number"
 msgstr "Var vänlig ange personnummer med korrekt kontrollsiffra i slutet"
 
-#: ../include/classes.php:2718
+#: ../include/classes.php:2817
 #, php-format
 msgid "Enter the details of the person who will use %s below"
 msgstr "Ange nedan uppgifter på den som ska använda %s"
 
-#: ../include/classes.php:2732
+#: ../include/classes.php:2831
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
-#: ../include/classes.php:2732
-#: ../include/classes.php:2733
+#: ../include/classes.php:2831
+#: ../include/classes.php:2832
 msgid "to the user"
 msgstr "till den som ska använda materialet"
 
-#: ../include/classes.php:2758
-#: ../include/classes.php:2807
+#: ../include/classes.php:2857
+#: ../include/classes.php:2906
 msgid "Please enter a Phone Number or E-mail Address"
 msgstr "Var vänlig ange telefonnummer eller e-postadress"
 
-#: ../include/classes.php:2772
+#: ../include/classes.php:2871
 msgid "Please enter a valid E-mail Address. The one you entered does not seam to be correct"
 msgstr "Var vänlig ange en korrekt e-postadress. Den som du angav verkar vara felaktig."
 
-#: ../include/classes.php:2782
+#: ../include/classes.php:2881
 msgid "The Social Security Number and Phone Number does not match on all products. If you enter the same Social Security Number on several products, you can't enter different Phone Numbers on those products."
 msgstr "Personnumret och telefonnumret stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika telefonnummer på dessa produkter."
 
-#: ../include/classes.php:2789
+#: ../include/classes.php:2888
 msgid "The Social Security Number and E-mail Address does not match on all products. If you enter the same Social Security Number on several products, you can't enter different E-mail Addresses on those products."
 msgstr "Personnumret och e-postadressen stämmer inte överens på alla produkter. Om du anger samma personnummer på flera produkter så kan du inte ange olika e-postadresser på dessa produkter."
 
-#: ../include/classes.php:2834
+#: ../include/classes.php:2933
 #: ../woocommerce/checkout/form-shipping.php:31
 msgid "Ship to a different address?"
 msgstr "Leverera till en annan adress?"
 
-#: ../include/classes.php:2837
+#: ../include/classes.php:2936
 msgid "First Name"
 msgstr "Förnamn"
 
-#: ../include/classes.php:2838
+#: ../include/classes.php:2937
 msgid "Last Name"
 msgstr "Efternamn"
 
-#: ../include/classes.php:2840
+#: ../include/classes.php:2939
 msgid "Street Address"
 msgstr "Gatuadress"
 
-#: ../include/classes.php:2843
+#: ../include/classes.php:2942
 msgid "Zipcode"
 msgstr "Postnummer"
 
-#: ../include/classes.php:2844
+#: ../include/classes.php:2943
 msgid "City"
 msgstr "Ort"
 
-#: ../include/classes.php:2877
+#: ../include/classes.php:2976
 msgid "Recipient"
 msgstr "Mottagare"
 
-#: ../include/classes.php:2887
-msgid "Test Card"
-msgstr "Testkort"
+#: ../include/classes.php:2986
+msgid "Test invoice & installment processing"
+msgstr ""
 
-#: ../include/classes.php:2928
-#: ../woocommerce/order/order-details.php:135
+#: ../include/classes.php:2987
+msgid "Test Card Processing"
+msgstr ""
+
+#: ../include/classes.php:3028
+#: ../woocommerce/order/order-details.php:134
 #: ../woocommerce/order/order-details.v.1.5.4.php:159
 #: ../woocommerce/order/order-details.v.1.7.0.php:152
 #: ../woocommerce/order/order-details.v.1.7.5.php:153
 msgid "Continue to shop"
 msgstr "Fortsätt handla"
 
-#: ../woocommerce/checkout/review-order.php:23
+#: ../include/classes.php:3042
+msgid "of which VAT"
+msgstr "varav moms"
+
+#: ../woocommerce/cart/cart-totals.php:30
+msgid "Cart totals"
+msgstr "Totalt i varukorgen"
+
+#: ../woocommerce/cart/cart-totals.php:35
+#: ../woocommerce/cart/cart-totals.php:36
+#: ../woocommerce/checkout/review-order.php:30
+msgid "Subtotal"
+msgstr "Delsumma"
+
+#: ../woocommerce/cart/cart-totals.php:79
+#, php-format
+msgid "(estimated for %s)"
+msgstr "(beräknat för %s)"
+
+#: ../woocommerce/cart/cart-totals.php:109
+#: ../woocommerce/cart/cart-totals.php:110
+#: ../woocommerce/checkout/review-order.php:123
+#: ../woocommerce/order/order-details.php:64
+#: ../woocommerce/order/order-details.v.1.5.4.php:64
+#: ../woocommerce/order/order-details.v.1.7.0.php:59
+#: ../woocommerce/order/order-details.v.1.7.5.php:60
+msgid "Total"
+msgstr "Totalt"
+
+#: ../woocommerce/checkout/review-order.php:29
 #: ../woocommerce/emails/email-order-details.php:50
 #: ../woocommerce/order/order-details.php:63
 #: ../woocommerce/order/order-details.v.1.5.4.php:63
@@ -324,18 +359,6 @@ msgstr "Fortsätt handla"
 #: ../woocommerce/order/order-details.v.1.7.5.php:59
 msgid "Product"
 msgstr "Produkt"
-
-#: ../woocommerce/checkout/review-order.php:24
-msgid "Subtotal"
-msgstr "Delsumma"
-
-#: ../woocommerce/checkout/review-order.php:111
-#: ../woocommerce/order/order-details.php:64
-#: ../woocommerce/order/order-details.v.1.5.4.php:64
-#: ../woocommerce/order/order-details.v.1.7.0.php:59
-#: ../woocommerce/order/order-details.v.1.7.5.php:60
-msgid "Total"
-msgstr "Totalt"
 
 #: ../woocommerce/checkout/thankyou.php:33
 #: ../woocommerce/checkout/thankyou.v.1.5.4.php:30
@@ -387,8 +410,8 @@ msgstr "Kvanitet"
 msgid "Price"
 msgstr "Pris"
 
-#: ../woocommerce/emails/email-order-details.php:95
-#: ../woocommerce/order/order-details.php:111
+#: ../woocommerce/emails/email-order-details.php:92
+#: ../woocommerce/order/order-details.php:110
 #: ../woocommerce/order/order-details.v.1.5.4.php:134
 #: ../woocommerce/order/order-details.v.1.7.0.php:128
 #: ../woocommerce/order/order-details.v.1.7.5.php:129
@@ -414,14 +437,14 @@ msgstr ""
 msgid "Shipping address"
 msgstr "Leveransadress"
 
-#: ../woocommerce/order/order-details.php:132
+#: ../woocommerce/order/order-details.php:131
 #: ../woocommerce/order/order-details.v.1.5.4.php:156
 #: ../woocommerce/order/order-details.v.1.7.0.php:149
 #: ../woocommerce/order/order-details.v.1.7.5.php:150
 msgid "Save your order details"
 msgstr "Spara din orderbekräftelse"
 
-#: ../woocommerce/order/order-details.php:140
+#: ../woocommerce/order/order-details.php:139
 #: ../woocommerce/order/order-details.v.1.5.4.php:164
 #: ../woocommerce/order/order-details.v.1.7.0.php:157
 #: ../woocommerce/order/order-details.v.1.7.5.php:158
@@ -429,7 +452,7 @@ msgstr "Spara din orderbekräftelse"
 msgid "Have you purchased access to the app %s?"
 msgstr "Har du köpt tillgång till appen %s?"
 
-#: ../woocommerce/order/order-details.php:141
+#: ../woocommerce/order/order-details.php:140
 #: ../woocommerce/order/order-details.v.1.5.4.php:165
 #: ../woocommerce/order/order-details.v.1.7.0.php:158
 #: ../woocommerce/order/order-details.v.1.7.5.php:159
@@ -437,7 +460,7 @@ msgstr "Har du köpt tillgång till appen %s?"
 msgid "Download from %s or %s. You need to create an account the first time you log in."
 msgstr "Ladda nu ner den från %s eller %s. Första gången du ska logga in så behöver du skapa ett konto."
 
-#: ../woocommerce/order/order-details.php:142
+#: ../woocommerce/order/order-details.php:141
 #: ../woocommerce/order/order-details.v.1.5.4.php:166
 #: ../woocommerce/order/order-details.v.1.7.0.php:159
 #: ../woocommerce/order/order-details.v.1.7.5.php:160
