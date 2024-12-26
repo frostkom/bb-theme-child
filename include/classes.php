@@ -2273,7 +2273,7 @@ class mf_theme_child
 							}
 						}
 
-						if(IS_SUPER_ADMIN) //in_array(get_current_user_id(), array(1, 3, 5, 12))
+						if(IS_SUPER_ADMIN)
 						{
 							echo " ";
 
