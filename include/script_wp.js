@@ -46,6 +46,11 @@ jQuery(function($)
 		});
 	});
 
+	$(document).on('keyup', "#setting_theme_child_company_id", function()
+	{
+		$("#setting_theme_child_company").val('');
+	});
+
 	$(document).on('click', "button[name='btnDebugLimeRun']:not(.is_disabled)", function(e)
 	{
 		var dom_obj = $(e.currentTarget),
@@ -57,6 +62,7 @@ jQuery(function($)
 			'data': {
 				'action': dom_obj_action,
 				'company': $("#setting_theme_child_company").val(),
+				'company_id': $("#setting_theme_child_company_id").val(),
 				'type': $("#setting_theme_child_type").val(),
 			},
 			'selector': $("#" + dom_obj_action)

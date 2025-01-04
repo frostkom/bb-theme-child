@@ -940,7 +940,7 @@ class mf_theme_child
 			{
 				if($data['debug'] == true)
 				{
-					echo "<p><strong>".date("H:i:s")."</strong> Company is not active</p>";
+					echo "<p><strong>".date("H:i:s")."</strong> Company is not active (".var_export($data['array'], true).")</p>";
 				}
 
 				$this->ignore_count++;
@@ -1831,6 +1831,7 @@ class mf_theme_child
 		$arr_settings['setting_theme_child_lime_assets_url'] = __("Assets URL", 'lang_bb-theme-child');
 
 		$arr_settings['setting_theme_child_company'] = __("Company", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_company_id'] = __("Company ID", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_type'] = __("Type", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_debug'] = __("Test API", 'lang_bb-theme-child');
 
@@ -1988,6 +1989,14 @@ class mf_theme_child
 			get_post_children(array('post_type' => $this->post_type_instructor, 'order_by' => 'post_title', 'add_choose_here' => true), $arr_data_instructors);
 
 			echo show_select(array('data' => $arr_data_instructors, 'name' => $setting_key, 'value' => $option, 'suffix' => get_option_page_suffix(array('value' => $option))));
+		}
+
+		function setting_theme_child_company_id_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
 		}
 
 		function setting_theme_child_type_callback()
@@ -3070,6 +3079,7 @@ class mf_theme_child
 		);
 
 		$setting_theme_child_company = check_var('company');
+		$setting_theme_child_company_id = check_var('company_id');
 		$setting_theme_child_type = check_var('type');
 
 		ob_start();
@@ -3079,9 +3089,9 @@ class mf_theme_child
 
 		if($obj_cron->is_running == false || $setting_theme_child_company > 0 || $setting_theme_child_type == 'terms')
 		{
-			if($setting_theme_child_company > 0)
+			if($setting_theme_child_company > 0 || $setting_theme_child_company_id > 0)
 			{
-				$school_id = get_post_meta($setting_theme_child_company, 'school_id', true);
+				$school_id = ($setting_theme_child_company_id > 0 ? $setting_theme_child_company_id : get_post_meta($setting_theme_child_company, 'school_id', true));
 
 				switch($setting_theme_child_type)
 				{
