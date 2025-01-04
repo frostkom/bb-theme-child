@@ -1465,97 +1465,100 @@ class mf_theme_child
 
 							$next_page = "";
 
-							foreach($arr_content as $key => $arr_json)
+							if(is_array($arr_content))
 							{
-								/*"_links": 
+								foreach($arr_content as $key => $arr_json)
 								{
-									"self": {"href": "[api_url]limeobject/company/"}, 
-									"next": {"href": "[api_url]limeobject/company/?_offset=10"}
-								}, 
-								"_embedded": 
-								{
-									"limeobjects": 
-									[
-										{
-											'name': '[text]', 'legalname' => '[text]', '_descriptive' => '[text]',
-											'phone' => '[number]',	'phone2' => '',
-											'www' => '[url]',
-											'address' => '[text]', 'visitingaddress' => '[text]',
-											'customerno' => '[number]',
-											'registrationno' => '[osn]', 'gln' => '[osn]',
-											'zipcode' => '[zipcode]',
-											'city' => '[CITY]', 'searchcity' => '[CITY]', 'searchcity2' => '', 'searchcity3' => '',
-											'visitingzipcode' => '', 'visitingcity' => '[CITY]',
-											'relation' => array ( 'id' => [id], 'key' => '[id]', 'text' => 'Kund', ),
-											'customertype' => array ( 'id' => [id], 'key' => '[id]', 'text' => '[text]', ),
-											'memberno' => '[number]',
-											'email' => '[email]',
-											'active' => true,
-											'invoiceaddress1' => '[text]','invoiceaddress2' => '[zipcode] [CITY]',
-											'deliveryaddress1' => '[text]','deliveryaddress2' => '[zipcode] [CITY]',
-											'properties' => array ( ),
-											'address2' => '', 'visitingaddress2' => '', 'invoiceaddress3' => '', 'deliveryaddress3' => '',
-											'description' => '[text]',
-											'map_long' => '17.6386409', 'map_lat' => '59.8569079',
-											'pricelist' => array ( 'id' => [id], 'key' => '1', 'text' => 'Guldmedlem', ),
-											'hideweb' => true,
-											'region' => 1004,
-											'companytype' => array ( 'id' => [id], 'key' => 'FMG', 'text' => 'Företagsmedlem Guld', ),
-											'creditlimit' => 30000,
-											'ismember' => true, 'iscustomer' => true,
-											'companycolor' => array ( 'id' => [id], 'key' => '[id]', 'text' => 'Kund & Medlem', ),
-											'teachercount' => 5,
-											'edi' => array ( 'id' => [id], 'key' => 'INVOICGB', 'text' => 'INVOICGB', ),
-											'iaid_member' => 'SVTRAFIKRIKSF_NYBRONSTRAFIKSK', 'iaid_service' => 'STRSERVICE_NYBRONSTRAFIKSK',
-											'blanket_version' => 'E',
-											'updated_website' => '2023-05-04T00:00:00+02:00',
-											'_id' => 19401,
-											'_links' => array (
-												...
-												'self' => array ( 'href' => '[api_url]limeobject/company/842501/', ), 
-												...
-												'relation_propertylink' => array ( 'href' => '[api_url]limeobject/company/19401/propertylink/', 'name' => 'propertylink', ),
-												...
-											),
-										}
-									]
-								}*/
-
-								switch($key)
-								{
-									case '_links':
-										if(isset($arr_json['next']['href']))
-										{
-											$next_page = $arr_json['next']['href'];
-										}
-									break;
-
-									case '_embedded':
-										foreach($arr_json as $key => $arr_embedded)
-										{
-											if($key == 'limeobjects')
+									/*"_links": 
+									{
+										"self": {"href": "[api_url]limeobject/company/"}, 
+										"next": {"href": "[api_url]limeobject/company/?_offset=10"}
+									}, 
+									"_embedded": 
+									{
+										"limeobjects": 
+										[
 											{
-												if($data['debug'] == true)
-												{
-													//echo "<p><strong>".date("H:i:s")."</strong> Get ".count($arr_embedded)." Companies...</p>";
-												}
+												'name': '[text]', 'legalname' => '[text]', '_descriptive' => '[text]',
+												'phone' => '[number]',	'phone2' => '',
+												'www' => '[url]',
+												'address' => '[text]', 'visitingaddress' => '[text]',
+												'customerno' => '[number]',
+												'registrationno' => '[osn]', 'gln' => '[osn]',
+												'zipcode' => '[zipcode]',
+												'city' => '[CITY]', 'searchcity' => '[CITY]', 'searchcity2' => '', 'searchcity3' => '',
+												'visitingzipcode' => '', 'visitingcity' => '[CITY]',
+												'relation' => array ( 'id' => [id], 'key' => '[id]', 'text' => 'Kund', ),
+												'customertype' => array ( 'id' => [id], 'key' => '[id]', 'text' => '[text]', ),
+												'memberno' => '[number]',
+												'email' => '[email]',
+												'active' => true,
+												'invoiceaddress1' => '[text]','invoiceaddress2' => '[zipcode] [CITY]',
+												'deliveryaddress1' => '[text]','deliveryaddress2' => '[zipcode] [CITY]',
+												'properties' => array ( ),
+												'address2' => '', 'visitingaddress2' => '', 'invoiceaddress3' => '', 'deliveryaddress3' => '',
+												'description' => '[text]',
+												'map_long' => '17.6386409', 'map_lat' => '59.8569079',
+												'pricelist' => array ( 'id' => [id], 'key' => '1', 'text' => 'Guldmedlem', ),
+												'hideweb' => true,
+												'region' => 1004,
+												'companytype' => array ( 'id' => [id], 'key' => 'FMG', 'text' => 'Företagsmedlem Guld', ),
+												'creditlimit' => 30000,
+												'ismember' => true, 'iscustomer' => true,
+												'companycolor' => array ( 'id' => [id], 'key' => '[id]', 'text' => 'Kund & Medlem', ),
+												'teachercount' => 5,
+												'edi' => array ( 'id' => [id], 'key' => 'INVOICGB', 'text' => 'INVOICGB', ),
+												'iaid_member' => 'SVTRAFIKRIKSF_NYBRONSTRAFIKSK', 'iaid_service' => 'STRSERVICE_NYBRONSTRAFIKSK',
+												'blanket_version' => 'E',
+												'updated_website' => '2023-05-04T00:00:00+02:00',
+												'_id' => 19401,
+												'_links' => array (
+													...
+													'self' => array ( 'href' => '[api_url]limeobject/company/842501/', ), 
+													...
+													'relation_propertylink' => array ( 'href' => '[api_url]limeobject/company/19401/propertylink/', 'name' => 'propertylink', ),
+													...
+												),
+											}
+										]
+									}*/
 
-												foreach($arr_embedded as $key => $arr_item)
+									switch($key)
+									{
+										case '_links':
+											if(isset($arr_json['next']['href']))
+											{
+												$next_page = $arr_json['next']['href'];
+											}
+										break;
+
+										case '_embedded':
+											foreach($arr_json as $key => $arr_embedded)
+											{
+												if($key == 'limeobjects')
 												{
-													$data_temp = $data;
-													$data_temp['array'] = $arr_item;
-													$this->get_company_item($data_temp);
+													if($data['debug'] == true)
+													{
+														//echo "<p><strong>".date("H:i:s")."</strong> Get ".count($arr_embedded)." Companies...</p>";
+													}
+
+													foreach($arr_embedded as $key => $arr_item)
+													{
+														$data_temp = $data;
+														$data_temp['array'] = $arr_item;
+														$this->get_company_item($data_temp);
+													}
 												}
 											}
-										}
-									break;
+										break;
 
-									default:
-										if($data['debug'] == true)
-										{
-											echo "<p><strong>".date("H:i:s")."</strong> Unknown key: ".$key."</p>";
-										}
-									break;
+										default:
+											if($data['debug'] == true)
+											{
+												echo "<p><strong>".date("H:i:s")."</strong> Unknown key: ".$key."</p>";
+											}
+										break;
+									}
 								}
 							}
 
