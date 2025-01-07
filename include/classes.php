@@ -554,7 +554,7 @@ class mf_theme_child
 
 		$school_id = $data['array']['_id'];
 
-		if($data['array']['active'] == true && $data['array']['hideweb'] == false && $data['array']['memberno'] != '' && in_array($data['array']['companytype']['id'], array('509201', '509301'))) //509201 = Företagsmedlem Företag, 509301 = Företagsmedlem Guld 
+		if($data['array']['active'] == true && $data['array']['hideweb'] == false && in_array($data['array']['companytype']['id'], array('509201', '509301')))// && $data['array']['memberno'] != '' //509201 = Företagsmedlem Företag, 509301 = Företagsmedlem Guld 
 		{
 			$post_id = 0;
 			$post_modified = DEFAULT_DATE;
@@ -575,10 +575,6 @@ class mf_theme_child
 			if($data['debug'] == true)
 			{
 				//echo "<p><strong>".date("H:i:s")."</strong> API Response #".$post_id.": ".var_export($data['array'], true)."</p>";
-			}
-
-			if($data['debug'] == true)
-			{
 				//echo "<p><strong>".date("H:i:s")."</strong> Modified #".$post_id.": ".date("Y-m-d H:i:s", strtotime($data['array']['updated_website']))." > ".$post_modified."</p>";
 			}
 
@@ -1943,7 +1939,7 @@ class mf_theme_child
 			$option = get_option($setting_key);
 
 			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => __("YYMMDDXXXX", 'lang_bb-theme-child'), 'xtra' => "maxlength='13'"))
-			."<div class='form_button'>"
+			."<div".get_form_button_classes().">"
 				.show_button(array('type' => 'button', 'name' => 'btnDebugSSNRun', 'text' => __("Run Now", 'lang_bb-theme-child'), 'class' => 'button-secondary', 'xtra' => " rel='debug_ssn_run'"))
 			."</div>
 			<div id='debug_ssn_run'></div>";
@@ -2015,7 +2011,7 @@ class mf_theme_child
 
 		function setting_theme_child_debug_callback()
 		{
-			echo "<div class='form_button'>"
+			echo "<div".get_form_button_classes().">"
 				.show_button(array('type' => 'button', 'name' => 'btnDebugLimeRun', 'text' => __("Run Now", 'lang_bb-theme-child'), 'class' => 'button-secondary', 'xtra' => " rel='debug_lime_run'"))
 			."</div>
 			<div id='debug_lime_run'></div>";
