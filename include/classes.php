@@ -281,6 +281,7 @@ class mf_theme_child
 						{
 							$product_virtual = get_post_meta($variation_id, '_virtual', true);
 							$product_downloadable = get_post_meta($variation_id, '_downloadable', true);
+							$product_sku = get_post_meta($variation_id, '_sku', true);
 
 							$item_id = $product_id."_v".$variation_id;
 						}
@@ -289,64 +290,101 @@ class mf_theme_child
 						{
 							$product_virtual = get_post_meta($product_id, '_virtual', true);
 							$product_downloadable = get_post_meta($product_id, '_downloadable', true);
+							$product_sku = get_post_meta($product_id, '_sku', true);
 
-							$item_id = $product_id;
-						}
+							$result = $wpdb->get_results($wpdb->prepare("SELECT ID, bundled_item_id FROM ".$wpdb->prefix."woocommerce_bundled_items INNER JOIN ".$wpdb->prefix."posts ON ".$wpdb->prefix."woocommerce_bundled_items.product_id = ".$wpdb->prefix."posts.ID WHERE bundle_id = '%d'", $product_id));
+							$num_rows = $wpdb->num_rows;
 
-						if($i > 1)
-						{
-							$item_id .= "_".$i;
-						}
-
-						if($product_virtual == 'yes' || $product_downloadable == 'yes')
-						{
-							$product_ssn = get_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, true);
-							$product_phone = get_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, true);
-							$product_email = get_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, true);
-
-							if($product_ssn != '')
+							if($num_rows > 0)
 							{
-								$product_ssn = substr($product_ssn, 0, 6)."-".substr($product_ssn, 6);
+								// Just ignore. The bundled products will come later...
+								$item_id = "";
+								/*$item_id = $product_id."_b";
+
+								$arr_item['total'] = 0;
+
+								foreach($result as $r)
+								{
+									$item_id .= "_".$r->ID;
+
+									$bundle_item_price = get_post_meta($r->ID, '_price', true);
+									
+									$bundle_item_discount = (int)$wpdb->get_var($wpdb->prepare("SELECT meta_value FROM ".$wpdb->prefix."woocommerce_bundled_itemmeta WHERE bundled_item_id = %s AND meta_key = %s", $r->bundled_item_id, 'discount'));
+
+									//$post_data .= "{'PRICE': ".$bundle_item_price." - ".$bundle_item_discount."%}";
+
+									if($bundle_item_discount > 0)
+									{
+										$bundle_item_price *= (1 - $bundle_item_discount / 100);
+									}
+
+									//$post_data .= "{'DISCOUNTED': ".$bundle_item_price."}";
+
+									$arr_item['total'] += $bundle_item_price;
+
+									//$post_data .= "{'TOTAL': ".$arr_item['total']."}";
+								}
+
+								$product_virtual = get_post_meta($product_id, '_virtual', true);
+								$product_downloadable = get_post_meta($product_id, '_downloadable', true);
+								$product_sku = get_post_meta($product_id, '_sku', true);*/
+							}
+
+							else
+							{
+								$item_id = $product_id;
 							}
 						}
 
-						else
+						if($item_id != '')
 						{
-							$product_ssn = $product_phone = $product_email = "";
+							if($i > 1)
+							{
+								$item_id .= "_".$i;
+							}
+
+							if($product_virtual == 'yes' || $product_downloadable == 'yes')
+							{
+								$product_ssn = get_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, true);
+								$product_phone = get_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, true);
+								$product_email = get_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, true);
+
+								if($product_ssn != '')
+								{
+									$product_ssn = substr($product_ssn, 0, 6)."-".substr($product_ssn, 6);
+								}
+							}
+
+							else
+							{
+								$product_ssn = $product_phone = $product_email = "";
+							}
+
+							$unitPrice = ($arr_item['total'] / $quantity);
+
+							if(!($unitPrice > 0))
+							{
+								//do_log(__FUNCTION__." - No price: ".var_export($arr_item, true));
+
+								$success = false;
+							}
+
+							$unitPrice = number_format((float)$unitPrice, 2, '.', '');
+
+							$post_data .= ($order_row_count > 0 ? "," : "").'{
+								"sku": "'.$product_sku.'",
+								"description": "",
+								"quantity": '.$quantity.',
+								"unit": "S",
+								"unitPrice": "'.$unitPrice.'",
+								"user_idenifier": "'.$_customer_user.'",
+								"identityNumber": "'.$product_ssn.'",
+								"email": "'.$product_email.'",
+								"mobilePhone": "'.$product_phone.'"
+							}';
+
+							$order_row_count++;
 						}
-
-						if($variation_id > 0)
-						{
-							$sku = get_post_meta($variation_id, '_sku', true);
-						}
-
-						else
-						{
-							$sku = get_post_meta($product_id, '_sku', true);
-						}
-
-						$unitPrice = ($arr_item['total'] / $quantity);
-
-						if(!($unitPrice > 0))
-						{
-							$success = false;
-						}
-
-						$unitPrice = number_format((float)$unitPrice, 2, '.', '');
-
-						$post_data .= ($order_row_count > 0 ? "," : "").'{
-							"sku": "'.$sku.'",
-							"description": "",
-							"quantity": '.$quantity.',
-							"unit": "S",
-							"unitPrice": "'.$unitPrice.'",
-							"user_idenifier": "'.$_customer_user.'",
-							"identityNumber": "'.$product_ssn.'",
-							"email": "'.$product_email.'",
-							"mobilePhone": "'.$product_phone.'"
-						}';
-
-						$order_row_count++;
 					}
 				}
 
@@ -2289,12 +2327,12 @@ class mf_theme_child
 							{
 								if($this->send_to_optima('completed', $id, true))
 								{
-									echo __("The information was successfully sent", 'lang_bb-theme-child');
+									echo "<i class='fa fa-recycle green' title='".__("The information was successfully sent", 'lang_bb-theme-child')."'></i>";
 								}
 
 								else
 								{
-									echo __("The information could not be sent", 'lang_bb-theme-child');
+									echo "<i class='fa fa-recycle red' title='".__("The information could not be sent", 'lang_bb-theme-child')."'></i>";
 								}
 							}
 
@@ -2323,6 +2361,10 @@ class mf_theme_child
 
 								echo "<a href='".wp_nonce_url($link_url, 'optima_resend_'.$id, '_wpnonce_optima_resend')."' rel='confirm'><i class='fa fa-recycle' title='".__("Send Again", 'lang_bb-theme-child').": ".$post_data_send."'></i></a>";
 							}
+
+							$order = wc_get_order($id);
+
+							echo " <a href='".$order->get_checkout_order_received_url()."'><i class='fas fa-vote-yea' title='".__("View Customer Checkout Page", 'lang_bb-theme-child')."'></i></a>";
 						}
 					break;
 				}
@@ -2547,7 +2589,7 @@ class mf_theme_child
 
 		$get_cart_shipping_total = WC()->cart->get_cart_shipping_total();
 
-		list($price, $suffix) = $this->get_raw_price($get_cart_shipping_total);	
+		list($price, $suffix) = $this->get_raw_price($get_cart_shipping_total);
 
 		$this->order_has_shipping($price);
 
@@ -2587,7 +2629,7 @@ class mf_theme_child
 
 			case 'shipping':
 				$total['value'] = preg_replace("/<small class=\"shipped_via\">(.*?)<\/small>/i", "", wp_kses_post($total['value']));
-			
+
 				$this->order_has_shipping($total['value']);
 
 				if($this->order_has_shipping == false)
@@ -2600,7 +2642,7 @@ class mf_theme_child
 
 			case 'tax':
 				$total['value'] = wp_kses_post($total['value']);
-				list($price, $suffix) = $this->get_raw_price($total['value']);				
+				list($price, $suffix) = $this->get_raw_price($total['value']);
 
 				if($this->order_has_shipping == true)
 				{
