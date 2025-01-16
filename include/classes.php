@@ -1964,7 +1964,7 @@ class mf_theme_child
 					break;
 
 					default:
-						echo sprintf(__("The site URL is %s and test mode is NOT activated", 'lang_bb-theme-child'), $site_url_clean);
+						echo "<a href='".admin_url("admin.php?page=wc-settings&tab=checkout&section=dibs_easy")."'>".sprintf(__("The site URL is %s and test mode is NOT activated", 'lang_bb-theme-child'), $site_url_clean)."</a>";
 					break;
 				}
 
