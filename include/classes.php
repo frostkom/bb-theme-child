@@ -277,6 +277,8 @@ class mf_theme_child
 
 					for($i = 1; $i <= $i_limit; $i++)
 					{
+						$is_bundled = false;
+
 						if($variation_id > 0)
 						{
 							$product_virtual = get_post_meta($variation_id, '_virtual', true);
@@ -297,11 +299,10 @@ class mf_theme_child
 
 							if($num_rows > 0)
 							{
-								// Just ignore. The bundled products will come later...
-								$item_id = "";
-								/*$item_id = $product_id."_b";
+								$is_bundled = true;
+								$item_id = $product_id."_b";
 
-								$arr_item['total'] = 0;
+								/*$arr_item['total'] = 0;
 
 								foreach($result as $r)
 								{
@@ -311,23 +312,13 @@ class mf_theme_child
 									
 									$bundle_item_discount = (int)$wpdb->get_var($wpdb->prepare("SELECT meta_value FROM ".$wpdb->prefix."woocommerce_bundled_itemmeta WHERE bundled_item_id = %s AND meta_key = %s", $r->bundled_item_id, 'discount'));
 
-									//$post_data .= "{'PRICE': ".$bundle_item_price." - ".$bundle_item_discount."%}";
-
 									if($bundle_item_discount > 0)
 									{
 										$bundle_item_price *= (1 - $bundle_item_discount / 100);
 									}
 
-									//$post_data .= "{'DISCOUNTED': ".$bundle_item_price."}";
-
 									$arr_item['total'] += $bundle_item_price;
-
-									//$post_data .= "{'TOTAL': ".$arr_item['total']."}";
-								}
-
-								$product_virtual = get_post_meta($product_id, '_virtual', true);
-								$product_downloadable = get_post_meta($product_id, '_downloadable', true);
-								$product_sku = get_post_meta($product_id, '_sku', true);*/
+								}*/
 							}
 
 							else
@@ -362,9 +353,9 @@ class mf_theme_child
 
 							$unitPrice = ($arr_item['total'] / $quantity);
 
-							if(!($unitPrice > 0))
+							if($is_bundled == false && !($unitPrice > 0))
 							{
-								//do_log(__FUNCTION__." - No price: ".var_export($arr_item, true));
+								do_log(__FUNCTION__." - No price: ".var_export($arr_item, true));
 
 								$success = false;
 							}
