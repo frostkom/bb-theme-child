@@ -1820,11 +1820,10 @@ class mf_theme_child
 		if($pagenow == 'options-general.php' && check_var('page') == 'settings_mf_base')
 		{
 			$theme_include_url = get_stylesheet_directory_uri()."/include/";
-			$theme_version = get_theme_version();
 
 			mf_enqueue_script('script_bb_theme_child_wp', $theme_include_url."script_wp.js", array(
 				'ajax_url' => admin_url('admin-ajax.php'),
-			), $theme_version);
+			));
 		}
 	}
 
@@ -2423,14 +2422,12 @@ class mf_theme_child
 		global $post;
 
 		$theme_include_url = get_stylesheet_directory_uri()."/include/";
-		//$theme_version = get_theme_version();
-		$theme_version = filemtime(get_stylesheet_directory()."/include/style.css");
-		mf_enqueue_style('bb-theme-child-style', $theme_include_url."style.css", $theme_version);
+
+		mf_enqueue_style('bb-theme-child-style', $theme_include_url."style.css");
 
 		if(isset($post->post_type) && $post->post_type == $this->post_type_instructor)
 		{
-			$theme_version = filemtime(get_stylesheet_directory()."/include/script_instructor.js");
-			mf_enqueue_script('script_bb_theme_instructor', $theme_include_url."script_instructor.js", $theme_version);
+			mf_enqueue_script('script_bb_theme_instructor', $theme_include_url."script_instructor.js");
 		}
 	}
 
@@ -3036,10 +3033,9 @@ class mf_theme_child
 	function woocommerce_after_order_notes($obj_checkout)
 	{
 		$theme_include_url = get_stylesheet_directory_uri()."/include/";
-		$theme_version = get_theme_version();
 
-		mf_enqueue_script('script_bb_theme_checkout', $theme_include_url."script_checkout.js", $theme_version);
-		mf_enqueue_style('style_bb_theme_checkout', $theme_include_url."style_checkout.css", $theme_version);
+		mf_enqueue_script('script_bb_theme_checkout', $theme_include_url."script_checkout.js");
+		mf_enqueue_style('style_bb_theme_checkout', $theme_include_url."style_checkout.css");
 
 		$this->run_checkout_part(array('type' => 'display', 'obj_checkout' => $obj_checkout));
 	}
