@@ -12,10 +12,12 @@
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 8.5.0
+ * @version 9.0.0
  *
  * @var bool $show_downloads Controls whether the downloads table should be rendered.
  */
+
+ // phpcs:disable WooCommerce.Commenting.CommentHooks.MissingHookComment
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,10 +32,12 @@ if ( ! $order ) {
 	return;
 }
 
-$order_items           = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
-$show_purchase_note    = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
-//$show_customer_details = is_user_logged_in() && $order->get_user_id() === get_current_user_id();
-$downloads             = $order->get_downloadable_items();
+$order_items        = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
+$show_purchase_note = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
+$downloads          = $order->get_downloadable_items();
+
+// We make sure the order belongs to the user. This will also be true if the user is a guest, and the order belongs to a guest (userID === 0).
+//$show_customer_details = $order->get_user_id() === get_current_user_id();
 
 if ( $show_downloads ) {
 	wc_get_template(
@@ -88,41 +92,17 @@ if ( $show_downloads ) {
 		<tfoot>
 			<?php
 			foreach ( $order->get_order_item_totals() as $key => $total ) {
-				if($key != 'cart_subtotal')
+				$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
+
+				if($out_temp != '')
 				{
-					echo "<tr class='".$key."'>"
-						."<th>".esc_html($total['label'])."</th>" // scope='row'
-						."<td>";
-
-							//." (".var_export($total, true).")"
-							//." (".$key.", ".$order_id.")"
-
-							switch($key)
-							{
-								case 'payment_method':
-									echo esc_html($total['value']);
-
-									$dibs_payment_method = get_post_meta($order_id, 'dibs_payment_method', true);
-
-									if($dibs_payment_method != '')
-									{
-										echo " - ".$dibs_payment_method;
-									}
-								break;
-
-								case 'order_total':
-									echo preg_replace("/<small class=\"includes_tax\">(.*?)<\/small>/i", "", wp_kses_post($total['value']));
-								break;
-
-								default:
-									echo wp_kses_post($total['value']);
-								break;
-							}
-
-						echo "</td>
+					echo "<tr class='order_details ".$key."'>
+						<th>".esc_html($total['label'])."</th>
+						<td>".$out_temp."</td>
 					</tr>";
 				}
 			}
+
 			?>
 			<?php if ( $order->get_customer_note() ) : ?>
 				<tr>
@@ -159,8 +139,8 @@ echo "<div class='fl-button-wrap fl-button-width-auto fl-button-center continue_
 	."<p>".sprintf(__("Download from %s or %s. You need to create an account the first time you log in.", 'lang_bb-theme-child'), "App Store", "Google Play")."</p>"
 	."<p>".__("There you use the social security number that you entered when you bought your periods and that you see above in your order. When you have created an account and logged in, your periods are there waiting for you. Good luck!", 'lang_bb-theme-child')."</p>";
 
-	echo "<div class='download_buttons'>" //fl-button-wrap fl-button-width-auto fl-button-center 
-		."<a href='https://apps.apple.com/se/app/k%C3%B6rkortsboken/id6450051169' class='fl-button'>
+	echo "<div class='download_buttons'>
+		<a href='https://apps.apple.com/se/app/k%C3%B6rkortsboken/id6450051169' class='fl-button'>
 			<span class='fl-button-text'>App Store</span>
 		</a>
 		<a href='https://play.google.com/store/apps/details?id=se.str.korkortsboken&pli=1' class='fl-button'>

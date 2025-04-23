@@ -12,7 +12,7 @@
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 9.0.0
+ * @version 9.8.0
  *
  * @var bool $show_downloads Controls whether the downloads table should be rendered.
  */
@@ -21,10 +21,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Added
+############################
 if(!isset($obj_theme_child))
 {
 	$obj_theme_child = new mf_theme_child();
 }
+############################
 
 $order = wc_get_order( $order_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
@@ -35,9 +38,20 @@ if ( ! $order ) {
 $order_items        = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
 $show_purchase_note = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
 $downloads          = $order->get_downloadable_items();
+$actions            = array_filter(
+	wc_get_account_orders_actions( $order ),
+	function ( $key ) {
+		return 'view' !== $key;
+	},
+	ARRAY_FILTER_USE_KEY
+);
 
+// Changed
+##########################
 // We make sure the order belongs to the user. This will also be true if the user is a guest, and the order belongs to a guest (userID === 0).
 //$show_customer_details = $order->get_user_id() === get_current_user_id();
+$show_customer_details = ($order->get_user_id() === get_current_user_id() || IS_SUPER_ADMIN);
+##########################
 
 if ( $show_downloads ) {
 	wc_get_template(
@@ -49,12 +63,18 @@ if ( $show_downloads ) {
 	);
 }
 
-//if ( $show_customer_details ) {
+//Moved up
+##########################
+if ( $show_customer_details ) {
 	wc_get_template( 'order/order-details-customer.php', array( 'order' => $order ) );
-//}
+}
+##########################
+
 ?>
 <section class="woocommerce-order-details">
 	<?php do_action( 'woocommerce_order_details_before_order_table', $order ); ?>
+
+	<h2 class="woocommerce-order-details__title"><?php esc_html_e( 'Order details', 'woocommerce' ); ?></h2>
 
 	<table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
 
@@ -89,26 +109,52 @@ if ( $show_downloads ) {
 			?>
 		</tbody>
 
+		<?php
+		if ( ! empty( $actions ) ) :
+			?>
+		<tfoot>
+			<tr>
+				<th class="order-actions--heading"><?php esc_html_e( 'Actions', 'woocommerce' ); ?>:</th>
+				<td>
+						<?php
+						$wp_button_class = wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '';
+						foreach ( $actions as $key => $action ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+							if ( empty( $action['aria-label'] ) ) {
+								// Generate the aria-label based on the action name.
+								/* translators: %1$s Action name, %2$s Order number. */
+								$action_aria_label = sprintf( __( '%1$s order number %2$s', 'woocommerce' ), $action['name'], $order->get_order_number() );
+							} else {
+								$action_aria_label = $action['aria-label'];
+							}
+								echo '<a href="' . esc_url( $action['url'] ) . '" class="woocommerce-button' . esc_attr( $wp_button_class ) . ' button ' . sanitize_html_class( $key ) . ' order-actions-button " aria-label="' . esc_attr( $action_aria_label ) . '">' . esc_html( $action['name'] ) . '</a>';
+								unset( $action_aria_label );
+						}
+						?>
+					</td>
+				</tr>
+			</tfoot>
+			<?php endif ?>
 		<tfoot>
 			<?php
 			foreach ( $order->get_order_item_totals() as $key => $total ) {
+				// Added
 				$out_temp = $obj_theme_child->get_order_detail_row($order_id, $key, $total);
 
 				if($out_temp != '')
 				{
-					echo "<tr class='order_details ".$key."'>
-						<th>".esc_html($total['label'])."</th>
-						<td>".$out_temp."</td>
-					</tr>";
+				?>
+					<tr>
+						<th scope="row"><?php echo esc_html( $total['label'] ); ?></th>
+						<td><?php echo wp_kses_post( $total['value'] ); ?></td>
+					</tr>
+					<?php
 				}
 			}
-
-			//echo "<tr><td colspan='2'>".var_export($order->get_order_item_totals(), true)."</td></tr>";
 			?>
 			<?php if ( $order->get_customer_note() ) : ?>
 				<tr>
 					<th><?php esc_html_e( 'Note:', 'woocommerce' ); ?></th>
-					<td><?php echo wp_kses_post( nl2br( wptexturize( $order->get_customer_note() ) ) ); ?></td>
+					<td><?php echo wp_kses( nl2br( wptexturize( $order->get_customer_note() ) ), array( 'br' => array() ) ); ?></td>
 				</tr>
 			<?php endif; ?>
 		</tfoot>
@@ -126,6 +172,8 @@ if ( $show_downloads ) {
  */
 do_action( 'woocommerce_after_order_details', $order );
 
+// Added
+##########################
 echo "<div class='fl-button-wrap fl-button-width-auto fl-button-center continue_buttons hide_on_print'>
 	<a href='#' onclick='window.print()' class='fl-button'>
 		<span class='fl-button-text'>".__("Save your order details", 'lang_bb-theme-child')."</span>
@@ -149,3 +197,4 @@ echo "<div class='fl-button-wrap fl-button-width-auto fl-button-center continue_
 		</a>
 	</div>
 </div>";
+##########################

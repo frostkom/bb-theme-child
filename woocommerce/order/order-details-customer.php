@@ -24,7 +24,7 @@ if(!isset($obj_theme_child))
 
 //$show_shipping = ! wc_ship_to_billing_address_only() && $order->needs_shipping_address();
 
-echo "<section class='woocommerce-customer-details'>";
+echo "<section class='woocommerce-customer-details' style='margin-top: 1em;'>";
 
 	//if ( $show_shipping ) :
 ?>
