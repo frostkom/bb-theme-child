@@ -613,19 +613,19 @@ class mf_theme_child
 			if($data['array']['email'] == ''){				$data['array']['email'] = "-";}
 			if($data['array']['description'] == ''){		$data['array']['description'] = "-";}
 			if($data['array']['visitingaddress'] == ''){	$data['array']['visitingaddress'] = "-";}
-			if($data['array']['zipcode'] == ''){			$data['array']['zipcode'] = "-";}
-			if($data['array']['city'] == ''){				$data['array']['city'] = "-";}
+			if($data['array']['visitingzipcode'] == ''){	$data['array']['visitingzipcode'] = "-";}
+			if($data['array']['visitingcity'] == ''){		$data['array']['visitingcity'] = "-";}
 
 			$post_content = "";
 
 			// Add searchable parameters
 			##################################
-			if($data['array']['city'] != '')
+			if($data['array']['visitingcity'] != '')
 			{
-				$post_content .= ($post_content != '' ? ", " : "").$data['array']['city'];
+				$post_content .= ($post_content != '' ? ", " : "").$data['array']['visitingcity'];
 			}
 
-			if($data['array']['searchcity'] != '' && $data['array']['searchcity'] != $data['array']['city'])
+			if($data['array']['searchcity'] != '' && $data['array']['searchcity'] != $data['array']['visitingcity'])
 			{
 				$post_content .= ($post_content != '' ? ", " : "").$data['array']['searchcity'];
 			}
@@ -668,7 +668,7 @@ class mf_theme_child
 				break;
 			}
 
-			$address = $data['array']['visitingaddress'].", ".$data['array']['zipcode']." ".$data['array']['city'];
+			$address = $data['array']['visitingaddress'].", ".$data['array']['visitingzipcode']." ".$data['array']['visitingcity'];
 
 			list($street_name, $street_number) = $this->split_street_address($data['array']['visitingaddress']);
 
@@ -688,7 +688,7 @@ class mf_theme_child
 					'email_address' => $data['array']['email'],
 					'address' => $address,
 					'post_address' => $address,
-					'location' => $data['array']['city'],
+					'location' => $data['array']['visitingcity'],
 					'address_map' => array(
 						'address' => $address,
 						'lat' => $data['array']['map_lat'],
@@ -697,8 +697,8 @@ class mf_theme_child
 						//'place_id' => "",
 						'street_name' => $street_name,
 						'street_number' => $street_number,
-						'post_code' => $data['array']['zipcode'],
-						'city' => $data['array']['city'],
+						'post_code' => $data['array']['visitingzipcode'],
+						'city' => $data['array']['visitingcity'],
 						//'state' => "",
 						'country' => "Sweden",
 						'country_short' => "SE",
@@ -1512,7 +1512,7 @@ class mf_theme_child
 												'registrationno' => '[osn]', 'gln' => '[osn]',
 												'zipcode' => '[zipcode]',
 												'city' => '[CITY]', 'searchcity' => '[CITY]', 'searchcity2' => '', 'searchcity3' => '',
-												'visitingzipcode' => '', 'visitingcity' => '[CITY]',
+												'visitingzipcode' => '[zipcode]', 'visitingcity' => '[CITY]',
 												'relation' => array ( 'id' => [id], 'key' => '[id]', 'text' => 'Kund', ),
 												'customertype' => array ( 'id' => [id], 'key' => '[id]', 'text' => '[text]', ),
 												'memberno' => '[number]',
