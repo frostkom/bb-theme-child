@@ -778,7 +778,7 @@ class mf_theme_child
 
 					if($data['debug'] == true)
 					{
-						echo "<p><strong>".date("H:i:s")."</strong> Added T&s ".$school_id." -> ".$post_id." -> ".get_post_title($post_id)." (".$wpdb->num_rows.")</p>"; // -> ".var_export($post_data, true)."
+						echo "<p><strong>".date("H:i:s")."</strong> Added T&s ".$school_id." -> ".$post_id." -> ".get_the_title($post_id)." (".$wpdb->num_rows.")</p>"; // -> ".var_export($post_data, true)."
 					}
 				}
 				######################################
@@ -789,7 +789,7 @@ class mf_theme_child
 				{
 					if($data['debug'] == true)
 					{
-						echo "<p><strong>".date("H:i:s")."</strong> Get Images for ".$school_id." -> ".$post_id." -> ".get_post_title($post_id)."</p>";
+						echo "<p><strong>".date("H:i:s")."</strong> Get Images for ".$school_id." -> ".$post_id." -> ".get_the_title($post_id)."</p>";
 					}
 
 					$meta_key_count = 1;
@@ -1313,7 +1313,7 @@ class mf_theme_child
 
 														if($data['debug'] == true && $post_id > 0)
 														{
-															echo "<p><strong>".date("H:i:s")."</strong> Got PostID: ".$company_id." -> ".$post_id." -> ".get_post_title($post_id)."</p>";
+															echo "<p><strong>".date("H:i:s")."</strong> Got PostID: ".$company_id." -> ".$post_id." -> ".get_the_title($post_id)."</p>";
 														}
 													}
 
@@ -1428,7 +1428,7 @@ class mf_theme_child
 								{
 									if($data['debug'] == true)
 									{
-										echo "<p><strong>".date("H:i:s")."</strong> Insert class ".$term_id." to #".$post_id." (".get_post_title($post_id).")</p>";
+										echo "<p><strong>".date("H:i:s")."</strong> Insert class ".$term_id." to #".$post_id." (".get_the_title($post_id).")</p>";
 									}
 
 									$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->term_relationships." SET object_id = '%d', term_taxonomy_id = '%d'", $post_id, $term_id));
@@ -1454,7 +1454,7 @@ class mf_theme_child
 
 										if($data['debug'] == true)
 										{
-											echo "<p><strong>".date("H:i:s")."</strong> Insert index ".$term_id."/".$name." to #".$post_id." (".get_post_title($post_id).")</p>";
+											echo "<p><strong>".date("H:i:s")."</strong> Insert index ".$term_id."/".$name." to #".$post_id." (".get_the_title($post_id).")</p>";
 										}
 
 										$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."wpgb_index SET object_id = '%d', slug = %s, facet_value = %s, facet_name = %s, facet_id = '%d'", $post_id, $parent_slug, $slug, $name, $term_id));
