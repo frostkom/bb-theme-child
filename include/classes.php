@@ -2283,7 +2283,7 @@ class mf_theme_child
 			{
 				case 'optima_http_code':
 					$arr_order = $post_id;
-					$post_id = $arr_order->id;
+					$post_id = $arr_order->get_id();
 					//$arr_order = wc_get_order($post_id);
 
 					list($success, $post_data_send) = $this->get_post_data(array('order_id' => $post_id));
