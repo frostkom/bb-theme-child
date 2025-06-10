@@ -14,6 +14,7 @@ class mf_theme_child
 	var $ignore_count = 0;
 	var $arr_terms_id = array();
 	var $order_has_shipping;
+	var $woocommerce_custom_orders_table_enabled = '';
 
 	function __construct()
 	{
@@ -221,27 +222,55 @@ class mf_theme_child
 	{
 		global $wpdb;
 
+		$this->get_woocommerce_custom_orders_table_enabled();
+
 		$success = true;
 
 		$_customer_user = "";
 
-		$_billing_first_name = get_post_meta($data['order_id'], '_billing_first_name', true);
-		$_billing_last_name = get_post_meta($data['order_id'], '_billing_last_name', true);
-		$_billing_address_1 = get_post_meta($data['order_id'], '_billing_address_1', true);
-		$_billing_postcode = get_post_meta($data['order_id'], '_billing_postcode', true);
-		$_billing_city = get_post_meta($data['order_id'], '_billing_city', true);
-		$_billing_email = get_post_meta($data['order_id'], '_billing_email', true);
-		$_billing_phone = get_post_meta($data['order_id'], '_billing_phone', true);
+		$arr_order = wc_get_order($data['order_id']);
 
-		$_shipping_first_name = get_post_meta($data['order_id'], '_shipping_first_name', true);
-		$_shipping_last_name = get_post_meta($data['order_id'], '_shipping_last_name', true);
-		$_shipping_address_1 = get_post_meta($data['order_id'], '_shipping_address_1', true);
-		$_shipping_postcode = get_post_meta($data['order_id'], '_shipping_postcode', true);
-		$_shipping_city = get_post_meta($data['order_id'], '_shipping_city', true);
+		if($this->woocommerce_custom_orders_table_enabled == 'yes')
+		{
+			$_billing_first_name = $arr_order->get_billing_first_name();
+			$_billing_last_name = $arr_order->get_billing_last_name();
+			$_billing_address_1 = $arr_order->get_billing_address_1();
+			$_billing_postcode = $arr_order->get_billing_postcode();
+			$_billing_city = $arr_order->get_billing_city();
+			$_billing_email = $arr_order->get_billing_email();
+			$_billing_phone = $arr_order->get_billing_phone();
 
-		$_dibs_payment_id = get_post_meta($data['order_id'], '_dibs_payment_id', true);
+			$_shipping_first_name = $arr_order->get_shipping_first_name();
+			$_shipping_last_name = $arr_order->get_shipping_last_name();
+			$_shipping_address_1 = $arr_order->get_shipping_address_1();
+			$_shipping_postcode = $arr_order->get_shipping_postcode();
+			$_shipping_city = $arr_order->get_shipping_city();
 
-		$_order_shipping = get_post_meta($data['order_id'], '_order_shipping', true);
+			$_dibs_payment_id = $arr_order->get_meta('_dibs_payment_id', true);
+
+			$_order_shipping = $arr_order->get_meta('_order_shipping', true);
+		}
+
+		else
+		{
+			$_billing_first_name = get_post_meta($data['order_id'], '_billing_first_name', true);
+			$_billing_last_name = get_post_meta($data['order_id'], '_billing_last_name', true);
+			$_billing_address_1 = get_post_meta($data['order_id'], '_billing_address_1', true);
+			$_billing_postcode = get_post_meta($data['order_id'], '_billing_postcode', true);
+			$_billing_city = get_post_meta($data['order_id'], '_billing_city', true);
+			$_billing_email = get_post_meta($data['order_id'], '_billing_email', true);
+			$_billing_phone = get_post_meta($data['order_id'], '_billing_phone', true);
+
+			$_shipping_first_name = get_post_meta($data['order_id'], '_shipping_first_name', true);
+			$_shipping_last_name = get_post_meta($data['order_id'], '_shipping_last_name', true);
+			$_shipping_address_1 = get_post_meta($data['order_id'], '_shipping_address_1', true);
+			$_shipping_postcode = get_post_meta($data['order_id'], '_shipping_postcode', true);
+			$_shipping_city = get_post_meta($data['order_id'], '_shipping_city', true);
+
+			$_dibs_payment_id = get_post_meta($data['order_id'], '_dibs_payment_id', true);
+
+			$_order_shipping = get_post_meta($data['order_id'], '_order_shipping', true);
+		}
 
 		$post_data = '{
 			"source": "korkort",
@@ -264,7 +293,6 @@ class mf_theme_child
 
 				$order_row_count = 0;
 
-				$arr_order = wc_get_order($data['order_id']);
 				$arr_order_items = $arr_order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
 
 				$i_limit = 1;
@@ -281,18 +309,42 @@ class mf_theme_child
 
 						if($variation_id > 0)
 						{
-							$product_virtual = get_post_meta($variation_id, '_virtual', true);
-							$product_downloadable = get_post_meta($variation_id, '_downloadable', true);
-							$product_sku = get_post_meta($variation_id, '_sku', true);
+							if($this->woocommerce_custom_orders_table_enabled == 'yes')
+							{
+								$arr_variation = wc_get_product($variation_id);
+
+								$product_virtual = ($arr_variation->is_virtual() ? 'yes' : 'no');
+								$product_downloadable = ($arr_variation->is_downloadable() ? 'yes' : 'no');
+								$product_sku = $arr_variation->get_sku();
+							}
+
+							else
+							{
+								$product_virtual = get_post_meta($variation_id, '_virtual', true);
+								$product_downloadable = get_post_meta($variation_id, '_downloadable', true);
+								$product_sku = get_post_meta($variation_id, '_sku', true);
+							}
 
 							$item_id = $product_id."_v".$variation_id;
 						}
 
 						else
 						{
-							$product_virtual = get_post_meta($product_id, '_virtual', true);
-							$product_downloadable = get_post_meta($product_id, '_downloadable', true);
-							$product_sku = get_post_meta($product_id, '_sku', true);
+							if($this->woocommerce_custom_orders_table_enabled == 'yes')
+							{
+								$arr_product = wc_get_product($product_id);
+
+								$product_virtual = ($arr_product->is_virtual() ? 'yes' : 'no');
+								$product_downloadable = ($arr_product->is_downloadable() ? 'yes' : 'no');
+								$product_sku = $arr_product->get_sku();
+							}
+
+							else
+							{
+								$product_virtual = get_post_meta($product_id, '_virtual', true);
+								$product_downloadable = get_post_meta($product_id, '_downloadable', true);
+								$product_sku = get_post_meta($product_id, '_sku', true);
+							}
 
 							$result = $wpdb->get_results($wpdb->prepare("SELECT ID, bundled_item_id FROM ".$wpdb->prefix."woocommerce_bundled_items INNER JOIN ".$wpdb->prefix."posts ON ".$wpdb->prefix."woocommerce_bundled_items.product_id = ".$wpdb->prefix."posts.ID WHERE bundle_id = '%d'", $product_id));
 							$num_rows = $wpdb->num_rows;
@@ -301,24 +353,6 @@ class mf_theme_child
 							{
 								$is_bundled = true;
 								$item_id = $product_id."_b";
-
-								/*$arr_item['total'] = 0;
-
-								foreach($result as $r)
-								{
-									$item_id .= "_".$r->ID;
-
-									$bundle_item_price = get_post_meta($r->ID, '_price', true);
-									
-									$bundle_item_discount = (int)$wpdb->get_var($wpdb->prepare("SELECT meta_value FROM ".$wpdb->prefix."woocommerce_bundled_itemmeta WHERE bundled_item_id = %s AND meta_key = %s", $r->bundled_item_id, 'discount'));
-
-									if($bundle_item_discount > 0)
-									{
-										$bundle_item_price *= (1 - $bundle_item_discount / 100);
-									}
-
-									$arr_item['total'] += $bundle_item_price;
-								}*/
 							}
 
 							else
@@ -336,9 +370,19 @@ class mf_theme_child
 
 							if($product_virtual == 'yes' || $product_downloadable == 'yes')
 							{
-								$product_ssn = get_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, true);
-								$product_phone = get_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, true);
-								$product_email = get_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, true);
+								if($this->woocommerce_custom_orders_table_enabled == 'yes')
+								{
+									$product_ssn = $arr_order->get_meta($this->meta_prefix.'ssn_'.$item_id, true);
+									$product_phone = $arr_order->get_meta($this->meta_prefix.'phone_'.$item_id, true);
+									$product_email = $arr_order->get_meta($this->meta_prefix.'email_'.$item_id, true);
+								}
+
+								else
+								{
+									$product_ssn = get_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, true);
+									$product_phone = get_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, true);
+									$product_email = get_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, true);
+								}
 
 								if($product_ssn != '')
 								{
@@ -402,6 +446,8 @@ class mf_theme_child
 
 	function send_to_optima($status, $order_id, $do_return)
 	{
+		$this->get_woocommerce_custom_orders_table_enabled();
+
 		$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
 
 		if($woocommerce_dibs_easy_settings['test_mode'] == 'yes')
@@ -451,7 +497,17 @@ class mf_theme_child
 				$headers = curl_getinfo($curl);
 				curl_close($curl);
 
-				$arr_post_data = get_post_meta($order_id, $this->meta_prefix.'optima_post_data');
+				if($this->woocommerce_custom_orders_table_enabled == 'yes')
+				{
+					$arr_order = wc_get_order($order_id);
+
+					$arr_post_data = $arr_order->get_meta($this->meta_prefix.'optima_post_data');
+				}
+
+				else
+				{
+					$arr_post_data = get_post_meta($order_id, $this->meta_prefix.'optima_post_data');
+				}
 
 				if(!is_array($arr_post_data))
 				{
@@ -459,7 +515,15 @@ class mf_theme_child
 					{
 						$arr_post_data_temp = $arr_post_data;
 
-						$http_code = get_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+						if($this->woocommerce_custom_orders_table_enabled == 'yes')
+						{
+							$http_code = $arr_order->get_meta($this->meta_prefix.'optima_http_code');
+						}
+
+						else
+						{
+							$http_code = get_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+						}
 
 						$arr_post_data = array();
 
@@ -470,7 +534,16 @@ class mf_theme_child
 							'created' => "",
 						);
 
-						delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+						if($this->woocommerce_custom_orders_table_enabled == 'yes')
+						{
+							$arr_order->delete_meta_data($this->meta_prefix.'optima_http_code');
+							$arr_order->save();
+						}
+
+						else
+						{
+							delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
+						}
 					}
 
 					else
@@ -489,7 +562,16 @@ class mf_theme_child
 					);
 				}
 
-				update_post_meta($order_id, $this->meta_prefix.'optima_post_data', $arr_post_data);
+				if($this->woocommerce_custom_orders_table_enabled == 'yes')
+				{
+					$arr_order->update_meta_data($this->meta_prefix.'optima_post_data', $arr_post_data);
+				    $arr_order->save();
+				}
+
+				else
+				{
+					update_post_meta($order_id, $this->meta_prefix.'optima_post_data', $arr_post_data);
+				}
 
 				switch($headers['http_code'])
 				{
@@ -2153,18 +2235,18 @@ class mf_theme_child
 			echo show_textfield(array('type' => 'number', 'name' => $setting_key, 'value' => $option));
 		}
 
-	function column_header($cols)
+	function column_header($columns)
 	{
 		global $post_type;
 
-		switch($post_type)
+		$page = check_var('page');
+
+		if(get_option('woocommerce_custom_orders_table_enabled') == 'yes' && $page == 'wc-orders' || $post_type == $this->post_type_shop_order)
 		{
-			case $this->post_type_shop_order:
-				$cols['optima_http_code'] = __("Optima", 'lang_bb-theme-child');
-			break;
+			$columns['optima_http_code'] = __("Optima", 'lang_bb-theme-child');
 		}
 
-		return $cols;
+		return $columns;
 	}
 
 	function format_post_data($data)
@@ -2183,72 +2265,52 @@ class mf_theme_child
 		return $data;
 	}
 
-	function column_cell($col, $id)
+	function get_woocommerce_custom_orders_table_enabled()
 	{
-		global $post;
-
-		switch($post->post_type)
+		if($this->woocommerce_custom_orders_table_enabled == '')
 		{
-			case $this->post_type_shop_order:
-				switch($col)
-				{
-					case 'optima_http_code':
-						list($success, $post_data_send) = $this->get_post_data(array('order_id' => $id));
-						$post_data_send = $this->format_post_data($post_data_send);
+			$this->woocommerce_custom_orders_table_enabled = get_option('woocommerce_custom_orders_table_enabled');
+		}
+	}
 
-						$arr_post_data = get_post_meta($id, $this->meta_prefix.'optima_post_data', true);
+	function column_cell($column, $post_id)
+	{
+		$this->get_woocommerce_custom_orders_table_enabled();
 
-						$post_data_status = 'unknown';
-						$post_data_sent_title = $http_code = "";
+		if($this->woocommerce_custom_orders_table_enabled == 'yes')
+		{
+			switch($column)
+			{
+				case 'optima_http_code':
+					$arr_order = $post_id;
+					$post_id = $arr_order->id;
+					//$arr_order = wc_get_order($post_id);
 
-						if(is_array($arr_post_data) && count($arr_post_data) > 0)
+					list($success, $post_data_send) = $this->get_post_data(array('order_id' => $post_id));
+					$post_data_send = $this->format_post_data($post_data_send);
+
+					$arr_post_data = $arr_order->get_meta($this->meta_prefix.'optima_post_data', true);
+
+					$post_data_status = 'unknown';
+					$post_data_sent_title = $http_code = "";
+
+					if(is_array($arr_post_data) && count($arr_post_data) > 0)
+					{
+						foreach($arr_post_data as $post_data)
 						{
-							foreach($arr_post_data as $post_data)
+							while(isset($post_data[0]))
 							{
-								while(isset($post_data[0]))
-								{
-									$post_data = $post_data[0];
-								}
-
-								$post_data_temp = $this->format_post_data($post_data['data']);
-								$http_code = $post_data['http_code'];
-								$user_id = (isset($post_data['user']) ? $post_data['user'] : 0);
-								$created = (isset($post_data['created']) && $post_data['created'] > DEFAULT_DATE ? format_date($post_data['created']) : "[?]");
-
-								$user_name = ($user_id > 0 ? get_user_info(array('id' => $user_id)) : __("Unknown", 'lang_bb-theme-child'));
-
-								$post_data_sent_title .= ($post_data_sent_title != '' ? "\n" : "").sprintf(__("Created %s by %s and got the answer %d", 'lang_bb-theme-child'), $created, $user_name, $http_code);
-
-								if($post_data_temp == $post_data_send)
-								{
-									$post_data_status = 'correct';
-								}
-
-								else if($post_data_temp != '')
-								{
-									$post_data_status = 'old_format';
-									$post_data_sent_title .= "\n".$post_data_temp;
-								}
-
-								else
-								{
-									$post_data_status = 'incorrect';
-									$post_data_sent_title .= "\n".$post_data_temp;
-								}
-
-								if(!isset($post_data['data']))
-								{
-									$post_data_sent_title .= "\n".var_export($post_data, true);
-								}
+								$post_data = $post_data[0];
 							}
-						}
 
-						else if($arr_post_data != '')
-						{
-							$post_data_temp = $this->format_post_data($arr_post_data);
-							$http_code = get_post_meta($id, $this->meta_prefix.'optima_http_code', true);
-							//$user_id = $post_data['user_id'];
-							//$created = $post_data['created'];
+							$post_data_temp = $this->format_post_data($post_data['data']);
+							$http_code = $post_data['http_code'];
+							$user_id = (isset($post_data['user']) ? $post_data['user'] : 0);
+							$created = (isset($post_data['created']) && $post_data['created'] > DEFAULT_DATE ? format_date($post_data['created']) : "[?]");
+
+							$user_name = ($user_id > 0 ? get_user_info(array('id' => $user_id)) : __("Unknown", 'lang_bb-theme-child'));
+
+							$post_data_sent_title .= ($post_data_sent_title != '' ? "\n" : "").sprintf(__("Created %s by %s and got the answer %d", 'lang_bb-theme-child'), $created, $user_name, $http_code);
 
 							if($post_data_temp == $post_data_send)
 							{
@@ -2264,101 +2326,308 @@ class mf_theme_child
 							else
 							{
 								$post_data_status = 'incorrect';
-								$post_data_sent_title .= $post_data_temp;
+								$post_data_sent_title .= "\n".$post_data_temp;
+							}
+
+							if(!isset($post_data['data']))
+							{
+								$post_data_sent_title .= "\n".var_export($post_data, true);
 							}
 						}
+					}
 
-						if($post_data_sent_title != '')
+					else if($arr_post_data != '')
+					{
+						$post_data_temp = $this->format_post_data($arr_post_data);
+						$http_code = $arr_order->get_meta($this->meta_prefix.'optima_http_code', true);
+
+						if($post_data_temp == $post_data_send)
 						{
-							switch($post_data_status)
+							$post_data_status = 'correct';
+						}
+
+						else if($post_data_temp != '')
+						{
+							$post_data_status = 'old_format';
+							$post_data_sent_title .= "\n".$post_data_temp;
+						}
+
+						else
+						{
+							$post_data_status = 'incorrect';
+							$post_data_sent_title .= $post_data_temp;
+						}
+					}
+
+					if($post_data_sent_title != '')
+					{
+						switch($post_data_status)
+						{
+							case 'correct':
+								echo "<i class='fa fa-check green' title='".$post_data_sent_title."'></i>";
+							break;
+
+							case 'old_format':
+								echo "<i class='fa fa-check grey' title='".$post_data_sent_title."'></i>";
+							break;
+
+							case 'incorrect':
+								echo "<i class='fa fa-times red' title='".$post_data_sent_title."'></i>";
+							break;
+
+							default:
+							case 'unknown':
+								echo "<i class='far fa-question-circle grey' title='".$post_data_sent_title."'></i>";
+							break;
+						}
+					}
+
+					else
+					{
+						switch($http_code)
+						{
+							case 201:
+								echo "<i class='fa fa-check green' title=\"".$http_code."\"></i>";
+							break;
+
+							case 401:
+								echo "<i class='fa fa-times red' title=\"".$http_code."\"></i>";
+							break;
+
+							default:
+								echo "<i class='far fa-question-circle grey' title=\"".$http_code."\"></i>";
+							break;
+						}
+					}
+
+					if(IS_SUPER_ADMIN)
+					{
+						echo " ";
+
+						if(isset($_GET['resend_to_optima_'.$post_id]) && $post_id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_optima_resend'], 'optima_resend_'.$post_id))
+						{
+							if($this->send_to_optima('completed', $post_id, true))
 							{
-								case 'correct':
-									echo "<i class='fa fa-check green' title='".$post_data_sent_title."'></i>";
-								break;
+								echo "<i class='fa fa-recycle green' title='".__("The information was successfully sent", 'lang_bb-theme-child')."'></i>";
+							}
 
-								case 'old_format':
-									echo "<i class='fa fa-check grey' title='".$post_data_sent_title."'></i>";
-								break;
-
-								case 'incorrect':
-									echo "<i class='fa fa-times red' title='".$post_data_sent_title."'></i>";
-								break;
-
-								default:
-								case 'unknown':
-									echo "<i class='far fa-question-circle grey' title='".$post_data_sent_title."'></i>";
-								break;
+							else
+							{
+								echo "<i class='fa fa-recycle red' title='".__("The information could not be sent", 'lang_bb-theme-child')."'></i>";
 							}
 						}
 
 						else
 						{
-							switch($http_code)
+							$post_search = check_var('s');
+							$post_status = check_var('post_status');
+							$post_paged = check_var('paged');
+
+							$link_url = "edit.php?post_type=".check_var('post_type')."&resend_to_optima_".$post_id;
+
+							if($post_search != '')
 							{
-								case 201:
-									echo "<i class='fa fa-check green' title=\"".$http_code."\"></i>";
-								break;
-
-								case 401:
-									echo "<i class='fa fa-times red' title=\"".$http_code."\"></i>";
-								break;
-
-								default:
-									echo "<i class='far fa-question-circle grey' title=\"".$http_code."\"></i>";
-								break;
+								$link_url .= "&s=".$post_search;
 							}
+
+							if($post_status != '')
+							{
+								$link_url .= "&post_status=".$post_status;
+							}
+
+							if($post_paged > 0)
+							{
+								$link_url .= "&paged=".$post_paged;
+							}
+
+							echo "<a href='".wp_nonce_url($link_url, 'optima_resend_'.$post_id, '_wpnonce_optima_resend')."' rel='confirm'><i class='fa fa-recycle' title='".__("Send Again", 'lang_bb-theme-child').": ".$post_data_send."'></i></a>";
 						}
 
-						if(IS_SUPER_ADMIN)
-						{
-							echo " ";
+						$arr_order = wc_get_order($post_id);
 
-							if(isset($_GET['resend_to_optima_'.$id]) && $id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_optima_resend'], 'optima_resend_'.$id))
+						echo " <a href='".$arr_order->get_checkout_order_received_url()."'><i class='fas fa-vote-yea' title='".__("View Customer Checkout Page", 'lang_bb-theme-child')."'></i></a>";
+					}
+				break;
+			}
+		}
+
+		else
+		{
+			global $post;
+
+			switch($post->post_type)
+			{
+				case $this->post_type_shop_order:
+					switch($column)
+					{
+						case 'optima_http_code':
+							list($success, $post_data_send) = $this->get_post_data(array('order_id' => $post_id));
+							$post_data_send = $this->format_post_data($post_data_send);
+
+							$arr_post_data = get_post_meta($post_id, $this->meta_prefix.'optima_post_data', true);
+
+							$post_data_status = 'unknown';
+							$post_data_sent_title = $http_code = "";
+
+							if(is_array($arr_post_data) && count($arr_post_data) > 0)
 							{
-								if($this->send_to_optima('completed', $id, true))
+								foreach($arr_post_data as $post_data)
 								{
-									echo "<i class='fa fa-recycle green' title='".__("The information was successfully sent", 'lang_bb-theme-child')."'></i>";
+									while(isset($post_data[0]))
+									{
+										$post_data = $post_data[0];
+									}
+
+									$post_data_temp = $this->format_post_data($post_data['data']);
+									$http_code = $post_data['http_code'];
+									$user_id = (isset($post_data['user']) ? $post_data['user'] : 0);
+									$created = (isset($post_data['created']) && $post_data['created'] > DEFAULT_DATE ? format_date($post_data['created']) : "[?]");
+
+									$user_name = ($user_id > 0 ? get_user_info(array('id' => $user_id)) : __("Unknown", 'lang_bb-theme-child'));
+
+									$post_data_sent_title .= ($post_data_sent_title != '' ? "\n" : "").sprintf(__("Created %s by %s and got the answer %d", 'lang_bb-theme-child'), $created, $user_name, $http_code);
+
+									if($post_data_temp == $post_data_send)
+									{
+										$post_data_status = 'correct';
+									}
+
+									else if($post_data_temp != '')
+									{
+										$post_data_status = 'old_format';
+										$post_data_sent_title .= "\n".$post_data_temp;
+									}
+
+									else
+									{
+										$post_data_status = 'incorrect';
+										$post_data_sent_title .= "\n".$post_data_temp;
+									}
+
+									if(!isset($post_data['data']))
+									{
+										$post_data_sent_title .= "\n".var_export($post_data, true);
+									}
+								}
+							}
+
+							else if($arr_post_data != '')
+							{
+								$post_data_temp = $this->format_post_data($arr_post_data);
+								$http_code = get_post_meta($post_id, $this->meta_prefix.'optima_http_code', true);
+								//$user_id = $post_data['user_id'];
+								//$created = $post_data['created'];
+
+								if($post_data_temp == $post_data_send)
+								{
+									$post_data_status = 'correct';
+								}
+
+								else if($post_data_temp != '')
+								{
+									$post_data_status = 'old_format';
+									$post_data_sent_title .= "\n".$post_data_temp;
 								}
 
 								else
 								{
-									echo "<i class='fa fa-recycle red' title='".__("The information could not be sent", 'lang_bb-theme-child')."'></i>";
+									$post_data_status = 'incorrect';
+									$post_data_sent_title .= $post_data_temp;
+								}
+							}
+
+							if($post_data_sent_title != '')
+							{
+								switch($post_data_status)
+								{
+									case 'correct':
+										echo "<i class='fa fa-check green' title='".$post_data_sent_title."'></i>";
+									break;
+
+									case 'old_format':
+										echo "<i class='fa fa-check grey' title='".$post_data_sent_title."'></i>";
+									break;
+
+									case 'incorrect':
+										echo "<i class='fa fa-times red' title='".$post_data_sent_title."'></i>";
+									break;
+
+									default:
+									case 'unknown':
+										echo "<i class='far fa-question-circle grey' title='".$post_data_sent_title."'></i>";
+									break;
 								}
 							}
 
 							else
 							{
-								$post_search = check_var('s');
-								$post_status = check_var('post_status');
-								$post_paged = check_var('paged');
-
-								$link_url = "edit.php?post_type=".check_var('post_type')."&resend_to_optima_".$id;
-
-								if($post_search != '')
+								switch($http_code)
 								{
-									$link_url .= "&s=".$post_search;
-								}
+									case 201:
+										echo "<i class='fa fa-check green' title=\"".$http_code."\"></i>";
+									break;
 
-								if($post_status != '')
-								{
-									$link_url .= "&post_status=".$post_status;
-								}
+									case 401:
+										echo "<i class='fa fa-times red' title=\"".$http_code."\"></i>";
+									break;
 
-								if($post_paged > 0)
-								{
-									$link_url .= "&paged=".$post_paged;
+									default:
+										echo "<i class='far fa-question-circle grey' title=\"".$http_code."\"></i>";
+									break;
 								}
-
-								echo "<a href='".wp_nonce_url($link_url, 'optima_resend_'.$id, '_wpnonce_optima_resend')."' rel='confirm'><i class='fa fa-recycle' title='".__("Send Again", 'lang_bb-theme-child').": ".$post_data_send."'></i></a>";
 							}
 
-							$order = wc_get_order($id);
+							if(IS_SUPER_ADMIN)
+							{
+								echo " ";
 
-							echo " <a href='".$order->get_checkout_order_received_url()."'><i class='fas fa-vote-yea' title='".__("View Customer Checkout Page", 'lang_bb-theme-child')."'></i></a>";
-						}
-					break;
-				}
-			break;
+								if(isset($_GET['resend_to_optima_'.$post_id]) && $post_id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_optima_resend'], 'optima_resend_'.$post_id))
+								{
+									if($this->send_to_optima('completed', $post_id, true))
+									{
+										echo "<i class='fa fa-recycle green' title='".__("The information was successfully sent", 'lang_bb-theme-child')."'></i>";
+									}
+
+									else
+									{
+										echo "<i class='fa fa-recycle red' title='".__("The information could not be sent", 'lang_bb-theme-child')."'></i>";
+									}
+								}
+
+								else
+								{
+									$post_search = check_var('s');
+									$post_status = check_var('post_status');
+									$post_paged = check_var('paged');
+
+									$link_url = "edit.php?post_type=".check_var('post_type')."&resend_to_optima_".$post_id;
+
+									if($post_search != '')
+									{
+										$link_url .= "&s=".$post_search;
+									}
+
+									if($post_status != '')
+									{
+										$link_url .= "&post_status=".$post_status;
+									}
+
+									if($post_paged > 0)
+									{
+										$link_url .= "&paged=".$post_paged;
+									}
+
+									echo "<a href='".wp_nonce_url($link_url, 'optima_resend_'.$post_id, '_wpnonce_optima_resend')."' rel='confirm'><i class='fa fa-recycle' title='".__("Send Again", 'lang_bb-theme-child').": ".$post_data_send."'></i></a>";
+								}
+
+								$arr_order = wc_get_order($post_id);
+
+								echo " <a href='".$arr_order->get_checkout_order_received_url()."'><i class='fas fa-vote-yea' title='".__("View Customer Checkout Page", 'lang_bb-theme-child')."'></i></a>";
+							}
+						break;
+					}
+				break;
+			}
 		}
 	}
 
@@ -2401,7 +2670,7 @@ class mf_theme_child
 		switch($sync_type)
 		{
 			case 'woocommerce_customers':
-				$result = $wpdb->get_results($wpdb->prepare("SELECT ID, meta_value FROM ".$wpdb->posts." INNER JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE post_type = %s AND meta_key = %s GROUP BY meta_value", 'shop_order', '_billing_email'));
+				$result = $wpdb->get_results($wpdb->prepare("SELECT ID, meta_value FROM ".$wpdb->posts." INNER JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE post_type = %s AND meta_key = %s GROUP BY meta_value", $this->post_type_shop_order, '_billing_email'));
 
 				foreach($result as $r)
 				{

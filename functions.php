@@ -21,6 +21,9 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_filter('manage_'.$obj_theme_child->post_type_shop_order.'_posts_columns', array($obj_theme_child, 'column_header'), 20);
 		add_action('manage_'.$obj_theme_child->post_type_shop_order.'_posts_custom_column', array($obj_theme_child, 'column_cell'), 20, 2);
 
+		add_filter('manage_woocommerce_page_wc-orders_columns', array($obj_theme_child, 'column_header'), 20);
+		add_action('manage_woocommerce_page_wc-orders_custom_column', array($obj_theme_child, 'column_cell'), 10, 2);
+
 		add_filter('get_group_sync_type', array($obj_theme_child, 'get_group_sync_type'), 10);
 
 		add_action('woocommerce_product_options_general_product_data', array($obj_theme_child, 'woocommerce_product_options_general_product_data'));
