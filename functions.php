@@ -45,6 +45,8 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('woocommerce_payment_complete', array($obj_theme_child, 'woocommerce_payment_complete'), 20);
 
 		add_action('woocommerce_proceed_to_checkout', array($obj_theme_child, 'woocommerce_proceed_to_checkout'), 20);
+
+		add_filter('woocommerce_order_get_formatted_shipping_address', array($obj_theme_child, 'woocommerce_order_get_formatted_shipping_address'), 10, 3);
 	}
 
 	add_filter('get_group_sync_addresses', array($obj_theme_child, 'get_group_sync_addresses'), 10, 2);

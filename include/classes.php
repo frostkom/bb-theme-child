@@ -245,6 +245,7 @@ class mf_theme_child
 			$arr_order->set_shipping_address_1($_shipping_address_1);
 			$arr_order->set_shipping_postcode($_shipping_postcode);
 			$arr_order->set_shipping_city($_shipping_city);
+			//$arr_order->save(); // This results in a 502 on the page
 			####################
 
 			$_billing_first_name = $arr_order->get_billing_first_name();
@@ -262,7 +263,6 @@ class mf_theme_child
 			$_shipping_city = $arr_order->get_shipping_city();*/
 
 			$_dibs_payment_id = $arr_order->get_meta('_dibs_payment_id', true);
-
 			$_order_shipping = $arr_order->get_meta('_order_shipping', true);
 		}
 
@@ -277,7 +277,6 @@ class mf_theme_child
 			$_billing_phone = get_post_meta($data['order_id'], '_billing_phone', true);
 
 			$_dibs_payment_id = get_post_meta($data['order_id'], '_dibs_payment_id', true);
-
 			$_order_shipping = get_post_meta($data['order_id'], '_order_shipping', true);
 		}
 
@@ -3357,6 +3356,21 @@ class mf_theme_child
 	function woocommerce_proceed_to_checkout()
 	{
 		echo "<a href='".get_permalink(wc_get_page_id('shop'))."' class='checkout-button button alt wc-forward wp-element-button'>".__("Continue to shop", 'lang_bb-theme-child')."</a>";
+	}
+
+	function woocommerce_order_get_formatted_shipping_address($address, $raw_address, $order)
+	{
+		$order_id = $order->get_id();
+
+		$_shipping_first_name = get_post_meta($order_id, '_shipping_first_name', true);
+		$_shipping_last_name = get_post_meta($order_id, '_shipping_last_name', true);
+		$_shipping_address_1 = get_post_meta($order_id, '_shipping_address_1', true);
+		$_shipping_postcode = get_post_meta($order_id, '_shipping_postcode', true);
+		$_shipping_city = get_post_meta($order_id, '_shipping_city', true);
+
+		return $_shipping_first_name." ".$_shipping_last_name."<br>"
+		.$_shipping_address_1."<br>"
+		.$_shipping_postcode." ".$_shipping_city;
 	}
 
 	function debug_ssn_run()
