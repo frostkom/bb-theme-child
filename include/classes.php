@@ -218,11 +218,19 @@ class mf_theme_child
 		return "SharedAccessSignature sr=".$targetUri."&sig=".$signature."&se=".$expires."&skn=".$sasKeyName;
 	}
 
+	function get_woocommerce_custom_orders_table_enabled()
+	{
+		if($this->woocommerce_custom_orders_table_enabled == '')
+		{
+			$this->woocommerce_custom_orders_table_enabled = get_option('woocommerce_custom_orders_table_enabled');
+		}
+
+		return $this->woocommerce_custom_orders_table_enabled;
+	}
+
 	function get_post_data($data)
 	{
 		global $wpdb;
-
-		$this->get_woocommerce_custom_orders_table_enabled();
 
 		$success = true;
 
@@ -230,22 +238,17 @@ class mf_theme_child
 
 		$arr_order = wc_get_order($data['order_id']);
 
-		$_shipping_first_name = get_post_meta($data['order_id'], '_shipping_first_name', true);
-		$_shipping_last_name = get_post_meta($data['order_id'], '_shipping_last_name', true);
-		$_shipping_address_1 = get_post_meta($data['order_id'], '_shipping_address_1', true);
-		$_shipping_postcode = get_post_meta($data['order_id'], '_shipping_postcode', true);
-		$_shipping_city = get_post_meta($data['order_id'], '_shipping_city', true);
-
-		if($this->woocommerce_custom_orders_table_enabled == 'yes')
+		if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 		{
 			// Update wc_orders
 			####################
-			$arr_order->set_shipping_first_name($_shipping_first_name);
+			/*$arr_order->set_shipping_first_name($_shipping_first_name);
 			$arr_order->set_shipping_last_name($_shipping_last_name);
 			$arr_order->set_shipping_address_1($_shipping_address_1);
 			$arr_order->set_shipping_postcode($_shipping_postcode);
 			$arr_order->set_shipping_city($_shipping_city);
-			//$arr_order->save(); // This results in a 502 on the page
+
+			$arr_order->save_meta_data();*/
 			####################
 
 			$_billing_first_name = $arr_order->get_billing_first_name();
@@ -256,14 +259,23 @@ class mf_theme_child
 			$_billing_email = $arr_order->get_billing_email();
 			$_billing_phone = $arr_order->get_billing_phone();
 
-			/*$_shipping_first_name = $arr_order->get_shipping_first_name();
+			$_shipping_first_name = $arr_order->get_shipping_first_name();
 			$_shipping_last_name = $arr_order->get_shipping_last_name();
 			$_shipping_address_1 = $arr_order->get_shipping_address_1();
 			$_shipping_postcode = $arr_order->get_shipping_postcode();
-			$_shipping_city = $arr_order->get_shipping_city();*/
+			$_shipping_city = $arr_order->get_shipping_city();
 
 			$_dibs_payment_id = $arr_order->get_meta('_dibs_payment_id', true);
-			$_order_shipping = $arr_order->get_meta('_order_shipping', true);
+			//$_order_shipping = $arr_order->get_meta('_order_shipping', true);
+
+			$shipping_methods = $arr_order->get_shipping_methods();
+
+			foreach($shipping_methods as $shipping_method)
+			{
+				$method_id = $shipping_method->get_method_id();
+				$method_title = $shipping_method->get_method_title();
+				$_order_shipping = $shipping_method->get_total();
+			}
 		}
 
 		else
@@ -275,6 +287,12 @@ class mf_theme_child
 			$_billing_city = get_post_meta($data['order_id'], '_billing_city', true);
 			$_billing_email = get_post_meta($data['order_id'], '_billing_email', true);
 			$_billing_phone = get_post_meta($data['order_id'], '_billing_phone', true);
+
+			$_shipping_first_name = get_post_meta($data['order_id'], '_shipping_first_name', true);
+			$_shipping_last_name = get_post_meta($data['order_id'], '_shipping_last_name', true);
+			$_shipping_address_1 = get_post_meta($data['order_id'], '_shipping_address_1', true);
+			$_shipping_postcode = get_post_meta($data['order_id'], '_shipping_postcode', true);
+			$_shipping_city = get_post_meta($data['order_id'], '_shipping_city', true);
 
 			$_dibs_payment_id = get_post_meta($data['order_id'], '_dibs_payment_id', true);
 			$_order_shipping = get_post_meta($data['order_id'], '_order_shipping', true);
@@ -317,7 +335,7 @@ class mf_theme_child
 
 						if($variation_id > 0)
 						{
-							if($this->woocommerce_custom_orders_table_enabled == 'yes')
+							if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 							{
 								$arr_variation = wc_get_product($variation_id);
 
@@ -338,7 +356,7 @@ class mf_theme_child
 
 						else
 						{
-							if($this->woocommerce_custom_orders_table_enabled == 'yes')
+							if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 							{
 								$arr_product = wc_get_product($product_id);
 
@@ -378,15 +396,11 @@ class mf_theme_child
 
 							if($product_virtual == 'yes' || $product_downloadable == 'yes')
 							{
-								$product_ssn = get_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, true);
-								$product_phone = get_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, true);
-								$product_email = get_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, true);
-
-								if($this->woocommerce_custom_orders_table_enabled == 'yes')
+								if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 								{
 									// Update wc_orders
 									####################
-									if($product_ssn != '')
+									/*if($product_ssn != '')
 									{
 										$arr_order->update_meta_data($this->meta_prefix.'ssn_'.$item_id, $product_ssn);
 									}
@@ -400,11 +414,20 @@ class mf_theme_child
 									{
 										$arr_order->update_meta_data($this->meta_prefix.'email_'.$item_id, $product_email);
 									}
+
+									$arr_order->save_meta_data();*/
 									####################
 
-									/*$product_ssn = $arr_order->get_meta($this->meta_prefix.'ssn_'.$item_id, true);
+									$product_ssn = $arr_order->get_meta($this->meta_prefix.'ssn_'.$item_id, true);
 									$product_phone = $arr_order->get_meta($this->meta_prefix.'phone_'.$item_id, true);
-									$product_email = $arr_order->get_meta($this->meta_prefix.'email_'.$item_id, true);*/
+									$product_email = $arr_order->get_meta($this->meta_prefix.'email_'.$item_id, true);
+								}
+
+								else
+								{
+									$product_ssn = get_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, true);
+									$product_phone = get_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, true);
+									$product_email = get_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, true);
 								}
 
 								if($product_ssn != '')
@@ -464,18 +487,17 @@ class mf_theme_child
 			$post_data .= ']
 		}';
 
-		if($this->woocommerce_custom_orders_table_enabled == 'yes')
+		/*if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 		{
-			$arr_order->save();
-		}
+			//$arr_order->save();
+			//$arr_order->save_meta_data();
+		}*/
 
 		return array($success, $post_data);
 	}
 
 	function send_to_optima($status, $order_id, $do_return)
 	{
-		$this->get_woocommerce_custom_orders_table_enabled();
-		
 		$arr_order = wc_get_order($order_id);
 
 		$woocommerce_dibs_easy_settings = get_option('woocommerce_dibs_easy_settings');
@@ -527,7 +549,7 @@ class mf_theme_child
 				$headers = curl_getinfo($curl);
 				curl_close($curl);
 
-				if($this->woocommerce_custom_orders_table_enabled == 'yes')
+				if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 				{
 					$arr_post_data = $arr_order->get_meta($this->meta_prefix.'optima_post_data');
 				}
@@ -543,7 +565,7 @@ class mf_theme_child
 					{
 						$arr_post_data_temp = $arr_post_data;
 
-						if($this->woocommerce_custom_orders_table_enabled == 'yes')
+						if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 						{
 							$http_code = $arr_order->get_meta($this->meta_prefix.'optima_http_code');
 						}
@@ -562,16 +584,15 @@ class mf_theme_child
 							'created' => "",
 						);
 
-						if($this->woocommerce_custom_orders_table_enabled == 'yes')
+						if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 						{
 							$arr_order->delete_meta_data($this->meta_prefix.'optima_http_code');
-							$arr_order->save();
+
+							//$arr_order->save();
+							$arr_order->save_meta_data();
 						}
 
-						else
-						{
-							delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
-						}
+						delete_post_meta($order_id, $this->meta_prefix.'optima_http_code');
 					}
 
 					else
@@ -590,10 +611,11 @@ class mf_theme_child
 					);
 				}
 
-				if($this->woocommerce_custom_orders_table_enabled == 'yes')
+				if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 				{
 					$arr_order->update_meta_data($this->meta_prefix.'optima_post_data', $arr_post_data);
-				    $arr_order->save();
+
+					$arr_order->save_meta_data();
 				}
 
 				update_post_meta($order_id, $this->meta_prefix.'optima_post_data', $arr_post_data);
@@ -1879,11 +1901,11 @@ class mf_theme_child
 		{
 			// Get order that has not been sent to Optima
 			#########################
-			/*global $wpdb;
+			global $wpdb;
 
 			$setting_theme_child_send_to_optima = get_option('setting_theme_child_send_to_optima');
 
-			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND post_modified < DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND post_modified > DATE_SUB(NOW(), INTERVAL 150 MINUTE) AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND post_modified < DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND post_modified > DATE_SUB(NOW(), INTERVAL 36 HOUR) AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
 
 			foreach($result as $r)
 			{
@@ -1896,7 +1918,7 @@ class mf_theme_child
 					break;
 
 					case 'email':
-						if(get_option('setting_theme_child_order_email_sent') < date("Y-m-d H:i:s", strtotime("-2 hour")))
+						if(get_option('setting_theme_child_order_email_sent') < date("Y-m-d H:i:s", strtotime("-24 hour")))
 						{
 							$mail_to = get_option('setting_theme_child_send_to_optima_email');
 							$mail_subject = $mail_content = $log_message;
@@ -1911,7 +1933,7 @@ class mf_theme_child
 						$this->send_to_optima('completed', $r->ID, true);
 					break;
 				}
-			}*/
+			}
 			#########################
 
 			$this->get_educators();
@@ -2290,26 +2312,15 @@ class mf_theme_child
 		return $data;
 	}
 
-	function get_woocommerce_custom_orders_table_enabled()
-	{
-		if($this->woocommerce_custom_orders_table_enabled == '')
-		{
-			$this->woocommerce_custom_orders_table_enabled = get_option('woocommerce_custom_orders_table_enabled');
-		}
-	}
-
 	function column_cell($column, $post_id)
 	{
-		$this->get_woocommerce_custom_orders_table_enabled();
-
-		if($this->woocommerce_custom_orders_table_enabled == 'yes')
+		if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 		{
 			switch($column)
 			{
 				case 'optima_http_code':
 					$arr_order = $post_id;
 					$post_id = $arr_order->get_id();
-					//$arr_order = wc_get_order($post_id);
 
 					list($success, $post_data_send) = $this->get_post_data(array('order_id' => $post_id));
 					$post_data_send = $this->format_post_data($post_data_send);
@@ -2448,7 +2459,7 @@ class mf_theme_child
 							$post_status = check_var('post_status');
 							$post_paged = check_var('paged');
 
-							if($this->woocommerce_custom_orders_table_enabled == 'yes')
+							if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 							{
 								$link_url = "admin.php?page=wc-orders&resend_to_optima_".$post_id;
 							}
@@ -2633,7 +2644,7 @@ class mf_theme_child
 									$post_status = check_var('post_status');
 									$post_paged = check_var('paged');
 
-									if($this->woocommerce_custom_orders_table_enabled == 'yes')
+									if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 									{
 										$link_url = "admin.php?page=wc-orders&resend_to_optima_".$post_id;
 									}
@@ -2699,9 +2710,18 @@ class mf_theme_child
 
 	function woocommerce_process_product_meta($post_id)
 	{
-		$post_meta = check_var($this->meta_prefix.'display_ssn');
+		$post_meta = sanitize_text_field(check_var($this->meta_prefix.'display_ssn'));
 
-		update_post_meta($post_id, $this->meta_prefix.'display_ssn', sanitize_text_field($post_meta));
+		if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
+		{
+			$arr_order = wc_get_order($post_id);
+
+			$arr_order->update_meta_data($this->meta_prefix.'display_ssn', $post_meta);
+
+			$arr_order->save_meta_data();
+		}
+
+		update_post_meta($post_id, $this->meta_prefix.'display_ssn', $post_meta);
 	}
 
 	function get_group_sync_addresses($arr_addresses, $sync_type)
@@ -3247,13 +3267,32 @@ class mf_theme_child
 						break;
 
 						case 'save':
-							if($post_meta_display_ssn == 'yes')
+							$product_ssn = check_var($this->meta_prefix.'ssn_'.$item_id, 'soc');
+							$product_phone = check_var($this->meta_prefix.'phone_'.$item_id, 'telno');
+							$product_email = check_var($this->meta_prefix.'email_'.$item_id, 'email');
+
+							if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 							{
-								update_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, check_var($this->meta_prefix.'ssn_'.$item_id, 'soc'));
+								$arr_order = wc_get_order($data['order_id']);
+
+								if($post_meta_display_ssn == 'yes')
+								{
+									$arr_order->update_meta_data($this->meta_prefix.'ssn_'.$item_id, $product_ssn);
+								}
+
+								$arr_order->update_meta_data($this->meta_prefix.'phone_'.$item_id, $product_phone);
+								$arr_order->update_meta_data($this->meta_prefix.'email_'.$item_id, $product_email);
+
+								$arr_order->save_meta_data();
 							}
 
-							update_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, check_var($this->meta_prefix.'phone_'.$item_id, 'telno'));
-							update_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, check_var($this->meta_prefix.'email_'.$item_id, 'email'));
+							if($post_meta_display_ssn == 'yes')
+							{
+								update_post_meta($data['order_id'], $this->meta_prefix.'ssn_'.$item_id, $product_ssn);
+							}
+
+							update_post_meta($data['order_id'], $this->meta_prefix.'phone_'.$item_id, $product_phone);
+							update_post_meta($data['order_id'], $this->meta_prefix.'email_'.$item_id, $product_email);
 						break;
 					}
 				}
@@ -3282,11 +3321,30 @@ class mf_theme_child
 						break;
 
 						case 'save':
-							update_post_meta($data['order_id'], '_shipping_first_name', check_var('_shipping_first_name'));
-							update_post_meta($data['order_id'], '_shipping_last_name', check_var('_shipping_last_name'));
-							update_post_meta($data['order_id'], '_shipping_address_1', check_var('_shipping_address_1'));
-							update_post_meta($data['order_id'], '_shipping_postcode', check_var('_shipping_postcode'));
-							update_post_meta($data['order_id'], '_shipping_city', check_var('_shipping_city'));
+							$_shipping_first_name = check_var('_shipping_first_name');
+							$_shipping_last_name = check_var('_shipping_last_name');
+							$_shipping_address_1 = check_var('_shipping_address_1');
+							$_shipping_postcode = check_var('_shipping_postcode');
+							$_shipping_city = check_var('_shipping_city');
+
+							if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
+							{
+								$arr_order = wc_get_order($data['order_id']);
+
+								$arr_order->set_shipping_first_name($_shipping_first_name);
+								$arr_order->set_shipping_last_name($_shipping_last_name);
+								$arr_order->set_shipping_address_1($_shipping_address_1);
+								$arr_order->set_shipping_postcode($_shipping_postcode);
+								$arr_order->set_shipping_city($_shipping_city);
+
+								$arr_order->save_meta_data();
+							}
+
+							update_post_meta($data['order_id'], '_shipping_first_name', $_shipping_first_name);
+							update_post_meta($data['order_id'], '_shipping_last_name', $_shipping_last_name);
+							update_post_meta($data['order_id'], '_shipping_address_1', $_shipping_address_1);
+							update_post_meta($data['order_id'], '_shipping_postcode', $_shipping_postcode);
+							update_post_meta($data['order_id'], '_shipping_city', $_shipping_city);
 						break;
 					}
 				}
@@ -3368,9 +3426,14 @@ class mf_theme_child
 		$_shipping_postcode = get_post_meta($order_id, '_shipping_postcode', true);
 		$_shipping_city = get_post_meta($order_id, '_shipping_city', true);
 
-		return $_shipping_first_name." ".$_shipping_last_name."<br>"
-		.$_shipping_address_1."<br>"
-		.$_shipping_postcode." ".$_shipping_city;
+		if($_shipping_address_1 != '')
+		{
+			$address = $_shipping_first_name." ".$_shipping_last_name."<br>"
+			.$_shipping_address_1."<br>"
+			.$_shipping_postcode." ".$_shipping_city;
+		}
+
+		return $address;
 	}
 
 	function debug_ssn_run()
