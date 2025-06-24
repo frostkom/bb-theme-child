@@ -398,26 +398,6 @@ class mf_theme_child
 							{
 								if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 								{
-									// Update wc_orders
-									####################
-									/*if($product_ssn != '')
-									{
-										$arr_order->update_meta_data($this->meta_prefix.'ssn_'.$item_id, $product_ssn);
-									}
-
-									if($product_phone != '')
-									{
-										$arr_order->update_meta_data($this->meta_prefix.'phone_'.$item_id, $product_phone);
-									}
-
-									if($product_email != '')
-									{
-										$arr_order->update_meta_data($this->meta_prefix.'email_'.$item_id, $product_email);
-									}
-
-									$arr_order->save_meta_data();*/
-									####################
-
 									$product_ssn = $arr_order->get_meta($this->meta_prefix.'ssn_'.$item_id, true);
 									$product_phone = $arr_order->get_meta($this->meta_prefix.'phone_'.$item_id, true);
 									$product_email = $arr_order->get_meta($this->meta_prefix.'email_'.$item_id, true);
@@ -433,6 +413,15 @@ class mf_theme_child
 								if($product_ssn != '')
 								{
 									$product_ssn = substr($product_ssn, 0, 6)."-".substr($product_ssn, 6);
+								}
+
+								if($product_phone != '')
+								{
+									$arr_exclude = $arr_include = array();
+									$arr_exclude[] = "-";	$arr_include[] = "";
+									$arr_exclude[] = "+46";	$arr_include[] = "0";
+
+									$product_phone = str_replace($arr_exclude, $arr_include, $product_phone);
 								}
 							}
 
