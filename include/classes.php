@@ -240,17 +240,6 @@ class mf_theme_child
 
 		if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 		{
-			// Update wc_orders
-			####################
-			/*$arr_order->set_shipping_first_name($_shipping_first_name);
-			$arr_order->set_shipping_last_name($_shipping_last_name);
-			$arr_order->set_shipping_address_1($_shipping_address_1);
-			$arr_order->set_shipping_postcode($_shipping_postcode);
-			$arr_order->set_shipping_city($_shipping_city);
-
-			$arr_order->save_meta_data();*/
-			####################
-
 			$_billing_first_name = $arr_order->get_billing_first_name();
 			$_billing_last_name = $arr_order->get_billing_last_name();
 			$_billing_address_1 = $arr_order->get_billing_address_1();
@@ -266,7 +255,8 @@ class mf_theme_child
 			$_shipping_city = $arr_order->get_shipping_city();
 
 			$_dibs_payment_id = $arr_order->get_meta('_dibs_payment_id', true);
-			//$_order_shipping = $arr_order->get_meta('_order_shipping', true);
+
+			$_order_shipping = 0;
 
 			$shipping_methods = $arr_order->get_shipping_methods();
 
@@ -418,8 +408,7 @@ class mf_theme_child
 								if($product_phone != '')
 								{
 									$arr_exclude = $arr_include = array();
-									$arr_exclude[] = "-";	$arr_include[] = "";
-									$arr_exclude[] = "+46";	$arr_include[] = "0";
+									$arr_exclude[] = "0046";	$arr_include[] = "0";
 
 									$product_phone = str_replace($arr_exclude, $arr_include, $product_phone);
 								}
@@ -3179,7 +3168,7 @@ class mf_theme_child
 							}
 
 							$out_software .= "<div class='flex_flow'>"
-								.show_textfield(array('type' => 'tel', 'name' => $this->meta_prefix.'phone_'.$item_id, 'text' => __("Phone Number", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'phone_'.$item_id), 'placeholder' => __("to the user", 'lang_bb-theme-child')))
+								.show_textfield(array('type' => 'tel', 'name' => $this->meta_prefix.'phone_'.$item_id, 'text' => __("Mobile Number", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'phone_'.$item_id), 'placeholder' => __("to the user", 'lang_bb-theme-child')))
 								.show_textfield(array('type' => 'email', 'name' => $this->meta_prefix.'email_'.$item_id, 'text' => __("E-mail", 'lang_bb-theme-child'), 'value' => $data['obj_checkout']->get_value($this->meta_prefix.'email_'.$item_id), 'placeholder' => __("to the user", 'lang_bb-theme-child')))
 							."</div>";
 						break;

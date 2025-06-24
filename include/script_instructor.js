@@ -19,7 +19,6 @@ jQuery(function($)
 			dom_obj.parents(".pp-infolist-title").html('<a class="pp-more-link" href="mailto:' + dom_text + '"><h3 class="pp-infolist-title-text">' + dom_text + '</h3></a>');
 		}
 
-		/*else if(dom_text.match(/^(\+46|0)/))*/
 		else if(dom_text.match(/^0/))
 		{
 			var dom_text_orig = dom_text;
