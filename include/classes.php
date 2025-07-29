@@ -2694,9 +2694,12 @@ class mf_theme_child
 		{
 			$arr_order = wc_get_order($post_id);
 
-			$arr_order->update_meta_data($this->meta_prefix.'display_ssn', $post_meta);
+			if($arr_order != false)
+			{
+				$arr_order->update_meta_data($this->meta_prefix.'display_ssn', $post_meta);
 
-			$arr_order->save_meta_data();
+				$arr_order->save_meta_data();
+			}
 		}
 
 		update_post_meta($post_id, $this->meta_prefix.'display_ssn', $post_meta);
