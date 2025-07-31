@@ -1883,16 +1883,32 @@ class mf_theme_child
 
 			$setting_theme_child_send_to_optima = get_option('setting_theme_child_send_to_optima');
 
-			$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND post_modified < DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND post_modified > DATE_SUB(NOW(), INTERVAL 36 HOUR) AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+			if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
+			{
+				$result = $wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->prefix."wc_orders LEFT JOIN ".$wpdb->prefix."wc_orders_meta ON ".$wpdb->prefix."wc_orders.id = ".$wpdb->prefix."wc_orders_meta.order_id AND ".$wpdb->prefix."wc_orders_meta.meta_key = 'mf_campaign_optima_post_data' WHERE ".$wpdb->prefix."wc_orders.status = 'wc-processing' AND ".$wpdb->prefix."wc_orders.type = 'shop_order' AND ".$wpdb->prefix."wc_orders.date_updated_gmt < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE) AND ".$wpdb->prefix."wc_orders_meta.meta_value IS NULL ORDER BY id ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+			}
+
+			else
+			{
+				$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status = %s AND post_modified < DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND post_modified > DATE_SUB(NOW(), INTERVAL 36 HOUR) AND meta_value IS null ORDER BY ID ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+			}
 
 			foreach($result as $r)
 			{
-				$log_message = "<a href='".admin_url("post.php?post=".$r->ID."&action=edit")."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->ID)."</a>";
+				if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
+				{
+					$log_message = "<a href='".admin_url("admin.php?page=wc-orders&action=edit&id=".$r->id)."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->ID)."</a>";
+				}
+
+				else
+				{
+					$log_message = "<a href='".admin_url("post.php?post=".$r->ID."&action=edit")."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->ID)."</a>";
+				}
 
 				switch($setting_theme_child_send_to_optima)
 				{
 					case 'log':
-						do_log($log_message);
+						do_log($log_message, 'publish', false);
 					break;
 
 					case 'email':
@@ -2980,7 +2996,14 @@ class mf_theme_child
 
 		for($i = 0; $i < 9; $i++)
 		{
-			$product = (substr($personal_numbers, $i, 1) * $weight[$i]);
+			$number_temp = substr($personal_numbers, $i, 1);
+
+			if(!is_numeric($number_temp))
+			{
+				do_log(__FUNCTION__." - Not a number: ".$personal_numbers."[".$i."] -> ".$number_temp);
+			}
+
+			$product = ($number_temp * $weight[$i]);
 			$sum += (floor($product / 10) + $product % 10);
 		}
 
