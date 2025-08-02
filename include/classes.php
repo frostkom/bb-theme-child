@@ -1885,7 +1885,7 @@ class mf_theme_child
 
 			if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 			{
-				$result = $wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->prefix."wc_orders LEFT JOIN ".$wpdb->prefix."wc_orders_meta ON ".$wpdb->prefix."wc_orders.id = ".$wpdb->prefix."wc_orders_meta.order_id AND ".$wpdb->prefix."wc_orders_meta.meta_key = 'mf_campaign_optima_post_data' WHERE ".$wpdb->prefix."wc_orders.status = 'wc-processing' AND ".$wpdb->prefix."wc_orders.type = 'shop_order' AND ".$wpdb->prefix."wc_orders.date_updated_gmt < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE) AND ".$wpdb->prefix."wc_orders_meta.meta_value IS NULL ORDER BY id ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing'));
+				$result = $wpdb->get_results($wpdb->prepare("SELECT ".$wpdb->prefix."wc_orders.id FROM ".$wpdb->prefix."wc_orders LEFT JOIN ".$wpdb->prefix."wc_orders_meta ON ".$wpdb->prefix."wc_orders.id = ".$wpdb->prefix."wc_orders_meta.order_id AND ".$wpdb->prefix."wc_orders_meta.meta_key = %s WHERE ".$wpdb->prefix."wc_orders.type = %s AND (".$wpdb->prefix."wc_orders.status = %s OR ".$wpdb->prefix."wc_orders.status = %s) AND ".$wpdb->prefix."wc_orders.date_updated_gmt < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE) AND ".$wpdb->prefix."wc_orders_meta.meta_value IS NULL ORDER BY id ASC LIMIT 0, 1", $this->meta_prefix.'optima_post_data', 'shop_order', 'wc-processing', 'wc-cancelled'));
 			}
 
 			else
@@ -1897,7 +1897,7 @@ class mf_theme_child
 			{
 				if($this->get_woocommerce_custom_orders_table_enabled() == 'yes')
 				{
-					$log_message = "<a href='".admin_url("admin.php?page=wc-orders&action=edit&id=".$r->id)."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->ID)."</a>";
+					$log_message = "<a href='".admin_url("admin.php?page=wc-orders&action=edit&id=".$r->id)."'>".sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->id)."</a>";
 				}
 
 				else
