@@ -1915,7 +1915,8 @@ class mf_theme_child
 						if(get_option('setting_theme_child_order_email_sent') < date("Y-m-d H:i:s", strtotime("-24 hour")))
 						{
 							$mail_to = get_option('setting_theme_child_send_to_optima_email');
-							$mail_subject = $mail_content = $log_message;
+							$mail_subject = sprintf(__("The order %s was not sent to Optima", 'lang_bb-theme-child'), $r->id);
+							$mail_content = $log_message;
 
 							send_email(array('to' => $mail_to, 'subject' => $mail_subject, 'content' => $mail_content));
 
