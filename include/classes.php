@@ -695,7 +695,7 @@ class mf_theme_child
 			$post_id = 0;
 			$post_modified = DEFAULT_DATE;
 
-			$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_modified FROM ".$wpdb->posts." INNER JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE post_type = %s AND post_status != %s AND meta_key = %s AND meta_value = '%d' LIMIT 0, 1", $this->post_type_instructor, 'trash', 'school_id', $school_id));
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_modified FROM ".$wpdb->posts." INNER JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s AND post_status != %s AND meta_value = '%d' LIMIT 0, 1", 'school_id', $this->post_type_instructor, 'trash', $school_id));
 
 			if($wpdb->num_rows > 0)
 			{
@@ -1416,7 +1416,7 @@ class mf_theme_child
 												{
 													if(!($post_id > 0))
 													{
-														$post_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM ".$wpdb->prefix."posts INNER JOIN ".$wpdb->prefix."postmeta ON ".$wpdb->prefix."posts.ID = ".$wpdb->prefix."postmeta.post_id WHERE post_type = %s AND meta_key = %s AND meta_value = '%d'", $this->post_type_instructor, 'school_id', $company_id));
+														$post_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM ".$wpdb->prefix."posts INNER JOIN ".$wpdb->prefix."postmeta ON ".$wpdb->prefix."posts.ID = ".$wpdb->prefix."postmeta.post_id AND meta_key = %s WHERE post_type = %s AND meta_value = '%d'", 'school_id', $this->post_type_instructor, $company_id));
 
 														if($data['debug'] == true && $post_id > 0)
 														{
@@ -1696,6 +1696,8 @@ class mf_theme_child
 
 							if($next_page != '')
 							{
+								update_option('option_theme_educators_url', $next_page, 'no');
+
 								$date_end = date("Y-m-d H:i:s");
 								$time_difference = time_between_dates(array('start' => $data['date_start'], 'end' => $date_end, 'type' => 'ceil', 'return' => 'seconds'));
 
@@ -1715,8 +1717,6 @@ class mf_theme_child
 									{
 										echo "<p><strong>".date("H:i:s")."</strong> Replace ".$next_page." -> ".$next_page_temp."</p>";
 									}*/
-
-									update_option('option_theme_educators_url', $next_page, 'no');
 
 									$data_temp = $data;
 									$data_temp['url'] = $next_page;
@@ -1964,6 +1964,7 @@ class mf_theme_child
 		$arr_settings['setting_theme_child_info'] = __("Lime", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_mode'] = __("Optima", 'lang_bb-theme-child');
 		$arr_settings['setting_theme_child_ssn'] = __("Social Security Number", 'lang_bb-theme-child');
+		$arr_settings['setting_theme_child_nets_order_debug'] = __("Debug Nets Order", 'lang_bb-theme-child');
 
 		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		############################
@@ -2096,6 +2097,29 @@ class mf_theme_child
 				.show_button(array('type' => 'button', 'name' => 'btnDebugSSNRun', 'text' => __("Run Now", 'lang_bb-theme-child'), 'class' => 'button-secondary', 'xtra' => " rel='debug_ssn_run'"))
 			."</div>
 			<div id='debug_ssn_run'></div>";
+		}
+
+		function setting_theme_child_nets_order_debug_callback()
+		{
+			global $wpdb;
+
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			$arr_data = ['' => "-- ".__("Choose Here", 'lang_bb-theme-child')." --"];
+
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID, billing_email, date_created_gmt, transaction_id FROM ".$wpdb->prefix."wc_orders WHERE type = %s ORDER BY date_created_gmt DESC LIMIT 0, 100", $this->post_type_shop_order));
+
+			foreach($result as $r)
+			{
+				$arr_data[$r->transaction_id] = $r->billing_email." (".format_date($r->date_created_gmt).")";
+			}
+
+			echo show_select(array('data' => $arr_data, 'name' => $setting_key, 'value' => $option))
+			."<div".get_form_button_classes().">"
+				.show_button(array('type' => 'button', 'name' => 'btnDebugNetsRun', 'text' => __("Run Now", 'lang_bb-theme-child'), 'class' => 'button-secondary', 'xtra' => " rel='debug_nets_run'"))
+			."</div>
+			<div id='debug_nets_run'></div>";
 		}
 
 	function settings_theme_child_lime_callback()
@@ -2730,7 +2754,7 @@ class mf_theme_child
 		switch($sync_type)
 		{
 			case 'woocommerce_customers':
-				$result = $wpdb->get_results($wpdb->prepare("SELECT ID, meta_value FROM ".$wpdb->posts." INNER JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE post_type = %s AND meta_key = %s GROUP BY meta_value", $this->post_type_shop_order, '_billing_email'));
+				$result = $wpdb->get_results($wpdb->prepare("SELECT ID, meta_value FROM ".$wpdb->posts." INNER JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id AND meta_key = %s WHERE post_type = %s GROUP BY meta_value", '_billing_email', $this->post_type_shop_order));
 
 				foreach($result as $r)
 				{
@@ -3462,6 +3486,145 @@ class mf_theme_child
 		{
 			$result['success'] = true;
 			$result['message'] = "<i class='fa fa-check green'></i> ".$setting_theme_child_ssn;
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($result);
+		die();
+	}
+
+	function debug_nets_run()
+	{
+		$result = array(
+			'success' => false,
+		);
+
+		$transaction_id = check_var('order');
+
+		/*
+			curl -v -X POST -H "authorization:foo" -H "content-type:application/json" -d "{}" staging.korkort.nu/wc-api/DIBS_Api_Callbacks/?dibs-payment-created-callback=1
+
+			- Payment ID: a3392f9be53a4c7ab0b1a7ba16e2dced / https://korkort.nu/wp-admin/post.php?post=421764&action=edit
+			- Timestamp: 2025-08-02 03:25:40.937896 (local time)
+			- Respons från er server: HTTP 403
+
+			{ "body":"{"id":"f7c2012510b241feaea33d10a3f6d268","merchantId":100054777,"timestamp":"2025-08-01T21:08:37.8911+00:00","event":"payment.checkout.completed","data":{"order":{"amount":{"amount":34900,"currency":"SEK"},"reference":"1","orderItems":[{"grossTotalAmount":34900,"name":"Körkortsboken™ Bil - English - 1 mån","netTotalAmount":32925,"quantity":1.0,"reference":"O-KB-B-EN-31","taxRate":600,"taxAmount":1975,"unit":"st","unitPrice":32925}]},"consumer":{"firstName":"Martin","lastName":"Fors","billingAddress":{"addressLine1":"Fisktärnevägen 8","addressLine2":"","city":"Bunkeflostrand","country":"SWE","postcode":"21832","receiverLine":"[CENSURERAD]"},"country":"SWE","email":"info@martinfors.se","ip":"255.255.255.255","phoneNumber":{"prefix":"+46","number":"702892245"},"shippingAddress":{"addressLine1":"Fisktärnevägen 8","addressLine2":"","city":"Bunkeflostrand","country":"SWE","postcode":"21832","receiverLine":"[CENSURERAD]"}},"paymentId":"a3392f9be53a4c7ab0b1a7ba16e2dced"}}", "bodyEncoding":"Unicode (UTF-8)", "headers":[{ "key":"authorization", "value":"acbe8f7478" }, { "key":"content-type", "value":"application/json" }], "method":"POST", "url":"https://staging.korkort.nu/wc-api/DIBS_Api_Callbacks/?dibs-payment-created-callback=1"}
+
+			- Payment ID: 1e000ac6da4b4210b8d2937f1169f4f3 / https://korkort.nu/wp-admin/post.php?post=416850&action=edit
+			- Timestamp: 2025-05-30 21:49:03.1630118 (local time)
+			- Respons från er server: HTTP 200
+
+			{ "body":"{"id":"f2a751fa8a094fde85ce00b337a27bf2","merchantId":100054777,"timestamp":"2025-05-30T19:49:01.9385+00:00","event":"payment.checkout.completed","data":{"order":{"amount":{"amount":34900,"currency":"SEK"},"reference":"1","orderItems":[{"grossTotalAmount":34900,"name":"Körkortsboken™ Moped - 1 mån","netTotalAmount":32925,"quantity":1.0,"reference":"O-KB-AM-31","taxRate":600,"taxAmount":1975,"unit":"st","unitPrice":32925}]},"consumer":{"firstName":"Martin","lastName":"Fors","billingAddress":{"addressLine1":"Fisktärnevägen 8","addressLine2":"","city":"Bunkeflostrand","country":"SWE","postcode":"21832","receiverLine":"[CENSURERAD]"},"country":"SWE","email":"info@martinfors.se","ip":"255.255.255.255","phoneNumber":{"prefix":"+46","number":"702892245"},"shippingAddress":{"addressLine1":"Fisktärnevägen 8","addressLine2":"","city":"Bunkeflostrand","country":"SWE","postcode":"21832","receiverLine":"[CENSURERAD]"}},"paymentId":"1e000ac6da4b4210b8d2937f1169f4f3"}}", "bodyEncoding":"Unicode (UTF-8)", "headers":[{ "key":"authorization", "value":"6efebe2465" }, { "key":"content-type", "value":"application/json" }], "method":"POST", "url":"https://staging.korkort.nu/wc-api/DIBS_Api_Callbacks/?dibs-payment-created-callback=1"}
+		*/
+
+		/*
+			cURL för Payment ID: a3392f9be53a4c7ab0b1a7ba16e2dced (403):
+
+			curl -v -X POST -H "authorization: acbe8f7478" -H "content-type: application/json" -d '{ "id": "f7c2012510b241feaea33d10a3f6d268", "merchantId": 100054777, "timestamp": "2025-08-01T21:08:37.8911+00:00", "event": "payment.checkout.completed", "data": { "order": { "amount": { "amount": 34900, "currency": "SEK" }, "reference": "1", "orderItems": [{ "grossTotalAmount": 34900, "name": "Körkortsboken™ Bil - English - 1 mån", "netTotalAmount": 32925, "quantity": 1.0, "reference": "O-KB-B-EN-31", "taxRate": 600, "taxAmount": 1975, "unit": "st", "unitPrice": 32925 }] }, "consumer": { "firstName": "[CENSURERAD]", "lastName": "[CENSURERAD]", "billingAddress": { "addressLine1": "[CENSURERAD]", "addressLine2": "", "city": "[CENSURERAD]", "country": "SWE", "postcode": "[CENSURERAD]", "receiverLine": "[CENSURERAD]" }, "country": "SWE", "email": "[CENSURERAD]", "ip": "[CENSURERAD]", "phoneNumber": { "prefix": "+46", "number": "[CENSURERAD]" }, "shippingAddress": { "addressLine1": "[CENSURERAD]", "addressLine2": "", "city": "[CENSURERAD]", "country": "SWE", "postcode": "[CENSURERAD]", "receiverLine": "[CENSURERAD]" } }, "paymentId": "a3392f9be53a4c7ab0b1a7ba16e2dced" } }' "https://korkort.nu/wc-api/DIBS_Api_Callbacks/?dibs-payment-created-callback=1"
+
+
+			cURL för Payment ID: 1e000ac6da4b4210b8d2937f1169f4f3 (200):
+
+			curl -v -X POST -H "authorization: 6efebe2465" -H "content-type: application/json" -d '{ "id": "f2a751fa8a094fde85ce00b337a27bf2", "merchantId": 100054777, "timestamp": "2025-05-30T19:49:01.9385+00:00", "event": "payment.checkout.completed", "data": { "order": { "amount": { "amount": 34900, "currency": "SEK" }, "reference": "1", "orderItems": [{ "grossTotalAmount": 34900, "name": "Körkortsboken™ Moped - 1 mån", "netTotalAmount": 32925, "quantity": 1.0, "reference": "O-KB-AM-31", "taxRate": 600, "taxAmount": 1975, "unit": "st", "unitPrice": 32925 }] }, "consumer": { "firstName": "[CENSURERAD]", "lastName": "[CENSURERAD]", "billingAddress": { "addressLine1": "[CENSURERAD]", "addressLine2": "", "city": "[CENSURERAD]", "country": "SWE", "postcode": "[CENSURERAD]", "receiverLine": "[CENSURERAD]" }, "country": "SWE", "email": "[CENSURERAD]", "ip": "[CENSURERAD]", "phoneNumber": { "prefix": "+46", "number": "[CENSURERAD]" }, "shippingAddress": { "addressLine1": "[CENSURERAD]", "addressLine2": "", "city": "[CENSURERAD]", "country": "SWE", "postcode": "[CENSURERAD]", "receiverLine": "[CENSURERAD]" } }, "paymentId": "1e000ac6da4b4210b8d2937f1169f4f3" } }' "https://korkort.nu/wc-api/DIBS_Api_Callbacks/?dibs-payment-created-callback=1"
+		*/
+
+		//$transaction_error = $this->check_product_ssn($transaction_id);
+
+		$url = add_query_arg( array( 'dibs-payment-created-callback' => '1' ), get_home_url() . '/wc-api/DIBS_Api_Callbacks/' );
+		/*$post_data = [
+			"body" => [
+				"id" => $transaction_id,
+				"merchantId" => 100054777,
+				"timestamp" => "2025-08-01T21:08:37.8911+00:00",
+				"event" => "payment.checkout.completed",
+				"data" => [
+					"order" => [
+						"amount" => [
+							"amount" => 34900,
+							"currency" => "SEK"
+						],
+						"reference" => "1",
+						"orderItems" => 
+						[
+							[
+								"grossTotalAmount" => 34900,
+								"name" => "Körkortsboken™ Bil - English - 1 mån",
+								"netTotalAmount" => 32925,
+								"quantity" => 1.0,
+								"reference" => "O-KB-B-EN-31",
+								"taxRate" => 600,
+								"taxAmount" => 1975,
+								"unit" => "st",
+								"unitPrice" => 32925
+							]
+						]
+					],
+					"consumer" => [
+						"firstName" => "Martin",
+						"lastName" => "Fors",
+						"billingAddress" => [
+							"addressLine1" => "Fisktärnevägen 8",
+							"addressLine2" => "",
+							"city" => "Bunkeflostrand",
+							"country" => "SWE",
+							"postcode" => "21832",
+							"receiverLine" => "[CENSURERAD]"
+						],
+						"country" => "SWE",
+						"email" => "info@martinfors.se",
+						"ip" => "255.255.255.255",
+						"phoneNumber" => [
+							"prefix" => "+46",
+							"number" => "702892245"
+						],
+						"shippingAddress" => [
+							"addressLine1" => "Fisktärnevägen 8",
+							"addressLine2" => "",
+							"city" => "Bunkeflostrand",
+							"country" => "SWE",
+							"postcode" => "21832",
+							"receiverLine" => "[CENSURERAD]"
+						]
+					],
+					"paymentId" => "a3392f9be53a4c7ab0b1a7ba16e2dced"
+				]
+			]
+		];*/
+		//$post_data = '{ "body":"{"id":"'.$transaction_id.'","merchantId":100054777,"timestamp":"2025-08-01T21:08:37.8911+00:00","event":"payment.checkout.completed","data":{"order":{"amount":{"amount":34900,"currency":"SEK"},"reference":"1","orderItems":[{"grossTotalAmount":34900,"name":"Körkortsboken™ Bil - English - 1 mån","netTotalAmount":32925,"quantity":1.0,"reference":"O-KB-B-EN-31","taxRate":600,"taxAmount":1975,"unit":"st","unitPrice":32925}]},"consumer":{"firstName":"Martin","lastName":"Fors","billingAddress":{"addressLine1":"Fisktärnevägen 8","addressLine2":"","city":"Bunkeflostrand","country":"SWE","postcode":"21832","receiverLine":"[CENSURERAD]"},"country":"SWE","email":"info@martinfors.se","ip":"255.255.255.255","phoneNumber":{"prefix":"+46","number":"702892245"},"shippingAddress":{"addressLine1":"Fisktärnevägen 8","addressLine2":"","city":"Bunkeflostrand","country":"SWE","postcode":"21832","receiverLine":"[CENSURERAD]"}},"paymentId":"a3392f9be53a4c7ab0b1a7ba16e2dced"}}"'; //, "bodyEncoding":"Unicode (UTF-8)", "headers":[{ "key":"authorization", "value":"acbe8f7478" }, { "key":"content-type", "value":"application/json" }], "method":"POST", "url":"https://staging.korkort.nu/wc-api/DIBS_Api_Callbacks/?dibs-payment-created-callback=1"}
+		$post_data = '{ "id": "'.$transaction_id.'", "merchantId": 100054777, "timestamp": "2025-08-01T21:08:37.8911+00:00", "event": "payment.checkout.completed", "data": { "order": { "amount": { "amount": 34900, "currency": "SEK" }, "reference": "1", "orderItems": [{ "grossTotalAmount": 34900, "name": "Körkortsboken™ Bil - English - 1 mån", "netTotalAmount": 32925, "quantity": 1.0, "reference": "O-KB-B-EN-31", "taxRate": 600, "taxAmount": 1975, "unit": "st", "unitPrice": 32925 }] }, "consumer": { "firstName": "Martin", "lastName": "Fors", "billingAddress": { "addressLine1": "Fisktärnevägen 8", "addressLine2": "", "city": "Bunkeflostrand", "country": "SWE", "postcode": "21832", "receiverLine": "[CENSURERAD]" }, "country": "SWE", "email": "info@martinfors.se", "ip": "255.255.255.255", "phoneNumber": { "prefix": "+46", "number": "02892245" }, "shippingAddress": { "addressLine1": "Fisktärnevägen 8", "addressLine2": "", "city": "Bunkeflostrand", "country": "SWE", "postcode": "21832", "receiverLine": "[CENSURERAD]" } }, "paymentId": "'.$transaction_id.'" } }';
+
+		$curl = curl_init($url);
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_POST, true);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
+
+		$arr_headers = array(
+			"Authorization: ".wp_create_nonce('dibs_web_hooks'),
+			"Content-Type: application/json",
+			"Content-Length: ".strlen($post_data),
+		);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $arr_headers);
+
+		//for debug only!
+		//curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+		//curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+		$content = curl_exec($curl);
+		$headers = curl_getinfo($curl);
+		curl_close($curl);
+
+		if(is_array($headers) || $content != '')
+		{
+			$result['success'] = true;
+			$result['message'] = "<i class='fa fa-check green'></i> ".$transaction_id." -> ".var_export($headers, true)." + ".$content;
+		}
+
+		else
+		{
+			$result['success'] = true;
+			$result['message'] = "<i class='fa fa-times red'></i> ".$transaction_id." -> ".var_export($headers, true)." + ".$content;
 		}
 
 		header('Content-Type: application/json');

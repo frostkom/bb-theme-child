@@ -46,6 +46,22 @@ jQuery(function($)
 		});
 	});
 
+	$(document).on('click', "button[name='btnDebugNetsRun']:not(.is_disabled)", function(e)
+	{
+		var dom_obj = $(e.currentTarget),
+			dom_obj_action = $(e.currentTarget).attr('rel');
+
+		run_ajax(
+		{
+			'button': dom_obj,
+			'data': {
+				'action': dom_obj_action,
+				'order': $("#setting_theme_child_nets_order_debug").val(),
+			},
+			'selector': $("#" + dom_obj_action)
+		});
+	});
+
 	$(document).on('keyup', "#setting_theme_child_company_id", function()
 	{
 		$("#setting_theme_child_company").val('');
